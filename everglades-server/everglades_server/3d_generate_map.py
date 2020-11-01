@@ -1,17 +1,25 @@
 from queue import Queue
 import random
 import json
+import numpy as np
 
 class Point:
-    def __init__(self):
-        self.x = 0
-        self.y = 0
-        self.z = 0
+    def __init__(self, x, y, z):
+        self.x = x
+        self.y = y
+        self.z = z
 
 #Global Variable
-directionX = [0, 1, 1, 1, 0, -1, -1, -1]
-directionY = [-1, -1, 0, 1, 1, 1, 0, -1]
-nodeDensityWeight = 3
+directionX = [0, 0, 1, 1, 1, 0, -1, -1, -1]
+directionY = [0, -1, -1, 0, 1, 1, 1, 0, -1]
+nodeCount = 0
+nodeDensityWeight = 5
+nodeCreatedWeight = 0.5
+nodeFailedWeight = 0.5
+fortressWeight = 0.2
+watchtowerWeight = 0.8
+nodeDistance = 3
+outputFile = "/Everglades/config/3DRandomMap.json"
 
 #Prints each 2D array in the 3D array
 def printMap(map):
@@ -24,23 +32,21 @@ def printMap(map):
         count += 1
 
 #Initializes a 3D array to represent the game board
-def createCube(size):
-    map = [[[0 for x in range(size)] for y in range(size)] for z in range(size)]
+def createCube(xLen, yLen, zLen):
+    map = [[[0 for x in range(xLen)] for y in range(yLen)] for z in range(zLen)]
     return map
 
 #Main function
-def generateMap(size, map):
+def generateMap(xLen, yLen, zLen, map):
+    global nodeCount
     queue = Queue()
-    nodeCount = 1
-    startingPoint = Point()
-    startingPoint.x = int(size/2)
-    startingPoint.y = int(size/2)
+    startingPoint = Point(int(xLen/2), int(yLen/2), 0)
 
     #Starting point is the middle of the plane of layer 0
     map[startingPoint.z][startingPoint.y][startingPoint.x] = 1
 
     queue.put(startingPoint)
-
+    nodeCount = 1
     while not queue.empty():
         currentPoint = queue.get()
         numPossibleConnections = 17
@@ -51,8 +57,8 @@ def generateMap(size, map):
         k = 0
         while k < 2:
             i = 0
-            while i < 8:
-                if currentPoint.z + 1 >= int(size/2) or currentPoint.x + directionX[i] < 0 or currentPoint.x + directionX[i] >= size or currentPoint.y + directionY[i] < 0 or currentPoint.y + directionY[i] >= size or map[currentPoint.z + k][currentPoint.y + directionY[i]][currentPoint.x + directionX[i]] != 0:
+            while i < 9:
+                if currentPoint.z + 1 >= int(zLen/2) or currentPoint.x + directionX[i] < 0 or currentPoint.x + directionX[i] >= xLen or currentPoint.y + directionY[i] < 0 or currentPoint.y + directionY[i] >= yLen or map[currentPoint.z + k][currentPoint.y + directionY[i]][currentPoint.x + directionX[i]] != 0:
                     numPossibleConnections -= 1
                 i += 1
             k += 1
@@ -64,16 +70,16 @@ def generateMap(size, map):
         # print(numPossibleConnections)
         weight = nodeDensityWeight/numPossibleConnections
         
-        #Iterate through the connections creating a node from a random chance
+        #Iterate through the possible connections, creating a node from a random chance
         #k = 0 is the current layer and k = 1 is next layer
         k = 0
         while k < 2:
             i = 0
-            while i < 8:
+            while i < 9:
                 # print("i = {}".format(i))
                 # print(map[0])
                 # print("Checking point: {} {} {}".format(currentPoint.z + k, currentPoint.y + directionY[i], currentPoint.x + directionX[i]))
-                if currentPoint.z + 1 >= int(size/2) or currentPoint.x + directionX[i] < 0 or currentPoint.x + directionX[i] >= size or currentPoint.y + directionY[i] < 0 or currentPoint.y + directionY[i] >= size:
+                if currentPoint.z + 1 >= int(zLen/2) or currentPoint.x + directionX[i] < 0 or currentPoint.x + directionX[i] >= xLen or currentPoint.y + directionY[i] < 0 or currentPoint.y + directionY[i] >= yLen:
                     a = 0
                 elif map[currentPoint.z + k][currentPoint.y + directionY[i]][currentPoint.x + directionX[i]] == 0:
                     randVal = random.random()
@@ -81,10 +87,7 @@ def generateMap(size, map):
                     if randVal <= weight:
                         # print("Adding new point")
                         map[currentPoint.z + k][currentPoint.y + directionY[i]][currentPoint.x + directionX[i]] = 1
-                        newPoint = Point()
-                        newPoint.x = currentPoint.x + directionX[i]
-                        newPoint.y = currentPoint.y + directionY[i]
-                        newPoint.z = currentPoint.z + k
+                        newPoint = Point(currentPoint.x + directionX[i], currentPoint.y + directionY[i], currentPoint.z + k)
                         queue.put(newPoint)
                         nodeCount += 1
                     else:
@@ -95,11 +98,11 @@ def generateMap(size, map):
 
     #Fill in leftover 0s as -1s
     i = 0
-    while i < int(size/2):
+    while i < int(zLen/2):
         j = 0
-        while j < size:
+        while j < yLen:
             k = 0
-            while k < size:
+            while k < xLen:
                 if map[i][j][k] == 0:
                     map[i][j][k] = -1
                 k += 1
@@ -108,24 +111,174 @@ def generateMap(size, map):
 
     #Mirror map to opposite side
     i = 0
-    while i < int(size/2):
+    while i < int(zLen/2):
         j = 0
-        while j < size:
+        while j < yLen:
             k = 0
-            while k < size:
-                map[size - 1 - i][j][k] = map[i][j][k]
+            while k < xLen:
+                map[zLen - 1 - i][j][k] = map[i][j][k]
                 k += 1
             j += 1
         i += 1
 
     #Multiplied by 2 to account for the mirrored side
-    print("Nodes: {}".format(nodeCount * 2))
-
-size = 5
-map = createCube(size)
-generateMap(size, map)
-printMap(map)
+    nodeCount *= 2
 
 #Center Plane Function
+def generateCenterPlane(xLen, yLen, zLen, map):
+    zCenter = int(zLen / 2)
+    weight = (nodeDensityWeight / 10)
+    global nodeCount
+    nodeCenterCount = 0
+    i = 0
+    while i < yLen:
+        j = 0
+        while j < xLen:
+            currentPoint = Point(j, i, zCenter)
+            hasConnection = False
+            k = 0
+            while k < 2:
+                h = 0
+                while h < 9:
+                    if currentPoint.x + directionX[h] >= 0 and currentPoint.x + directionX[h] < xLen and currentPoint.y + directionY[h] >= 0 and currentPoint.y + directionY[h] < yLen and map[currentPoint.z + k][currentPoint.y + directionY[h]][currentPoint.x + directionX[h]] > 0:
+                        hasConnection = True
+                        break
+                    h += 1
+                k += 1
 
-#Create json file function
+            randVal = random.random()
+            # print(randVal)
+            if hasConnection and randVal <= weight:
+                map[zCenter][currentPoint.y][currentPoint.x] = 1
+                nodeCount += 1
+                nodeCenterCount += 1
+            else:
+                map[zCenter][currentPoint.y][currentPoint.x] = -1
+            j += 1
+        i += 1
+    if nodeCenterCount == 0:
+        print("Center plane has 0 nodes, regenerating")
+        print(map[zCenter])
+        for i in range(yLen):
+            for j in range(xLen):
+                map[zCenter][i][j] = 0
+        map[zCenter]
+        generateCenterPlane(xLen, yLen, zLen, map)
+
+def GenerateJsonFile(xLen, yLen, zLen, map):
+    jsonData = {}
+    nodes = []
+
+    #Generate P0 Base Node
+    first_node = {}
+    firstPoint = Point(int(xLen/2), int(yLen/2), 0)
+    first_node_connections = discoverConnections(map, firstPoint, xLen, yLen, zLen)
+    first_node["Connections"] = first_node_connections
+    first_node["ID"] = (firstPoint.y * xLen) + (firstPoint.x) + (xLen * yLen * firstPoint.z) + 1
+    first_node["Radius"] = 1
+    resource1 = []
+    first_node["Resource"] = resource1
+    first_node["StructureDefense"] = 1
+    first_node["TeamStart"] = 0
+    first_node["ControlPoints"] = 500
+    nodes.append(first_node)
+    
+    #Generate P1 Base Node
+    last_node = {}
+    lastPoint = Point(int(xLen/2), int(yLen/2), zLen - 1)
+    last_node_connections = discoverConnections(map, lastPoint, xLen, yLen, zLen)
+    last_node["Connections"] = last_node_connections
+    last_node["ID"] = (lastPoint.y * xLen) + (lastPoint.x) + (xLen * yLen * lastPoint.z) + 1
+    last_node["Radius"] = 1
+    resource1 = []
+    last_node["Resource"] = resource1
+    last_node["StructureDefense"] = 1
+    last_node["TeamStart"] = 1
+    last_node["ControlPoints"] = 500
+
+    # print("main json loop")
+    #Generate Json for all center nodes
+    i = 0
+    while i < zLen:
+        j = 0
+        while j < yLen:
+            k = 0
+            while k < xLen:
+                if map[i][j][k] > 0:
+                    tmp_node = {}
+                    nodeID = ((j + directionY[i]) * xLen) + (k + directionX[i]) + (xLen * yLen * i) + 1
+                    connections = discoverConnections(map, Point(k, j, i), xLen, yLen, zLen)
+                    tmp_node["Connections"] = connections
+                    tmp_node["ID"] = nodeID
+                    tmp_node["Radius"] = 1
+                    tmp_node["Resource"] = []
+                    tmp_node["StructureDefense"] = 1
+                    tmp_node["TeamStart"] = -1
+                    tmp_node["ControlPoints"] = 100
+                    nodes.append(tmp_node)
+                k += 1
+            j += 1
+        i += 1
+
+    nodes.append(last_node)
+
+    jsonData["__type"] = "Map:#Everglades_MapJSONDef"
+    jsonData["MapName"] = "3DRandom"
+    jsonData["Xsize"] = xLen
+    jsonData["Ysize"] = yLen
+    jsonData["Zsize"] = zLen
+    jsonData["nodes"] = nodes
+    FileO = open(r"3dmapconnection.json", "w")
+    FileO.write(json.dumps(jsonData, sort_keys=True, indent = 4))
+    FileO.close()
+
+def discoverConnections(map, point, xLen, yLen, zLen):
+    # print("checking around the point z = ", point.z, " y = ", point.y, " x = ", point.x)
+    connections = []
+    k = -1
+    while k < 2:
+        i = 0
+        while i < 9:
+            if point.z + k < 0 or point.z + k >= zLen or point.x + directionX[i] < 0 or point.x + directionX[i] >= xLen or point.y + directionY[i] < 0 or point.y + directionY[i] >= yLen:
+                None
+            elif map[point.z + k][point.y + directionY[i]][point.x + directionX[i]] == 1:
+                # print("connection z = ", point.z + k, " y = ", point.y + directionY[i], " x = ", point.x + directionX[i])
+                conNodeId = ((point.y + directionY[i]) * xLen) + (point.x + directionX[i]) + (xLen * yLen * (point.z + k)) + 1
+                tmp_conn = {}
+                tmp_conn["ConnectedID"] = conNodeId
+                tmp_conn["Distance"] = 3
+                connections.append(tmp_conn)
+            i += 1
+        k += 1
+    return connections
+
+x = 5
+y = 3
+z = 7
+map = createCube(x, y, z)
+generateMap(x, y, z, map)
+generateCenterPlane(x, y, z, map)
+print("Nodes: {}".format(nodeCount))
+#printMap(map)
+
+temp = {"x": x, "y": y, "z": z, "gameboard":map}
+mapjson = json.dumps(temp, sort_keys=True, indent = 4)
+#mapjson = json.dumps(map)
+
+FileO = open(r"3dmap.json", "w")
+FileO.write(mapjson)
+FileO.close()
+
+thepoint = Point(int(x/2), int(y/2), 0)
+GenerateJsonFile(x, y, z, map)
+# print("done")
+
+#print(arry)
+# printMap(map)
+#Add node types to json
+
+#What if a layer has no nodes?
+
+#Adjust the weights, less chance of a full layer of nodes
+
+#Randomly generate watchtower, fortress, etc...
