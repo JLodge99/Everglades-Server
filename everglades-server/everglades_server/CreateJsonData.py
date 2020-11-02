@@ -9,11 +9,11 @@ class Point:
         self.y = 0
 
 #Global Variables
-outputFileLoadout = "/Everglades/config/Loadout"
+outputFileLoadout = "/Everglades-Server/config/Loadout"
 outputFileLoadoutEnd = ".json"
 
-defaultLoadoutFile = "/Everglades/config/LoadoutDefault"
-outputFileMap = "/Everglades/config/RandomMap.json"
+defaultLoadoutFile = "/Everglades-Server/config/LoadoutDefault"
+outputFileMap = "/Everglades-Server/config/RandomMap.json"
 
 
 
@@ -190,7 +190,7 @@ def GenerateJsonFileLoadout(loadout, playerIdentifier):
     jsonData["__type"] = "Loadout:#Everglades_LoadoutJSONDef"
     jsonData["Squads"] = squads
 
-    with open(outputFileLoadout + playerIdentifier + outputFileLoadoutEnd, 'w', encoding='utf-8') as f:
+    with open(outputFileLoadout + str(playerIdentifier) + outputFileLoadoutEnd, 'w', encoding='utf-8') as f:
               json.dump(jsonData, f, ensure_ascii=False, indent=4)
 
 
