@@ -1,0 +1,66 @@
+{
+    "__type": "Loadout:#Everglades_LoadoutJSONDef",
+    "Squads": [
+        {
+            "Squad": [
+                {
+                    "Type": "tank"
+                },
+                {
+                    "Type": "tank"
+                },
+                {
+                    "Type": "tank"
+                },
+                {
+                    "Type": "tank"
+                },
+                {
+                    "Type": "tank"
+                },
+                {
+                    "Type": "tank"
+                },
+                {
+                    "Type": "tank"
+                },
+                {
+                    "Type": "tank"
+                }
+            ]
+        },
+        {
+            "Squad": []
+        },
+        {
+            "Squad": []
+        },
+        {
+            "Squad": []
+        },
+        {
+            "Squad": []
+        },
+        {
+            "Squad": []
+        },
+        {
+            "Squad": []
+        },
+        {
+            "Squad": []
+        },
+        {
+            "Squad": []
+        },
+        {
+            "Squad": []
+        },
+        {
+            "Squad": []
+        },
+        {
+            "Squad": []
+        }
+    ]
+}
