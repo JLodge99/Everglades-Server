@@ -19,7 +19,7 @@ class EvergladesGame:
         config_path = kwargs.get('config_dir')
         map_file = kwargs.get('map_file')
         unit_file = kwargs.get('unit_file')
-        self.setup_file = config_path + 'GameSetup.json'
+        self.setup_file = kwargs.get('setup_file')
         self.debug = kwargs.get('debug', False)
         self.player_names = kwargs.get('pnames')
         self.output_dir = kwargs.get('output_dir')
@@ -28,7 +28,7 @@ class EvergladesGame:
         # Initialize game
         if os.path.exists(map_file):
             self.board_init(map_file)
-        elif os.path.exists(config_dir + map_file):
+        elif os.path.exists(os.path.join(config_path, map_file)):
             self.board_init(map_file)
         else:
             # Exit with error
@@ -36,7 +36,7 @@ class EvergladesGame:
 
         if os.path.exists(unit_file):
             self.unitTypes_init(unit_file)
-        elif os.path.exists(config_dir + unit_file):
+        elif os.path.exists(os.path.join(config_path, unit_file)):
             self.unitTypes_init(unit_file)
         else:
             # Exit with error
@@ -64,6 +64,7 @@ class EvergladesGame:
             self.map_dat = json.load(fid)
 
         # Load in GameSetup.json file
+        print("lmao: ", self.setup_file)
         with open(self.setup_file) as f:
             self.setup = json.load(f)
 

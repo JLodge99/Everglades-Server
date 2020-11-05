@@ -1,6 +1,7 @@
 from queue import Queue
 import random
 import json
+import os
 
 class Point:
     def __init__(self):
@@ -8,7 +9,7 @@ class Point:
         self.y = 0
 
 #Global Variables
-outputFile = "/Everglades/config/RandomMap.json"
+outputFile = os.path.abspath('config/RandomMap.json')
 
 nodeDensityWeight = 2
 nodeCreatedWeight = 0.5

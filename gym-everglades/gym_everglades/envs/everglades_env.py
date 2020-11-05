@@ -61,6 +61,7 @@ class EvergladesEnv(gym.Env):
         self.players = kwargs.get('players')
         config_dir = kwargs.get('config_dir')
         map_file = kwargs.get('map_file')
+        setup_file = kwargs.get('setup_file')
         unit_file = kwargs.get('unit_file')
         output_dir = kwargs.get('output_dir')
         player_names = kwargs.get('pnames')
@@ -97,6 +98,7 @@ class EvergladesEnv(gym.Env):
         self.game = server.EvergladesGame(
                 config_dir = config_dir,
                 map_file = map_file,
+                setup_file = setup_file,
                 unit_file = unit_file,
                 output_dir = output_dir,
                 pnames = player_names,

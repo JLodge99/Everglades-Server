@@ -31,12 +31,13 @@ else:
 
 if map_name == 'RandomMap.json':
     generate_map.exec(7)
-    
-config_dir = '/everglades/config/'  
-map_file = config_dir + map_name
-setup_file = config_dir + 'GameSetup.json'
-unit_file = config_dir + 'UnitDefinitions.json'
-output_dir = '/everglades/game_telemetry/'
+
+config_dir = os.path.abspath('config')
+print(config_dir)
+map_file = os.path.join(config_dir, map_name)
+setup_file = os.path.join(config_dir, "GameSetup.json")
+unit_file = os.path.join(config_dir, "UnitDefinitions.json")
+output_dir = os.path.abspath('game_telemetry')
 
 debug = 1
 
@@ -63,6 +64,7 @@ observations = env.reset(
         players=players,
         config_dir = config_dir,
         map_file = map_file,
+        setup_file = setup_file,
         unit_file = unit_file,
         output_dir = output_dir,
         pnames = names,
@@ -73,7 +75,7 @@ actions = {}
 
 ## Game Loop
 done = 0
-while not done:
+while not done: 
     if debug:
         env.game.debug_state()
 
