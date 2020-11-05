@@ -35,6 +35,7 @@ def GenerateJsonFileLoadout(loadout, playerIdentifier):
     for i in range(len(loadout)):
         tmp_squad = {}
         tmp_squadUnits = []
+        print("Length " + str(len(loadout)) + " and i = " + str(i))
         for j in range(len(loadout[i])):
             tmp_unit = {}
             tmp_unit["Type"] = loadout[i][j]
@@ -55,34 +56,18 @@ def GenerateJsonFileLoadout(loadout, playerIdentifier):
     #          json.dump(jsonData, f, ensure_ascii=False, indent=4)
 
 
-#Call this function for an array of arrays storing the unit types
-def GetLoadoutTypeArray(playerIdentifier):
-    loadout = []
-    loadedData = GetLoadout(playerIdentifier)
-    for i in range(len(loadedData["Squads"])):
-        tmp_squad = {}
-        tmp_squadUnits = []
-        for j in range(len(loadedData["Squads"][i]["Squad"])):
-            loadout[i][j] = loadedData["Squads"][i]["Squad"]["Type"]
-
-    return loadout
-
-# Call this function to get the loadout to be used
-def GetLoadout(playerIdentifier):
-    loadedJSON = __loadJsonFileLoadout(playerIdentifier)
-    if CheckIfValidLoadout(loadedJSON):
-        return loadedJSON
-    else:
-        return __loadJsonFileLoadout(-1) #Gets the default loadout
-
 # Loadout -1 is reserved for default loadout
+
+
 def __loadJsonFileLoadout(playerIdentifier):
 
-    loadoutFile = outputFileLoadout + playerIdentifier + outputFileLoadoutEnd
+    loadoutFile = outputFileLoadout + str(playerIdentifier) + outputFileLoadoutEnd
     if (playerIdentifier < 0 or not os.path.exists(os.path.abspath(loadoutFile))):
+        print("Loading failed")
         with open(os.path.abspath(defaultLoadoutFile)) as f:
             data = json.load(f)
     else:
+        print("Loading found")
         with open(os.path.abspath(loadoutFile)) as f:
             data = json.load(f)
 
@@ -91,6 +76,12 @@ def __loadJsonFileLoadout(playerIdentifier):
     
     return data
 
+
+def CheckIfValidSquad(squad):
+
+    return True
+
+# Takes in an array group
 def CheckIfValidLoadout(loadout):
 
     droneCount = 0
@@ -111,6 +102,44 @@ def CheckIfValidLoadout(loadout):
 
     return True
 
-def CheckIfValidSquad(squad):
+def __getLoadoutTypeArrayViaJSON(loadedData):
+    loadout = []
+    
+    for i in range(len(loadedData["Squads"])):
+        row = []
+        for j in range(len(loadedData["Squads"][i]["Squad"])):
+            row.append(loadedData["Squads"][i]["Squad"][j]["Type"])
+        loadout.append(row)
 
-    return True
+    return loadout
+
+# Call this function to get the loadout to be used
+def GetLoadout(playerIdentifier):
+    loadedJSON = __loadJsonFileLoadout(playerIdentifier)
+    if CheckIfValidLoadout(__getLoadoutTypeArrayViaJSON(loadedJSON)):
+        return loadedJSON
+    else:
+        return __loadJsonFileLoadout(-1) #Gets the default loadout
+
+#Call this function for an array of arrays storing the unit types
+def GetLoadoutTypeArray(playerIdentifier):
+    loadedData = GetLoadout(playerIdentifier)
+
+    return __getLoadoutTypeArrayViaJSON(loadedData)
+
+
+
+
+
+
+
+
+# Delete Me
+def testLoading():
+    print("Now testing the 2 loadout make")
+    GenerateJsonFileLoadout(GetLoadoutTypeArray(1),2)
+
+
+
+        
+
