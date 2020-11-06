@@ -68,7 +68,6 @@ class EvergladesGame:
             self.map_dat = json.load(fid)
 
         # Load in GameSetup.json file
-        print("lmao: ", self.setup_file)
         with open(self.setup_file) as f:
             self.setup = json.load(f)
 
@@ -151,22 +150,19 @@ class EvergladesGame:
 
         array = []
 
-        array.append(Ysize*Xsize + 2)
-
         #Reverse the node list
-        i = Xsize - 1
-        while i >= 0:
-            j = 0
-            while j < Ysize:
-                if j + (Ysize * i) + 2 in arrayIDs:
-                    array.append(j + (Ysize * i) + 2)
-                j = j + 1
-            i = i - 1
+        array = self.map_key1[::-1]
+        # i = Xsize - 1
+        # while i >= 0:
+        #     j = 0
+        #     while j < Ysize:
+        #         print("check: ", j + (Ysize * i) + 2)
+        #         if j + (Ysize * i) + 2 in arrayIDs:
+        #             array.append(j + (Ysize * i) + 2)
+        #         j = j + 1
+        #     i = i - 1
 
-        array.append(1)
-
-        print(self.map_key1)
-        print(array)
+        # array.append(1)
 
         self.p1_node_map = array
 
