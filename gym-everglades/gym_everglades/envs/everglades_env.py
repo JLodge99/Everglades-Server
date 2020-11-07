@@ -188,10 +188,9 @@ class EvergladesEnv(gym.Env):
         return observations
 
 # end class EvergladesEnv
-print("Shalom Im testing")
 
 
 if __name__ == '__main__':
     test_env = EvergladesEnv()
 
-test_env._build_groups(1)
+#test_env._build_groups(1)
