@@ -3,11 +3,17 @@ from gym import error, spaces, utils
 from gym.utils import seeding
 from gym.spaces import Tuple, Discrete, Box
 
-import everglades_server.server as server
+from collections import Counter
+import os.path
 
+from everglades_server import CreateJsonData
+from everglades_server import server
+
+## Filepath:
 import numpy as np
 import pdb
 
+##from CreateJsonData import GetLoadoutTypeArray
 
 class EvergladesEnv(gym.Env):
 
@@ -19,13 +25,13 @@ class EvergladesEnv(gym.Env):
         self.num_nodes = 11
         self.num_actions_per_turn = 7
         self.unit_classes = ['controller', 'striker', 'tank', 'recon']
-        
+
         # Integers are used to represent the unit type (e.g. 0: controller, 1: striker).
         # With 4 types of units, a group containing all 4 would have the maximum value
         # for this part of the observation space. If each unit is designated by index, then
         # this integer would be 3210.
         self.unit_config_high = 3210
-        
+
 
         # Define the action space
         self.action_space = Tuple((Discrete(self.num_groups), Discrete(self.num_nodes + 1)) * self.num_actions_per_turn)
@@ -41,7 +47,7 @@ class EvergladesEnv(gym.Env):
         observations = self._build_observations()
 
         reward = {i:0 for i in self.players}
-        done = 0 
+        done = 0
         if status != 0:
             done = 1
             if scores[0] != scores[1]:
@@ -74,8 +80,8 @@ class EvergladesEnv(gym.Env):
         self.player_dat = {}
         for i in self.pks:
             self.player_dat[i] = {}
-            
-            # This allows individual agents to specify their unit configurations as long as 
+
+            # This allows individual agents to specify their unit configurations as long as
             # the agent specifies a dictionary with group number as key and an array of tuples
             #  as values. The tuples consist of ('UnitType', count). The format would be:
             # self.unit_configs = {1: [('Striker', 5), ('Tank', 3)], 2:........}
@@ -92,7 +98,7 @@ class EvergladesEnv(gym.Env):
                 self.player_dat[i]['sensor_config'] = self.players[i].sensor_config
             else:
                 self.player_dat[i]['sensor_config'] = {}
-            
+
 
         # Initialize game
         self.game = server.EvergladesGame(
@@ -104,7 +110,7 @@ class EvergladesEnv(gym.Env):
                 pnames = player_names,
                 debug = self.debug
         )
-        
+
         # Initialize players with selected groups
         self.game.game_init(self.player_dat)
 
@@ -151,14 +157,12 @@ class EvergladesEnv(gym.Env):
 
     def _build_groups(self, player_num):
         unit_configs = {}
+        loadout = CreateJsonData.GetLoadoutTypeArray(player_num)
 
-        num_units_per_group = int(self.num_units / self.num_groups)
-        for i in range(self.num_groups):
-            unit_type = self.unit_classes[i % len(self.unit_classes)]
-            if i == self.num_groups - 1:
-                unit_configs[i] = [(unit_type, self.num_units - sum([c[0][1] for c in unit_configs.values()]))]
-            else:
-                unit_configs[i] = [(unit_type, num_units_per_group)]
+        for i in range(len(loadout)):
+            group_units = loadout[i]       ## Get each group
+            unit_configs[i] = [(x,group_units.count(x)) for x in set(group_units)]  ## Returns [('drone type', count),...]
+            
         return unit_configs
 
     def _build_observations(self):
@@ -184,6 +188,10 @@ class EvergladesEnv(gym.Env):
         return observations
 
 # end class EvergladesEnv
+print("Shalom Im testing")
+
 
 if __name__ == '__main__':
     test_env = EvergladesEnv()
+
+test_env._build_groups(1)
