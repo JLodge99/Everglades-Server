@@ -10,7 +10,7 @@ import numpy as np
 
 from everglades_server import server
 from everglades_server import generate_map
-
+from everglades_server import generate_3dmap
 ## Input Variables
 # Agent files must include a class of the same name with a 'get_action' function
 # Do not include './' in file path
@@ -26,24 +26,27 @@ else:
 
 if len(sys.argv) > 3:
     map_name = sys.argv[3] + '.json'
-else:
-    map_name = 'RandomMap.json'
+# else:
+#     map_name = 'RandomMap.json'
 
-if map_name == 'RandomMap.json':
-    generate_map.exec(7)
+# if map_name == 'RandomMap.json':
+#     generate_map.exec(7)
 
 config_dir = os.path.abspath('config')
-print(config_dir)
+generate_3dmap.exec(5, 3, 11)
+print("Generating 3D map :)")
+map_name = '3dmap.json'
 map_file = os.path.join(config_dir, map_name)
 setup_file = os.path.join(config_dir, "GameSetup.json")
 unit_file = os.path.join(config_dir, "UnitDefinitions.json")
 output_dir = os.path.abspath('game_telemetry')
 
-debug = 1
+debug = 0
 
 ## Specific Imports
 agent0_name, agent0_extension = os.path.splitext(agent0_file)
 agent0_mod = importlib.import_module(agent0_name.replace('/','.'))
+print("Importing: ", agent0_name.replace('/','.'))
 agent0_class = getattr(agent0_mod, os.path.basename(agent0_name))
 
 agent1_name, agent1_extension = os.path.splitext(agent1_file)
@@ -52,6 +55,7 @@ agent1_class = getattr(agent1_mod, os.path.basename(agent1_name))
 
 ## Main Script
 env = gym.make('everglades-v0')
+
 players = {}
 names = {}
 
@@ -78,10 +82,9 @@ done = 0
 while not done: 
     if debug:
         env.game.debug_state()
-
+    #print("ACTIONS: ", actions)
     for pid in players:
         actions[pid] = players[pid].get_action( observations[pid] )
 
     observations, reward, done, info = env.step(actions)
-
-print(reward)
+#print("FINAL: ", reward)
