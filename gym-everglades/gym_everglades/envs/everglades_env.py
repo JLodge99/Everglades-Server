@@ -6,20 +6,25 @@ from gym.spaces import Tuple, Discrete, Box
 import everglades_server.server as server
 
 import numpy as np
+import json
 import pdb
-
+import os.path
 
 class EvergladesEnv(gym.Env):
 
     def __init__(self):
+        setup_file = os.path.join(os.path.abspath('config'), 'GameSetup.json')
+        with open(setup_file) as f:
+            self.setup = json.load(f)
+        print(self.setup)
         # Game parameters
-        self.num_turns = 150
+        self.num_turns = self.setup['TurnLimit']
         self.num_units = 100
         self.num_groups = 12
         self.num_nodes = 11
         self.num_actions_per_turn = 7
         self.unit_classes = ['controller', 'striker', 'tank', 'recon']
-        
+
         # Integers are used to represent the unit type (e.g. 0: controller, 1: striker).
         # With 4 types of units, a group containing all 4 would have the maximum value
         # for this part of the observation space. If each unit is designated by index, then

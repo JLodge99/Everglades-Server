@@ -516,7 +516,7 @@ class EvergladesGame:
 
         ## Check progress
         # Time expiration
-        if self.current_turn >= 150:
+        if self.current_turn >= self.setup['TurnLimit']:
             status = end_states['TimeExpired']
         # Annihilation
         elif np.sum(counts) == 0:
