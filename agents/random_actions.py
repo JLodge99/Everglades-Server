@@ -2,6 +2,8 @@ import os
 import numpy as np
 import time
 import json
+from gym_everglades.envs import everglades_env
+from everglades_server import CreateJsonData
 
 class random_actions:
     def __init__(self, action_space, player_num, map_name):
@@ -25,25 +27,27 @@ class random_actions:
         #   1 - Striker
         #   2 - Tank
         #   3 - Recon
-        self.unit_config = {
-            0: [('controller',1), ('striker', 4), ('recon', 1)],# 6
-            1: [('controller',2), ('striker', 2), ('tank', 3), ('recon', 2)],# 15
-            2: [('tank', 5)],# 20
-            3: [('controller', 2), ('tank', 1), ('recon', 3)],# 26
-            4: [('striker', 5), ('recon', 5)],# 36
-            5: [('controller', 3), ('striker', 2), ('recon', 1)],# 42
-            6: [('striker', 3), ('recon', 1)],# 46
-            7: [('controller', 1), ('striker', 2), ('tank', 2), ('recon', 1)],# 52
-            8: [('controller', 1), ('recon', 2)],# 55
-            9: [('controller', 1), ('striker', 3), ('recon', 2)],# 61
-            10: [('striker', 9)],# 70
-            11: [('controller', 10), ('striker', 8), ('tank', 2), ('recon', 10)],# 100
-        }
+        self.unit_config = CreateJsonData.ConvertLoadoutToObject(player_num)
+        # Default Output Format:
+        #{
+        #    0: [('controller',1), ('striker', 4), ('recon', 1)],# 6
+        #    1: [('controller',2), ('striker', 2), ('tank', 3), ('recon', 2)],# 15
+        #    2: [('tank', 5)],# 20
+        #    3: [('controller', 2), ('tank', 1), ('recon', 3)],# 26
+        #    4: [('striker', 5), ('recon', 5)],# 36
+        #    5: [('controller', 3), ('striker', 2), ('recon', 1)],# 42
+        #    6: [('striker', 3), ('recon', 1)],# 46
+        #    7: [('controller', 1), ('striker', 2), ('tank', 2), ('recon', 1)],# 52
+        #    8: [('controller', 1), ('recon', 2)],# 55
+        #    9: [('controller', 1), ('striker', 3), ('recon', 2)],# 61
+        #    10: [('striker', 9)],# 70
+        #    11: [('controller', 10), ('striker', 8), ('tank', 2), ('recon', 10)],# 100
+        #}
 
         # Recon sensor settings. Format is
         # {Group #: [mode, range, wavelength], ...}
-        # Mode is 'active' or 'passive'. Range is 
-        # an integer of 1, 2, or 3. Wavelength is 
+        # Mode is 'active' or 'passive'. Range is
+        # an integer of 1, 2, or 3. Wavelength is
         # a string of a decimal between 0.37 and 2.50 inclusive.
         # Wavelength must be of the form 'X.XX'.
         self.sensor_config = {
@@ -72,5 +76,3 @@ class random_actions:
         action[:, 1] = np.random.choice(self.nodes_array, self.num_actions, replace=False)
         #print(action)
         return action
-
-

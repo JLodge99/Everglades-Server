@@ -30,7 +30,7 @@ class EvergladesEnv(gym.Env):
         # for this part of the observation space. If each unit is designated by index, then
         # this integer would be 3210.
         self.unit_config_high = 3210
-        
+
 
         # Define the action space
         self.action_space = Tuple((Discrete(self.num_groups), Discrete(self.num_nodes + 1)) * self.num_actions_per_turn)
@@ -46,7 +46,7 @@ class EvergladesEnv(gym.Env):
         observations = self._build_observations()
 
         reward = {i:0 for i in self.players}
-        done = 0 
+        done = 0
         if status != 0:
             done = 1
             if scores[0] != scores[1]:
@@ -79,8 +79,8 @@ class EvergladesEnv(gym.Env):
         self.player_dat = {}
         for i in self.pks:
             self.player_dat[i] = {}
-            
-            # This allows individual agents to specify their unit configurations as long as 
+
+            # This allows individual agents to specify their unit configurations as long as
             # the agent specifies a dictionary with group number as key and an array of tuples
             #  as values. The tuples consist of ('UnitType', count). The format would be:
             # self.unit_configs = {1: [('Striker', 5), ('Tank', 3)], 2:........}
@@ -97,7 +97,7 @@ class EvergladesEnv(gym.Env):
                 self.player_dat[i]['sensor_config'] = self.players[i].sensor_config
             else:
                 self.player_dat[i]['sensor_config'] = {}
-            
+
 
         # Initialize game
         self.game = server.EvergladesGame(
@@ -109,7 +109,7 @@ class EvergladesEnv(gym.Env):
                 pnames = player_names,
                 debug = self.debug
         )
-        
+
         # Initialize players with selected groups
         self.game.game_init(self.player_dat)
 
