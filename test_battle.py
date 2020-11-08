@@ -26,16 +26,22 @@ else:
 
 if len(sys.argv) > 3:
     map_name = sys.argv[3] + '.json'
-# else:
-#     map_name = 'RandomMap.json'
 
-# if map_name == 'RandomMap.json':
-#     generate_map.exec(7)
+# Choose which map you want by setting map_name
+# 3dmap.json     -  3D
+# RandomMap.json -  2D
+
+map_name = '3dmap.json'
+# map_name = 'RandomMap.json'
+
+if map_name == 'RandomMap.json':
+    print("Generating 2D map")
+    generate_map.exec(7)
+elif map_name == '3dmap.json':
+    print("Generating 3D map")
+    generate_3dmap.exec(5, 3, 5) #(X, Y, Z)
 
 config_dir = os.path.abspath('config')
-generate_3dmap.exec(5, 3, 11)
-print("Generating 3D map :)")
-map_name = '3dmap.json'
 map_file = os.path.join(config_dir, map_name)
 setup_file = os.path.join(config_dir, "GameSetup.json")
 unit_file = os.path.join(config_dir, "UnitDefinitions.json")
@@ -46,7 +52,6 @@ debug = 0
 ## Specific Imports
 agent0_name, agent0_extension = os.path.splitext(agent0_file)
 agent0_mod = importlib.import_module(agent0_name.replace('/','.'))
-print("Importing: ", agent0_name.replace('/','.'))
 agent0_class = getattr(agent0_mod, os.path.basename(agent0_name))
 
 agent1_name, agent1_extension = os.path.splitext(agent1_file)
