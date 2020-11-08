@@ -65,7 +65,7 @@ def __loadJsonFileLoadout(playerIdentifier):
     loadoutFile = outputFileLoadout + str(playerIdentifier) + outputFileLoadoutEnd
     if (playerIdentifier < 0 or not os.path.exists(os.path.abspath(loadoutFile))):
         print("Loading failed")
-        with open(os.path.abspath(defaultLoadoutFile)) as f:
+        with open(os.path.abspath(defaultLoadoutFile+outputFileLoadoutEnd)) as f:
             data = json.load(f)
     else:
         print("Loading found")
@@ -131,7 +131,7 @@ def GetLoadoutTypeArray(playerIdentifier):
 # Converts JSON with array of strings into an object
 def ConvertLoadoutToObject(playerIdentifier):
     unit_configs = {}
-    loadout = GetLoadoutTypeArray(player_num)
+    loadout = GetLoadoutTypeArray(playerIdentifier)
 
     for i in range(len(loadout)):
         group_units = loadout[i]       ## Get each group
