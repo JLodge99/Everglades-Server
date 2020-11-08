@@ -26,7 +26,7 @@ class random_actions:
         #   1 - Striker
         #   2 - Tank
         #   3 - Recon
-        self.unit_config = everglades_env._build_groups(-1)
+        self.unit_config = everglades_env._build_groups(player_num)
         # Default Output Format:
         #{
         #    0: [('controller',1), ('striker', 4), ('recon', 1)],# 6
@@ -75,4 +75,3 @@ class random_actions:
         action[:, 1] = np.random.choice(self.nodes_array, self.num_actions, replace=False)
         #print(action)
         return action
-
