@@ -3,17 +3,11 @@ from gym import error, spaces, utils
 from gym.utils import seeding
 from gym.spaces import Tuple, Discrete, Box
 
-from collections import Counter
-import os.path
+import everglades_server.server as server
 
-from everglades_server import CreateJsonData
-from everglades_server import server
-
-## Filepath:
 import numpy as np
 import pdb
 
-##from CreateJsonData import GetLoadoutTypeArray
 
 class EvergladesEnv(gym.Env):
 
@@ -157,12 +151,14 @@ class EvergladesEnv(gym.Env):
 
     def _build_groups(self, player_num):
         unit_configs = {}
-        loadout = CreateJsonData.GetLoadoutTypeArray(player_num)
 
-        for i in range(len(loadout)):
-            group_units = loadout[i]       ## Get each group
-            unit_configs[i] = [(x,group_units.count(x)) for x in set(group_units)]  ## Returns [('drone type', count),...]
-            
+        num_units_per_group = int(self.num_units / self.num_groups)
+        for i in range(self.num_groups):
+            unit_type = self.unit_classes[i % len(self.unit_classes)]
+            if i == self.num_groups - 1:
+                unit_configs[i] = [(unit_type, self.num_units - sum([c[0][1] for c in unit_configs.values()]))]
+            else:
+                unit_configs[i] = [(unit_type, num_units_per_group)]
         return unit_configs
 
     def _build_observations(self):
@@ -189,8 +185,5 @@ class EvergladesEnv(gym.Env):
 
 # end class EvergladesEnv
 
-
 if __name__ == '__main__':
     test_env = EvergladesEnv()
-
-#test_env._build_groups(1)

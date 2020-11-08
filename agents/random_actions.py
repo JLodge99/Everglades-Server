@@ -3,6 +3,7 @@ import numpy as np
 import time
 import json
 from gym_everglades.envs import everglades_env
+from everglades_server import CreateJson
 
 class random_actions:
     def __init__(self, action_space, player_num, map_name):
@@ -26,7 +27,7 @@ class random_actions:
         #   1 - Striker
         #   2 - Tank
         #   3 - Recon
-        self.unit_config = everglades_env._build_groups(player_num)
+        self.unit_config = CreateJson.ConvertLoadoutToObject(player_num)
         # Default Output Format:
         #{
         #    0: [('controller',1), ('striker', 4), ('recon', 1)],# 6

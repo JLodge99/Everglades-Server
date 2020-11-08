@@ -2,6 +2,7 @@ from queue import Queue
 import random
 import json
 import os.path
+from collections import Counter
 
 class Point:
     def __init__(self):
@@ -71,9 +72,9 @@ def __loadJsonFileLoadout(playerIdentifier):
         with open(os.path.abspath(loadoutFile)) as f:
             data = json.load(f)
 
-        
-        
-    
+
+
+
     return data
 
 
@@ -104,7 +105,7 @@ def CheckIfValidLoadout(loadout):
 
 def __getLoadoutTypeArrayViaJSON(loadedData):
     loadout = []
-    
+
     for i in range(len(loadedData["Squads"])):
         row = []
         for j in range(len(loadedData["Squads"][i]["Squad"])):
@@ -121,13 +122,22 @@ def GetLoadout(playerIdentifier):
     else:
         return __loadJsonFileLoadout(-1) #Gets the default loadout
 
-#Call this function for an array of arrays storing the unit types
+# Call this function for an array of arrays storing the unit types
 def GetLoadoutTypeArray(playerIdentifier):
     loadedData = GetLoadout(playerIdentifier)
 
     return __getLoadoutTypeArrayViaJSON(loadedData)
 
+# Converts JSON with array of strings into an object
+def ConvertLoadoutToObject(playerIdentifier):
+    unit_configs = {}
+    loadout = GetLoadoutTypeArray(player_num)
 
+    for i in range(len(loadout)):
+        group_units = loadout[i]       ## Get each group
+        unit_configs[i] = [(x,group_units.count(x)) for x in set(group_units)]  ## Returns [('drone type', count),...]
+
+    return unit_configs
 
 
 
@@ -138,8 +148,3 @@ def GetLoadoutTypeArray(playerIdentifier):
 def testLoading():
     print("Now testing the 2 loadout make")
     GenerateJsonFileLoadout(GetLoadoutTypeArray(1),2)
-
-
-
-        
-
