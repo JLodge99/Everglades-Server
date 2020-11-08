@@ -64,7 +64,6 @@ class EvergladesGame:
             self.map_dat = json.load(fid)
 
         # Load in GameSetup.json file
-        print("lmao: ", self.setup_file)
         with open(self.setup_file) as f:
             self.setup = json.load(f)
 
@@ -158,9 +157,6 @@ class EvergladesGame:
             i = i - 1
 
         array.append(1)
-
-        print(self.map_key1)
-        print(array)
 
         self.p1_node_map = array
 
@@ -514,7 +510,7 @@ class EvergladesGame:
 
         ## Check progress
         # Time expiration
-        if self.current_turn >= 150:
+        if self.current_turn >= self.setup['TurnLimit']:
             status = end_states['TimeExpired']
         # Annihilation
         elif np.sum(counts) == 0:
