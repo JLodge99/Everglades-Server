@@ -11,6 +11,7 @@ import numpy as np
 from everglades_server import server
 from everglades_server import generate_map
 from everglades_server import generate_3dmap
+
 ## Input Variables
 # Agent files must include a class of the same name with a 'get_action' function
 # Do not include './' in file path
@@ -27,12 +28,14 @@ else:
 if len(sys.argv) > 3:
     map_name = sys.argv[3] + '.json'
 
-# Choose which map you want by setting map_name
+# Choose which map you want by setting map_name.
+# To enable wind go to server.py and in the init() for EvergladesGame set self.enableWind = 1
+# ********WARNING - ENABLING BOTH 3DMAP AND WIND WILL BREAK THE SERVER.***********
 # 3dmap.json     -  3D
 # RandomMap.json -  2D
 
-map_name = '3dmap.json'
-# map_name = 'RandomMap.json'
+#map_name = '3dmap.json'
+map_name = 'RandomMap.json'
 
 if map_name == 'RandomMap.json':
     print("Generating 2D map")
@@ -92,4 +95,4 @@ while not done:
         actions[pid] = players[pid].get_action( observations[pid] )
 
     observations, reward, done, info = env.step(actions)
-#print("FINAL: ", reward)
+print("Reward: ", reward)

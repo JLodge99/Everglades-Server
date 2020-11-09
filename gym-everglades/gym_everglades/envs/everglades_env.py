@@ -16,7 +16,6 @@ class EvergladesEnv(gym.Env):
         setup_file = os.path.join(os.path.abspath('config'), 'GameSetup.json')
         with open(setup_file) as f:
             self.setup = json.load(f)
-        print(self.setup)
         # Game parameters
         self.num_turns = self.setup['TurnLimit']
         self.num_units = 100

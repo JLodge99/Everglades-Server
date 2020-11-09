@@ -63,12 +63,12 @@ def GenerateJsonFileLoadout(loadout, playerIdentifier):
 def __loadJsonFileLoadout(playerIdentifier):
 
     loadoutFile = outputFileLoadout + str(playerIdentifier) + outputFileLoadoutEnd
+
     if (playerIdentifier < 0 or not os.path.exists(os.path.abspath(loadoutFile))):
-        print("Loading failed")
+        print("Loading default loadout for player ", playerIdentifier)
         with open(os.path.abspath(defaultLoadoutFile+outputFileLoadoutEnd)) as f:
             data = json.load(f)
     else:
-        print("Loading found")
         with open(os.path.abspath(loadoutFile)) as f:
             data = json.load(f)
 

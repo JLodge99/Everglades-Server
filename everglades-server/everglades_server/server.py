@@ -25,7 +25,8 @@ class EvergladesGame:
         self.output_dir = kwargs.get('output_dir')
         #config_file = kwargs.get(
 
-        # 0 = Disable 1 = Enable
+        # 0 = Disable 
+        # 1 = Enable
         self.enableWind = 0
 
         # Initialize game
@@ -1102,7 +1103,7 @@ class EvergladesGame:
                                 wind_mag = self.winds[(start_idx, end_idx)][1]
                             # Apply amount moved
                             # BUG - if group consists of different unit types, it won't move properly
-                            print("groupspeed: ", group.speed[0], " windmag: ", wind_mag)
+                            # print("groupspeed: ", group.speed[0], " windmag: ", wind_mag)
                             group.distance_remaining -= (group.speed[0] + group.speed[0] * wind_mag)
                         else:
                             group.distance_remaining -= group.speed[0]
