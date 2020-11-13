@@ -9,16 +9,16 @@ class Point:
         self.y = 0
 
 #Global Variables
-outputFileLoadout = "config/Loadout"
+outputLocation = "config"
+
+outputFileLoadout = "Loadout"
 outputFileLoadoutEnd = ".json"
 
-defaultLoadoutFile = "config/LoadoutDefault"
+defaultLoadoutFile = "LoadoutDefault"
 
-outputFileMap = "config/RandomMap.json"
+outputFileMap = "RandomMap.json"
 
-def GetFilePathToMain():
-    print("Here is what I found: " + os.path.curdir)
-    return os.path.dirname(os.path.dirname(os.path.curdir))
+
 
 
 
@@ -47,7 +47,8 @@ def GenerateJsonFileLoadout(loadout, playerIdentifier):
     jsonData["__type"] = "Loadout:#Everglades_LoadoutJSONDef"
     jsonData["Squads"] = squads
 
-    savePath = outputFileLoadout + str(playerIdentifier) + outputFileLoadoutEnd
+    fileName = outputFileLoadout + str(playerIdentifier) + outputFileLoadoutEnd
+    savePath = os.path.join(outputLocation, fileName)
     FileO = open(os.path.abspath('{}'.format(savePath)), "w")
     FileO.write(json.dumps(jsonData, indent=4))
     FileO.close()
@@ -61,7 +62,9 @@ def GenerateJsonFileLoadout(loadout, playerIdentifier):
 
 def __loadJsonFileLoadout(playerIdentifier):
 
-    loadoutFile = outputFileLoadout + str(playerIdentifier) + outputFileLoadoutEnd
+    fileName = outputFileLoadout + str(playerIdentifier) + outputFileLoadoutEnd
+    loadoutFile = os.path.join(outputLocation, fileName)
+    dFile = os.path.join(outputLocation, loadoutFile)
     if (playerIdentifier < 0 or not os.path.exists(os.path.abspath(loadoutFile))):
         print("Loading failed")
         with open(os.path.abspath(defaultLoadoutFile)) as f:
