@@ -4,18 +4,18 @@ from CreateJsonData import *
 
 thismodule = sys.modules[__name__]
 
-squad1= [];
-squad2= [];
-squad3= [];
-squad4= [];
-squad5= [];
-squad6= [];
-squad7= [];
-squad8= [];
-squad9= [];
-squad10= [];
-squad11= [];
-squad12= [];
+squad1= []
+squad2= []
+squad3= []
+squad4= []
+squad5= []
+squad6= []
+squad7= []
+squad8= []
+squad9= []
+squad10= []
+squad11= []
+squad12= []
 
 def helloWorld():
     lbl_result["text"] = f"Hello World"

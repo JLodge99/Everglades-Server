@@ -1,0 +1,23 @@
+{
+    "__type": "Loadout:#Everglades_AttributesJSONDef",
+    "Abilities": [
+        {
+            "Name": "Increased Health",
+            "Effect": "health",
+            "Modifier": 50,
+            "Priority": 1,
+            "addOverMult": false,
+            "Description": "Increases HP by 50%",
+            "Cost": 3                
+        },
+        {
+            "Name": "Increased Speed",
+            "Effect": "speed",
+            "Modifier": 50,
+            "Priority": 1,
+            "addOverMult": false,
+            "Description": "Increases Speed by 50%",
+            "Cost": 3                
+        }
+    ]
+}
