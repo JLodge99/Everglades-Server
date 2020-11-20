@@ -15,56 +15,56 @@ def dot(v1, v2):
 	return x1 * x2 + y1 * y2
 
 # Generates hash map of each connection's direction
-def genConnMags(xsize, ysize, map, conn, wind):
+def genConnMags(xsize, ysize, zsize, map, conn, wind):
 
-	neighbors = [(1,0), (1,1), (0,1), (-1,1), (-1,0), (-1,-1), (0,-1), (1,-1)]
-	diagonals = [(1,1), (-1, 1), (-1,-1), (1,-1)]
+	neighbors = [(-1,1,0), (-1,1,1), (-1,0,1), (-1,-1,1), (-1,-1,0), (-1,-1,-1), (-1,0,-1), (-1,1,-1), (0,1,0), (0,1,1), (0,0,1), (0,-1,1), (0,-1,0), (0,-1,-1), (0,0,-1), (0,1,-1), (1,1,0), (1,1,1), (1,0,1), (1,-1,1), (1,-1,0), (1,-1,-1), (1,0,-1), (1,1,-1)]
+	diagonals = [(-1,1,1), (-1,-1, 1), (-1,-1,-1), (-1,1,-1),(0,1,1), (0,-1, 1), (0,-1,-1), (0,1,-1),(1,1,1), (1,-1, 1), (1,-1,-1), (1,1,-1)]
 
 	# Iterate through map
-	for y in range(ysize):
-		for x in range(xsize):
+	for z in range(zsize):
+		for y in range(ysize):
+			for x in range(xsize):
 			# Check neighboring nodes for connections
-			if map[y][x] != -1:
-				for n in neighbors:
-					(i, j) = n
+				if map[z][y][x] != -1:
+					for n in neighbors:
+						(i, j, k) = n
+						xCheck = x + i >= 0 and x + i < xsize
+						yCheck = y + j >= 0 and y + j < ysize
+						zCheck = z + k >= 0 and z + k < zsize
 
-					# Bounds check
-					xCheck = x + i >= 0 and x + i < xsize
-					yCheck = y + j >= 0 and y + j < ysize
+						if xCheck and yCheck and zCheck and map[z + k][y + j][x + i] != -1:
 
-					if xCheck and yCheck and map[y + j][x + i] != -1:
+							node1 = map[z][y][x]
+							node2 = map[z + k][y + j][x + i]
 
-						node1 = map[y][x]
-						node2 = map[y + j][x + i]
+							node1_wind = wind[z][y][x]
+							node2_wind = wind[z + k][y + j][x + i]
 
-						node1_wind = wind[y][x]
-						node2_wind = wind[y + j][x + i]
+							# Add node as connection after performing scalar multiplier
+							if not ((node1, node2) in conn.keys()):
+								if n in diagonals:
+									node1_mag = dot(node1_wind, (i * 0.7071, j * 0.7071, k * 0.7071))
+									node2_mag = dot(node2_wind, (i * 0.7071, j * 0.7071, k * 0.7071))
+								else:
+									node1_mag = dot(node1_wind, n)
+									node2_mag = dot(node2_wind, n)
 
-						# Add node as connection after performing scalar multiplier
-						if not ((node1, node2) in conn.keys()):
-							if n in diagonals:
-								node1_mag = dot(node1_wind, (i * 0.7071, j * 0.7071))
-								node2_mag = dot(node2_wind, (i * 0.7071, j * 0.7071))
-							else:
-								node1_mag = dot(node1_wind, n)
-								node2_mag = dot(node2_wind, n)
+								conn[(node1, node2)] = [round(node1_mag * .2,3), round(node2_mag * .2,3)]
+							# Add node going in other direction
+							if not ((node2,node1) in conn.keys()):
+								if n in diagonals:
+									node1_mag = dot(node1_wind, (-i * 0.7071, -j * 0.7071, -k * 0.7071))
+									node2_mag = dot(node2_wind, (-i * 0.7071, -j * 0.7071, -k * 0.7071))
+								else:
+									node1_mag = dot(node1_wind, (-i,-j,-k))
+									node2_mag = dot(node2_wind, (-i,-j,-k))
 
-							conn[(node1, node2)] = [round(node1_mag * .2,3), round(node2_mag * .2,3)]
-						# Add node going in other direction
-						if not ((node2,node1) in conn.keys()):
-							if n in diagonals:
-								node1_mag = dot(node1_wind, (-i * 0.7071, -j * 0.7071))
-								node2_mag = dot(node2_wind, (-i * 0.7071, -j * 0.7071))
-							else:
-								node1_mag = dot(node1_wind, (-i,-j))
-								node2_mag = dot(node2_wind, (-i,-j))
+								conn[(node2, node1)] = [round(node2_mag * .2,3), round(node1_mag * .2,3)]
 
-							conn[(node2, node1)] = [round(node2_mag * .2,3), round(node1_mag * .2,3)]
-
-	return;
+	return
 
 # Creates a vector array for the wind
-def createWindArray(xsize, ysize, octaves=1, offset=0, mirrored=True):
+def createWindArray(xsize, ysize, zsize,octaves=1, offset=0, mirrored=True):
 	wind = []
 
 	freq  = 16 * octaves
@@ -73,14 +73,17 @@ def createWindArray(xsize, ysize, octaves=1, offset=0, mirrored=True):
 	if mirrored:
 		xsize_half = int(xsize / 2)
 
+	for z in range(zsize):
+		column = []
 		for y in range(ysize):
 			row = []
 			# Creates vectors using Perlin noise as angle for vector in radians
 			for x in range(xsize):
-				noise = snoise2((x + offset)/freq, (y+offset)/freq, octaves)
+				noise = snoise2((x + offset)/freq, (y+offset)/freq, (z+offset)/freq,octaves)
 				angle = noise * 2 * math.pi
 				x_dir = math.cos(angle)
 				y_dir = math.sin(angle)
+				##z_dir =
 
 				if x < xsize_half:
 					row.append((round(x_dir,3),round(y_dir,3)))
@@ -140,15 +143,15 @@ def createWindArray(xsize, ysize, octaves=1, offset=0, mirrored=True):
 # 	plt.show()
 
 # Main function that creates vector field
-def exec(map, xsize, ysize, seed=0):
+def exec(map, xsize, ysize, zsize, seed=0):
 	r.seed(seed)
 	offset = int(r.random() * 10000)
 	#file = open("wind.txt", "w")
 	conn = {}
 	m = map
 	w = createWindArray(xsize,ysize,5,offset,True)
-	genConnMags(xsize, ysize, m, conn, w)
+	genConnMags(xsize, ysize, zsize, m, conn, w)
 	#export("wind.txt", map, conn, w)
 	#genVecMap(w)
 
-	return conn;
+	return conn

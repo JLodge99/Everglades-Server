@@ -12,18 +12,20 @@ from everglades_server import server
 from everglades_server import generate_map
 from everglades_server import generate_3dmap
 
+firstPath = ''
+
 ## Input Variables
 # Agent files must include a class of the same name with a 'get_action' function
 # Do not include './' in file path
 if len(sys.argv) > 1:
-    agent0_file = 'agents/' + sys.argv[1]
+    agent0_file = firstPath + 'agents/' + sys.argv[1]
 else:
-    agent0_file = 'agents/random_actions'
+    agent0_file = firstPath + 'agents/random_actions'
     
 if len(sys.argv) > 2:
-    agent1_file = 'agents/' + sys.argv[2]
+    agent1_file = firstPath + 'agents/' + sys.argv[2]
 else:
-    agent1_file = 'agents/random_actions'
+    agent1_file = firstPath + 'agents/random_actions'
 
 if len(sys.argv) > 3:
     map_name = sys.argv[3] + '.json'
@@ -44,11 +46,11 @@ elif map_name == '3dmap.json':
     print("Generating 3D map")
     generate_3dmap.exec(5, 3, 5) #(X, Y, Z)
 
-config_dir = os.path.abspath('config')
+config_dir = os.path.abspath(firstPath + 'config')
 map_file = os.path.join(config_dir, map_name)
 setup_file = os.path.join(config_dir, "GameSetup.json")
 unit_file = os.path.join(config_dir, "UnitDefinitions.json")
-output_dir = os.path.abspath('game_telemetry')
+output_dir = os.path.abspath(firstPath + 'game_telemetry')
 
 debug = 0
 

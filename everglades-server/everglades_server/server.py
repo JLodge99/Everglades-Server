@@ -902,6 +902,7 @@ class EvergladesGame:
         all_dmg = {}
 
         for node in self.evgMap.nodes:
+            # player_gids stores a list of players that are currently at the given node
             player_gids = {}
             counts = {}
             tgt_gids = {}
@@ -910,6 +911,7 @@ class EvergladesGame:
             # Determine which players occupy this node
             for player in self.team_starts:
                 #pdb.set_trace()
+                # If there is at least one squadron present of the given player at this node, start doing some stuff.
                 if len(node.groups[player]) > 0:
                     player_gids[player] = []
                     counts[player] = []
@@ -917,30 +919,38 @@ class EvergladesGame:
 
                     # Build a list of groups that are available for combat
                     for gid in node.groups[player]:
-                        # Discount groups in transit
+                        # Discount groups in transit. Groups that moving to the node do not get to participate in combat. They neither give or receive damage.
                         if self.players[player].groups[gid].moving == False:
                             player_gids[player].append(gid)
                             # BUG - if group consists of different units combat is not applied to all
                             count = 0
                             counts_units[player][gid] = []
 
+                            # TODO: Look into units to see if there's a way to make individual.
+                            # groups.units does not hold a reference to each individual unit. It holds a reference to GROUPS of unit types. So all strikers are grouped
+                            # together as one unit in the units list, for instance.
                             for i, unit in enumerate(self.players[player].groups[gid].units):
+                                # Very odd. unit holds a reference to many units of one type. unit.unitHealth is a list with health from each drone in that sub-group.
                                 for j in range(len(unit.unitHealth)):
+                                    # If the individual unit is alive, add it to counts_units to keep track of what unit groups are available for combat.
                                     if unit.unitHealth[j] > 0 :
                                         counts_units[player][gid].append(i)
                                         count += 1
-
+                            # Note how many units are available for combat from the given player.
                             counts[player].append(count)
 
                     # Remove empty list to make combat application work
+                    # If the node is not being contested, get rid of the absent player from player_gids and keep going.
                     if len(player_gids[player]) == 0:
                         player_gids.pop(player)
                     # end group loop
             # end player loop
 
             # Only enter combat if previous conditions hold true
+            # There needs to be at least 2 players at the node in order for combat to happen.
             if len(player_gids) >= 2:
                 #pdb.set_trace()
+
                 # Build a damage dictionary
                 #   keys = player ids
                 #   values = array with the opposing unit id that each unit targeted
@@ -951,6 +961,8 @@ class EvergladesGame:
                 # Build damage
                 for pid in player_gids:
                     # Only works for two players right now
+                    # Get the total number of units the opposing player has at this node and
+                    # what the current player has at this node.
                     opp_pid = np.where( pids != pid )[0][0]
                     opp_player_units = np.sum( counts[opp_pid] )
                     player_units = np.sum( counts[pid] )
@@ -958,12 +970,18 @@ class EvergladesGame:
                     infliction[pid] = {}
                     nulled_ids[pid] = {}
                     #pdb.set_trace()
+                    # This is what actually picks the targeting.
                     for i, gid in enumerate(player_gids[pid]):
                         nulled_ids[pid][i] = []
                         for j in range(counts[pid][i]):
+                            # Get a reference to one of the sub-groups of one type of unit in the current player's current group
                             unittype_idx = counts_units[pid][gid][j]
                             unittype = self.players[pid].groups[gid].units[unittype_idx]
+
+                            # Pick a random unit from the enemy group to target.
                             uid = np.random.randint(opp_player_units)
+
+                            # Initialize or apply more damage to the selected opposing unit.
                             if uid in infliction[pid]:
                                 infliction[pid][uid] += unittype.definition.damage
                             else:
@@ -971,6 +989,7 @@ class EvergladesGame:
                 # end player loop
                 #pdb.set_trace()
 
+                # all_dmg is used for output purposes.
                 all_dmg[node.ID] = {pid:{'groups':[], 'units':[], 'health':[]} for pid in self.team_starts}
 
                 # Apply damage - separate so units don't die before they get to apply their damage
@@ -982,9 +1001,12 @@ class EvergladesGame:
                     for tgt_idx in sorted( infliction[pid].keys() ):
                         # Determine which opposing group was affected
                         tgt_dmg = infliction[pid][tgt_idx]
+                        # uid = tgt_group = tgt_idx (in the grand scheme of things)
+                        # It will get incremented tf the conditional tgt_idx < counts... is false
                         tgt_group = 0
                         found = False
 
+                        # Loop through the counts of the opponent's group ids to find the group that has the unit we're looking for.
                         while found == False:
                             if tgt_idx < counts[opp_pid][tgt_group]:
                                 #pdb.set_trace()
@@ -997,6 +1019,7 @@ class EvergladesGame:
                                 tgt_armor = tgt_unit.definition.health
                                 tgt_cntrl = 1 if node.controlledBy == opp_pid else 0
 
+                                # Determine fort bonus for attacking
                                 fort_bns = 1 if ('DEFEND' in node.resource) else 0
                                 strct_def = node.defense
                                 node_def = (tgt_cntrl + fort_bns) * strct_def
@@ -1015,20 +1038,23 @@ class EvergladesGame:
                                     if tgt_idx < np.sum(unit.unitHealth > 0):
                                         break
                                     tgt_idx -= np.sum(unit.unitHealth > 0)
-
+                                
+                                # Working assumption: tgt_unit_idx is individual unit
                                 tgt_unit_idx = np.argwhere( tgt_unit.unitHealth > 0 )[tgt_idx]
+                                # Subtract the total amount of calculated damage from the selected unit
                                 tgt_unit.unitHealth[tgt_unit_idx] -= loss
 
                                 outgroup = group.mapGroupID
                                 outunit = group.mapUnitID[tgt_unit_type_idx] + tgt_unit_idx
 
-                                # Remove from node groups if dead
+                                # Remove units from the group if they are dead.
                                 if tgt_unit.unitHealth[tgt_unit_idx] <= 0:
                                     outhealth = 0.
                                     tgt_unit.unitHealth[tgt_unit_idx] = 0
                                     tgt_unit.count -= 1
                                     group.count -= 1
 
+                                    # If the sub-group has no members remove that group's speed from the overall squadron.
                                     if tgt_unit.count == 0:
                                         group.speed.remove(tgt_unit.definition.speed)
 
@@ -1053,6 +1079,7 @@ class EvergladesGame:
                                         self.output['GROUP_Disband'].append(outstr)
                                 else:
                                     outhealth = tgt_armor * (tgt_unit.unitHealth[tgt_unit_idx] / 100.)
+
                                 outhealthstr = '{:.6f}'.format(float(outhealth))
                                 all_dmg[node.ID][opp_pid]['groups'].append(int(outgroup))
                                 all_dmg[node.ID][opp_pid]['units'].append(int(outunit))
