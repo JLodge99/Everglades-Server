@@ -1,0 +1,38 @@
+{
+    "__type": "Loadout:#Everglades_LoadoutJSONDef",
+    "Squads": [
+        {
+            "Squad": [
+                {
+                    "Type": "controller",
+                    "Count": 1
+                },
+                {
+                    "Type": "striker",
+                    "Count": 4
+                },
+                {
+                    "Type": "recon",
+                    "Count": 1
+                }
+            ],
+            "ReconInfo": {
+                "Type": "active",
+                "Range": 3,
+                "Wavelength": 0.3
+            }
+        },
+        {
+            "Squad": [
+                {
+                    "Type": "tank",
+                    "Count": 5
+                },
+                {
+                    "Type": "striker",
+                    "Count": 4
+                }
+            ]
+        }
+    ]
+}

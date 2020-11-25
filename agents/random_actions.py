@@ -29,6 +29,7 @@ class random_actions:
         #   3 - Recon
         self.unit_config = CreateJsonData.ConvertLoadoutToObject(player_num)
         print("Successfully loaded player", player_num, "loadout")
+
         # Default Output Format:
         #{
         #    0: [('controller',1), ('striker', 4), ('recon', 1)],# 6
@@ -63,6 +64,7 @@ class random_actions:
             9: ['active', 3, '0.77'],
             11: ['passive', 3]
         }
+
     # end __init__
 
     def get_action(self, obs):

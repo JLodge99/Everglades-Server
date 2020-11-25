@@ -2,11 +2,14 @@
 # Wind Library for Everglades Games
 
 import sys
-from noise import pnoise2, snoise2
-#import matplotlib.pyplot as plt
+from noise import pnoise2, snoise2, snoise3, pnoise3
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 import math
 import random as r
+from everglades_server import generate_map
+import os
 
 # Calculates dot product between two vectors
 def dot(v1, v2):
@@ -79,8 +82,11 @@ def createWindArray(xsize, ysize, octaves=1, offset=0, mirrored=True):
 			for x in range(xsize):
 				noise = snoise2((x + offset)/freq, (y+offset)/freq, octaves)
 				angle = noise * 2 * math.pi
+				print("Noise: ", noise)
+				#print("Angle: ", angle)
 				x_dir = math.cos(angle)
 				y_dir = math.sin(angle)
+				print("X: ", x_dir, "Y: ", y_dir)
 
 				if x < xsize_half:
 					row.append((round(x_dir,3),round(y_dir,3)))
@@ -106,6 +112,66 @@ def createWindArray(xsize, ysize, octaves=1, offset=0, mirrored=True):
 				row.append((round(x_dir,3),round(y_dir,3)))
 
 			wind.append(row)
+
+	return wind
+
+def create3DWindArray(xsize, ysize, zsize, octaves=2, offset=0, mirrored=True):
+	wind = []
+	magnitude = 5
+	freq  = 16 * octaves
+
+	# Mirrors the wind vector field
+	if mirrored:
+		xsize_half = int(xsize / 2)
+
+		for z in range(zsize):
+			page = []
+			for y in range(ysize):
+				row = []
+				# Creates vectors using Perlin noise as angle for vector in radians
+				for x in range(xsize):
+					noise = snoise3((x + offset)/freq, (y+offset)/freq, (z+offset)/freq, octaves, persistence=.1, lacunarity=5)
+					angle = noise * 2 * math.pi
+					print("Noise: ", noise)
+					print("Angle: ", angle)
+					x_dir = magnitude * math.sin(angle) * math.cos(angle)
+					y_dir = magnitude * math.sin(angle) * math.sin(angle)
+					z_dir = magnitude * math.cos(angle)
+
+					if x < xsize_half:
+						row.append((round(x_dir,3),round(y_dir,3)))
+					# Makes middle row have no vectors to ensure fairness
+					elif x == xsize_half:
+						row.append((0,0))
+
+					else:
+						(x,y) = row[xsize - 1 - x]
+						row.append((-x,y))
+
+				page.append(row)
+			wind.append(page)
+
+	else:
+		for z in range(zsize):
+			page = []
+			for y in range(ysize):
+				row = []
+				for x in range(xsize):
+					noise = snoise3((x + offset)/freq, (y+offset)/freq, (z+offset)/freq, octaves, persistence=.2) * pow(10, 2)
+					#angle = noise * 2 * math.pi + math.pi/4
+					angle = noise * 2 * math.pi + math.pi/4
+					phi = noise * math.pi
+					#print("Noise: ", noise)
+					#print("Anglesdf: ", angle)
+					x_dir = magnitude * math.sin(angle) * math.cos(angle)
+					y_dir = magnitude * math.sin(angle) * math.sin(angle)
+					z_dir = magnitude * math.cos(angle)
+					#print("X: ", x_dir, "Y: ", y_dir, "Z: ", z_dir)
+					#row.append((round(x_dir,4), round(y_dir,4), round(z_dir,4)))
+					row.append((x_dir, y_dir, z_dir))
+
+				page.append(row)
+			wind.append(page)
 
 	return wind
 
@@ -139,6 +205,24 @@ def createWindArray(xsize, ysize, octaves=1, offset=0, mirrored=True):
 #
 # 	plt.show()
 
+def gen3DVecMap(w, count):
+
+	fig = plt.figure()
+	ax = fig.add_subplot(projection='3d')
+
+	for z in range(5):
+		for y in range(5):
+			for x in range(5):
+				(x_dir, y_dir, z_dir) = w[z][y][x]
+				ax.quiver(x,y,z,x_dir,y_dir,z_dir, length = .3, normalize=True)
+
+	filename = "model{}.pdf".format(count)
+	winddir = os.path.abspath('windmodels')
+	output = os.path.join(winddir, filename)
+	plt.savefig(output)
+	plt.show()
+	plt.close()
+
 # Main function that creates vector field
 def exec(map, xsize, ysize, seed=0):
 	r.seed(seed)
@@ -152,3 +236,13 @@ def exec(map, xsize, ysize, seed=0):
 	#genVecMap(w)
 
 	return conn;
+
+# for i in range(20):
+# 	r.seed(i * 23)
+# 	offset = int(r.random() * 10000)
+# 	print(offset)
+# 	gen3DVecMap(create3DWindArray(5,5,5,offset,mirrored=False), i)
+
+offset = int(r.random() * 10000)
+
+gen3DVecMap(create3DWindArray(5,5,5,offset,mirrored=False), 0)
