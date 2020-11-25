@@ -16,7 +16,11 @@ outputFileLoadoutEnd = ".json"
 
 
 outputFileAttributes = "Attributes.json"
+outputFileUnitDefaults = "UnitDefaults.json"
 outputFileUnitPresets = "UnitPresets.json"
+outputFileUnitCustoms = "UnitCustoms.json"
+
+outputFileUnitDefinitions = "UnitDefinitions.json"
 
 defaultLoadoutFile = "LoadoutDefault"
 
@@ -207,25 +211,25 @@ def LoadUnitAttributeFile():
         with open(os.path.abspath(attributeFile)) as f:
             data = json.load(f)
 
-            for info in range(len(data["Attributes"])):
-                names.append(data["Attributes"]["Name"])
-                effects.append(data["Attributes"]["Effect"])
-                descriptions.append(data["Attributes"]["Description"])
-                modifiers.append(data["Attributes"]["Modifier"])
-                isMults.append(data["Attributes"]["isMult"])
-                modPriorities.append(data["Attributes"]["ModifierPriority"])
-                costs.append(data["Attributes"]["Cost"])
+            for i in range(len(data["Attributes"])):
+                names.append(data["Attributes"][i]["Name"])
+                effects.append(data["Attributes"][i]["Effect"])
+                descriptions.append(data["Attributes"][i]["Description"])
+                modifiers.append(data["Attributes"][i]["Modifier"])
+                isMults.append(data["Attributes"][i]["isMult"])
+                modPriorities.append(data["Attributes"][i]["ModifierPriority"])
+                costs.append(data["Attributes"][i]["Cost"])
 
             f.close()
     
 
-    information.append(names)
-    information.append(effects)
-    information.append(descriptions)
-    information.append(modifiers)
-    information.append(isMults)
-    information.append(modPriorities)
-    information.append(costs)
+    information.append(names)           #0
+    information.append(effects)         #1
+    information.append(descriptions)    #2
+    information.append(modifiers)       #3
+    information.append(isMults)         #4
+    information.append(modPriorities)   #5
+    information.append(costs)           #6
 
     return information
 
@@ -274,8 +278,13 @@ def LoadAttributesBasedUnitFile(preset):
 
     names = []
     attributeLists = []
+    if(preset == 0):
+        fileName = outputFileUnitDefaults
+    elif(preset == 1):
+        fileName = outputFileUnitPresets
+    else:
+        fileName = outputFileUnitCustoms
 
-    fileName = outputFileUnitPresets
     attributeFile = os.path.join(outputLocation, fileName)
     if (os.path.exists(os.path.abspath(attributeFile))):
         
@@ -286,7 +295,7 @@ def LoadAttributesBasedUnitFile(preset):
                 names.append(data["Units"][i]["Name"])
                 attributeSlugs = []
                 for j in range(len(data["Units"][i]["Attributes"])):
-                    attributeSlugs.append(data["Units"][i]["Attributes"])
+                    attributeSlugs.append(data["Units"][i]["Attributes"][j])
                 attributeLists.append(attributeSlugs)
 
             f.close()
@@ -298,90 +307,94 @@ def LoadAttributesBasedUnitFile(preset):
 
     return information
 
-'''
-def GenerateSingleUnit(name, Attributes):
+# -------------------------------------
+#   Unit Conversion
+# -------------------------------------
+
+def sortAttributeListbyPriority(attributeList):
+
+    #TODO: Sort list. Sort by adjusted priority, lowest to highest integer value
+    # Adjusted Priority Equation: Origional Priority * 2, if isMult then -1 from result
+    return attributeList
+
+def GenerateUnitDefinition(name, attributeList):
     jsonData = {}
-
-    health = 1
-    damage = 1
-    speed = 1
-    control = 1
-    cost = 0
-
-    maxPriority = 0
-
-    Attributes.sort(key=lambda x: x., reverse=False)
-
-    for attribute in range(len(Attributes)):
-        
+    attributes = []
 
     jsonData["Name"] = name
-    jsonData["Health"] = health
-    jsonData["Damage"] = damage
-    jsonData["Speed"] = speed    
-    jsonData["Control"] = control   
-    jsonData["Cost"] = cost
+
+    #Initialize Fields
+    jsonData["Health"] = 1
+    jsonData["Damage"] = 1
+    jsonData["Speed"] = 1
+    jsonData["Control"] = 1
+    jsonData["Recon"] = 0
+    jsonData["Cost"] = 0
+
+
+
+
+
+    sortedAttributeList = sortAttributeListbyPriority(attributeList)
+    attributeFile = LoadUnitAttributeFile()
+    
+    costOfUnit = 0
+    for i in range(len(sortedAttributeList)):
+        attributeName = sortedAttributeList[i]
+        foundSuccess = False
+        index = -1
+
+        # Determine which index in the attribute file corresponds for each attribute the unit has 
+        for j in range(len(attributeFile[0])):
+            if(attributeFile[0][j] == attributeName):
+                foundSuccess = True
+                index = j
+                break
+        if(foundSuccess == False):
+            #TODO: Error handling
+            placeholder = 1 #Delete this
+        
+        # Apply the modifier
+        # TODO: Support same priority modifier addition. IE, multiplier of .2 and .3 on same priority would be combined to be .5
+        if(attributeFile[4][index] == 1):
+            jsonData[attributeFile[1][index]] = jsonData[attributeFile[1][index]] * attributeFile[3][index]
+        else:
+            jsonData[attributeFile[1][index]] = jsonData[attributeFile[1][index]] + attributeFile[3][index]
+
+        costOfUnit += attributeFile[6][index]
+
+    # Set cost in line with 1 being normal cost. Attribute selection is out of 6 for balance, therefore cost/6 gives actual cost
+    jsonData["Cost"] = costOfUnit / 6
 
     return jsonData
 
-def GenerateUnitAttributeFile(names, effects, descriptions, modifiers, isMults, modPriorities, costs):
+def GenerateUnitDefinitions():
     jsonData = {}
-    abilities = []
+    unitInformation = []
 
-    for i in range(len(names)):
-        ability = GenerateUnitAttribute(names[i], effects[i], descriptions[i], modifiers[i], isMults[i], modPriorities[i], costs[i])
+    unitNames = []
+    unitAttributes = []
+    for i in range(3):
+        dataToConvert = LoadAttributesBasedUnitFile(i)
+        unitNames = unitNames + dataToConvert[0]
+        unitAttributes = unitAttributes + dataToConvert[1]
 
-        abilities.append(ability)
-
+    for i in range(len(unitNames)):
+        unitInformation.append(GenerateUnitDefinition(unitNames[i], unitAttributes[i]))
+    
 
     jsonData["__type"] = "Units"
-    jsonData["Attributes"] = abilities
+    jsonData["units"] = unitInformation
 
-    fileName = outputFileAttributes
+    fileName = outputFileUnitDefinitions
     savePath = os.path.join(outputLocation, fileName)
     FileO = open(os.path.abspath('{}'.format(savePath)), "w")
     FileO.write(json.dumps(jsonData, indent=4))
     FileO.close()
 
-# TODO, actually load
-# Loads in the attribute file as an array of arrays
-def LoadUnitAttributeFile():
 
-    information = []
 
-    names = []
-    effects = []
-    descriptions = []
-    modifiers = []
-    isMults = []
-    modPriorities = []
-    costs = []
 
-    fileName = outputFileAttributes
-    attributeFile = os.path.join(outputLocation, fileName)
-    if (os.path.exists(os.path.abspath(attributeFile))):
-        with open(os.path.abspath(attributeFile)) as f:
-            data = json.load(f)
-
-            for info in range(len(data["Attributes"])):
-                names.append(data["Attributes"]["Name"])
-                effects.append(data["Attributes"]["Effect"])
-                descriptions.append(data["Attributes"]["Description"])
-                modifiers.append(data["Attributes"]["Modifier"])
-                isMults.append(data["Attributes"]["isMult"])
-                modPriorities.append(data["Attributes"]["ModifierPriority"])
-                costs.append(data["Attributes"]["Cost"])
-
-            f.close()
-    
-
-    information.append(names)
-    information.append(effects)
-    information.append(descriptions)
-    information.append(modifiers)
-    information.append(isMults)
-    information.append(modPriorities)
-    information.append(costs)
-
-    return information
-'''
+def TestingFunction():
+    GenerateUnitDefinitions()
+TestingFunction()

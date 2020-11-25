@@ -1,0 +1,50 @@
+{
+    "__type": "Unit_Attributes",
+    "Attributes": [
+        {
+            "Name": "Increased Health",
+            "Effect": "Health",
+            "Description": "Increases HP by 100%\n",
+            "Modifier": 2.0,
+            "isMult": 1,
+            "ModifierPriority": 1,
+            "Cost": 3
+        },
+        {
+            "Name": "Increased Speed",
+            "Effect": "Speed",
+            "Description": "Increases Speed by 100%\n",
+            "Modifier": 2.0,
+            "isMult": 1,
+            "ModifierPriority": 1,
+            "Cost": 3
+        },
+        {
+            "Name": "Increased Damage",
+            "Effect": "Damage",
+            "Description": "Increases damage by 100%\n",
+            "Modifier": 2.0,
+            "isMult": 1,
+            "ModifierPriority": 1,
+            "Cost": 3
+        },
+        {
+            "Name": "Recon Ability",
+            "Effect": "Recon",
+            "Description": "Used to set recon definition. DO NOT use on any other unit, it will not work. \n",
+            "Modifier": 1.0,
+            "isMult": 0,
+            "ModifierPriority": 1,
+            "Cost": 3
+        },
+        {
+            "Name": "Tank Health",
+            "Effect": "Health",
+            "Description": "Placeholder till priority system set up\n",
+            "Modifier": 3.0,
+            "isMult": 1,
+            "ModifierPriority": 1,
+            "Cost": 6
+        }
+    ]
+}
