@@ -139,9 +139,23 @@ def ConvertLoadoutToObject(playerIdentifier):
 
     return unit_configs
 
-
-
-
+# Connect with everything
+def getSensorConfig(playerIdentifier):
+    sensor_config = {}
+    loadout = GetLoadout(playerIdentifier)
+    for i in range(12):
+        hasRecon = False
+        for unit in loadout['Squads'][i]['Squad']:
+            if 'recon' in unit.values():
+                hasRecon = True
+        if hasRecon:
+            sensorinfo = []
+            sensorinfo.append(loadout['Squads'][i]['ReconInfo']['Type'])
+            sensorinfo.append(loadout['Squads'][i]['ReconInfo']['Range'])
+            sensorinfo.append(loadout['Squads'][i]['ReconInfo']['Wavelength'])
+            sensor_config[i] = sensorinfo
+    print(sensor_config)
+    return sensor_config
 
 
 # Delete Me
