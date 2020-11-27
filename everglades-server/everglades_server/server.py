@@ -900,6 +900,7 @@ class EvergladesGame:
         # targeting range during the same turn; arriving units need to get
         # bearings before attacking anything.
         all_dmg = {}
+        useRandomTargeting = False
 
         for node in self.evgMap.nodes:
             # player_gids stores a list of players that are currently at the given node
@@ -967,6 +968,8 @@ class EvergladesGame:
                     opp_player_units = np.sum( counts[opp_pid] )
                     player_units = np.sum( counts[pid] )
 
+                    # opp_gid = player_gids[opp_id] <- Use to get reference to target opponent group
+
                     infliction[pid] = {}
                     nulled_ids[pid] = {}
                     #pdb.set_trace()
@@ -978,8 +981,12 @@ class EvergladesGame:
                             unittype_idx = counts_units[pid][gid][j]
                             unittype = self.players[pid].groups[gid].units[unittype_idx]
 
-                            # Pick a random unit from the enemy group to target.
-                            uid = np.random.randint(opp_player_units)
+                            # If useRandomTargeting is true, have units pick a random unit to deal damage to. Otherwise, use a certain targeting scheme
+                            # to have drones intelligently target an enemy unit.
+                            if (useRandomTargeting):
+                                uid = np.random.randint(opp_player_units)
+                            else:
+                                uid = findValidTarget(opp_pid)
 
                             # Initialize or apply more damage to the selected opposing unit.
                             if uid in infliction[pid]:
@@ -1105,6 +1112,17 @@ class EvergladesGame:
                 #pdb.set_trace()
             # end if combat check
         # end node loop
+
+    # This will return an int indicative of the unit ID.
+    # Gets opp_pid, the groups of the opponent that are at this node, and a list/array of drones that are "marked for death" i.e. they will definitely die, and so
+    # drones looking for a target should pick the next-best drone that fits their targeting criteria
+    # Pass a value that is indicative of the starting index that this funciton should look at to get the drone with the lowest health.
+    def findValidTarget(opp_pid):
+        # Get the health of all the enemy units across all enemy groups currently at the node.
+        # Create an array of all enemy units and sort it based off of each individual unit's health.
+        # Go to the index of the unit with the lowest health. This index would start at 0 and increment as drones are "marked for death"
+        # If the target drone dies, increment the starting index
+        
 
     def movement(self):
         ## Apply group movements
