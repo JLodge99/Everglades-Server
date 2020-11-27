@@ -22,7 +22,7 @@ outputFileUnitCustoms = "UnitCustoms.json"
 
 outputFileUnitDefinitions = "UnitDefinitions.json"
 
-defaultLoadoutFile = "LoadoutDefault"
+defaultLoadoutFile = "LoadoutDefault.json"
 
 outputFileMap = "RandomMap.json"
 
@@ -101,7 +101,7 @@ def CheckIfValidSquad(squad):
 
 # Takes in an array group
 def CheckIfValidLoadout(loadout):
-
+    
     droneCount = 0
     squadCount = 0
     for i in range(len(loadout)):
@@ -110,8 +110,8 @@ def CheckIfValidLoadout(loadout):
         if CheckIfValidSquad(loadout[i]) == False:
             return False
 
-        for j in range(len(loadout[i])): # TODO: JEROLD: Make Duple thingy work here
-                droneCount = droneCount + 1
+        for j in range(len(loadout[i])):
+                droneCount += loadout[i][j][1]
 
     if squadCount != 12: #TODO: Pull value from settings file
         return False
@@ -126,8 +126,9 @@ def __getLoadoutTypeArrayViaJSON(loadedData):
     for i in range(len(loadedData["Squads"])):
         row = []
         for j in range(len(loadedData["Squads"][i]["Squad"])):
-            row.append(loadedData["Squads"][i]["Squad"][j]["Type"])
-        loadout.append(row) # TODO: JEROLD: Make Duple thingy
+            unit = (loadedData["Squads"][i]["Squad"][j]["Type"], loadedData["Squads"][i]["Squad"][j]["Count"])
+            row.append(unit)
+        loadout.append(row)
 
     return loadout
 
@@ -140,7 +141,7 @@ def GetLoadout(playerIdentifier):
         return __loadJsonFileLoadout(-1) #Gets the default loadout
 
 #Call this function for an array of arrays storing the unit types
-def GetLoadoutTypeArray(playerIdentifier): # TODO: JEROLD: Make Duple thingy work with whatever is calling this
+def GetLoadoutTypeArray(playerIdentifier):
     loadedData = GetLoadout(playerIdentifier)
 
     return __getLoadoutTypeArrayViaJSON(loadedData)
