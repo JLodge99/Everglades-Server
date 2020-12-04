@@ -368,13 +368,14 @@ def GenerateUnitDefinition(name, attributeList):
 
     return jsonData
 
-def GenerateUnitDefinitions():
+# GameType determines the units used, 0 = only defaults, 1 = defaults and presets, 2 = all units including customs
+def GenerateUnitDefinitions(gameType):
     jsonData = {}
     unitInformation = []
 
     unitNames = []
     unitAttributes = []
-    for i in range(3):
+    for i in range(max(min(3,gameType + 1),1)):
         dataToConvert = LoadAttributesBasedUnitFile(i)
         unitNames = unitNames + dataToConvert[0]
         unitAttributes = unitAttributes + dataToConvert[1]
@@ -396,5 +397,5 @@ def GenerateUnitDefinitions():
 
 
 def TestingFunction():
-    GenerateUnitDefinitions()
+    GenerateUnitDefinitions(0)
 TestingFunction()

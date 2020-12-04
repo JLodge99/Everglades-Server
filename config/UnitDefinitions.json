@@ -36,24 +36,6 @@
             "Control": 1,
             "Recon": 1.0,
             "Cost": 1.0
-        },
-        {
-            "Name": "Warrior",
-            "Health": 1,
-            "Damage": 4.0,
-            "Speed": 1,
-            "Control": 1,
-            "Recon": 0,
-            "Cost": 1.0
-        },
-        {
-            "Name": "Mobile Heavy",
-            "Health": 2.0,
-            "Damage": 1,
-            "Speed": 2.0,
-            "Control": 1,
-            "Recon": 0,
-            "Cost": 1.0
         }
     ]
 }
