@@ -10,6 +10,7 @@ import numpy as np
 
 from everglades_server import server
 from everglades_server import generate_map
+from everglades_server import generate_3dmap
 
 ## Input Variables
 # Agent files must include a class of the same name with a 'get_action' function
@@ -26,20 +27,30 @@ else:
 
 if len(sys.argv) > 3:
     map_name = sys.argv[3] + '.json'
-else:
-    map_name = 'RandomMap.json'
+
+# Choose which map you want by setting map_name.
+# To enable wind go to server.py and in the init() for EvergladesGame set self.enableWind = 1
+# ********WARNING - ENABLING BOTH 3DMAP AND WIND WILL BREAK THE SERVER.***********
+# 3dmap.json     -  3D
+# RandomMap.json -  2D
+
+#map_name = '3dmap.json'
+map_name = 'RandomMap.json'
 
 if map_name == 'RandomMap.json':
+    print("Generating 2D map")
     generate_map.exec(7)
+elif map_name == '3dmap.json':
+    print("Generating 3D map")
+    generate_3dmap.exec(5, 3, 5) #(X, Y, Z)
 
 config_dir = os.path.abspath('config')
-print(config_dir)
 map_file = os.path.join(config_dir, map_name)
 setup_file = os.path.join(config_dir, "GameSetup.json")
 unit_file = os.path.join(config_dir, "UnitDefinitions.json")
 output_dir = os.path.abspath('game_telemetry')
 
-debug = 1
+debug = 0
 
 ## Specific Imports
 agent0_name, agent0_extension = os.path.splitext(agent0_file)
@@ -52,6 +63,7 @@ agent1_class = getattr(agent1_mod, os.path.basename(agent1_name))
 
 ## Main Script
 env = gym.make('everglades-v0')
+
 players = {}
 names = {}
 
@@ -78,10 +90,9 @@ done = 0
 while not done: 
     if debug:
         env.game.debug_state()
-
+    #print("ACTIONS: ", actions)
     for pid in players:
         actions[pid] = players[pid].get_action( observations[pid] )
 
     observations, reward, done, info = env.step(actions)
-
-print(reward)
+print("Reward: ", reward)

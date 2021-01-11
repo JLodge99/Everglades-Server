@@ -9,6 +9,7 @@ class Point:
         self.y = 0
 
 #Global Variables
+
 outputLocation = "config"
 
 outputFileLoadout = "Loadout"
@@ -101,7 +102,7 @@ def CheckIfValidSquad(squad):
 
 # Takes in an array group
 def CheckIfValidLoadout(loadout):
-    
+  
     droneCount = 0
     squadCount = 0
     for i in range(len(loadout)):

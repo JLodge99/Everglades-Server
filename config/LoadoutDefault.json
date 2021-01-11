@@ -20,6 +20,50 @@
         {
             "Squad": [
                 {
+                    "Type": "striker",
+                    "Count": 4
+                },
+                {
+                    "Type": "tank",
+                    "Count": 4
+                }
+            ]
+        },
+        {
+            "Squad": [
+                {
+                    "Type": "striker",
+                    "Count": 4
+                },
+                {
+                    "Type": "tank",
+                    "Count": 4
+                }
+            ]
+        },
+        {
+            "Squad": [
+                {
+                    "Type": "tank",
+                    "Count": 4
+                },
+                {
+                    "Type": "recon",
+                    "Count": 2
+                },
+                {
+                    "Type": "striker",
+                    "Count": 1
+                },
+                {
+                    "Type": "controller",
+                    "Count": 1
+                }
+            ]
+        },
+        {
+            "Squad": [
+                {
                     "Type": "tank",
                     "Count": 8
                 }
@@ -36,112 +80,44 @@
         {
             "Squad": [
                 {
-                    "Type": "striker",
-                    "Count": 4
-                },
-                {
                     "Type": "tank",
-                    "Count": 4
+                    "Count": 8
                 }
             ]
         },
         {
             "Squad": [
                 {
-                    "Type": "striker",
-                    "Count": 4
-                },
-                {
                     "Type": "tank",
-                    "Count": 4
+                    "Count": 8
                 }
             ]
         },
         {
             "Squad": [
                 {
-                    "Type": "striker",
-                    "Count": 4
-                },
-                {
                     "Type": "tank",
-                    "Count": 4
+                    "Count": 8
                 }
             ]
         },
         {
             "Squad": [
                 {
-                    "Type": "striker",
-                    "Count": 4
-                },
-                {
                     "Type": "tank",
-                    "Count": 4
+                    "Count": 8
                 }
             ]
         },
         {
             "Squad": [
                 {
-                    "Type": "controller",
-                    "Count": 4
-                },
-                {
-                    "Type": "striker",
-                    "Count": 2
+                    "Type": "recon",
+                    "Count": 3
                 },
                 {
                     "Type": "tank",
-                    "Count": 2
-                }
-            ]
-        },
-        {
-            "Squad": [
-                {
-                    "Type": "controller",
-                    "Count": 4
-                },
-                {
-                    "Type": "striker",
-                    "Count": 2
-                },
-                {
-                    "Type": "tank",
-                    "Count": 2
-                }
-            ]
-        },
-        {
-            "Squad": [
-                {
-                    "Type": "controller",
-                    "Count": 4
-                },
-                {
-                    "Type": "striker",
-                    "Count": 2
-                },
-                {
-                    "Type": "tank",
-                    "Count": 2
-                }
-            ]
-        },
-        {
-            "Squad": [
-                {
-                    "Type": "striker",
-                    "Count": 4
-                },
-                {
-                    "Type": "tank",
-                    "Count": 4
-                },
-                {
-                    "Type": "controller",
-                    "Count": 4
+                    "Count": 8
                 }
             ]
         }
