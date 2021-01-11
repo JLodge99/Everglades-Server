@@ -1,0 +1,32 @@
+{
+    "__type": "Units_in_Attribute_Format",
+    "Units": [
+        {
+            "Name": "Tank",
+            "Attributes": [
+                "Tank Health"
+            ]
+        },
+        {
+            "Name": "Striker",
+            "Attributes": [
+                "Increased Speed",
+                "Increased Damage"
+            ]
+        },
+        {
+            "Name": "Controller",
+            "Attributes": [
+                "Increased Speed",
+                "Increased Health"
+            ]
+        },
+        {
+            "Name": "Recon",
+            "Attributes": [
+                "Increased Speed",
+                "Recon Ability"
+            ]
+        }
+    ]
+}

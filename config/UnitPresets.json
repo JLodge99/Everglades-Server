@@ -1,0 +1,19 @@
+{
+    "__type": "Units_in_Attribute_Format",
+    "Units": [
+        {
+            "Name": "Warrior",
+            "Attributes": [
+                "Increased Damage",
+                "Increased Damage"
+            ]
+        },
+        {
+            "Name": "Mobile Heavy",
+            "Attributes": [
+                "Increased Speed",
+                "Increased Health"
+            ]
+        }
+    ]
+}
