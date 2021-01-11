@@ -893,14 +893,134 @@ class EvergladesGame:
         #print(state)
         return state
 
-
     def combat(self):
+        useRandomTargeting = True
+        useDefaultTargeting = False
+        useCustomTargeting = False
+
+        contestedNodeFound = False
+
+        activeGroups = {}
+        activeUnits = {}
+        activeNodes = []
+        groupList = []
+
+        # Comb through all nodes in the map to find contested nodes.
+        for node in self.evgMap.nodes:
+            # Determine which players occupy the current node.
+            for player in self.team_starts:
+                # If there is at least one squadron present at the given node, but not from both teams so as to make the node contested,
+                # stop checking this node and move on to evaluating the next one.
+                if (len(node.groups[0]) > 0 and len(node.groups[1]) == 0) or (len(node.groups[0]) == 0 and len(node.groups[1]) > 0):
+                    break
+                # If the given player has more than one squadron at this node, proceed.
+                elif len(node.groups[player]) > 0:
+                    contestedNodeFound = True
+                    # Build a list of squadrons that are available for combat at this node.
+                    for groupID in node.groups[player]:
+                        # Only count a group as being available for combat if they are not moving and are alive. Moving units neither give or receive damage.
+                        if (self.players[player].groups[groupID].moving == False) and (self.players[player].groups[groupID].destroyed == False):
+                            activeGroups[node][player].append(groupID)
+                            activeNodes.append(node)
+                        
+                        unitIndex = 0
+                        # Find all units that are alive on both sides and add them to the dictionary for targeting use.
+                        for unitType in self.players[player].groups[groupID].units:
+                            for unitID in range(len(unitType.unitHealth)):
+                                # If the given unit is alive, then add it to the active unit dictionary.
+                                if unitType.unitHealth[unitID] > 0:
+                                    # This gives access to all relevant data of the given unit type.
+                                    # activeUnits[node][player][groupID][unitType][unitID] = unitType
+                                    # Store the unit type, its ID within the unitHealth array, and the unit's health.
+                                    unitInfo = (unitType, unitIndex, unitType.unitHealth[unitID])
+                                    activeUnits[node][player][groupID].append(unitInfo)
+                                    unitIndex = unitIndex + 1
+
+            # If the above code block has found a contested node, then combat will start to be simulated with the active groups.
+            if contestedNodeFound == True:
+                infliction = {}
+
+                # Start building the damage for each drone currently at the node.
+                # Damage has to be built before actually applying it so that all drones at the given node have a chance of dealing damage before dying.
+                # Applying damage now would unfairly favor drones that appear first in their respective activeUnit lists.
+                for node in activeNodes:
+                    for player in self.team_starts:
+                        # Get the opponent player's ID.
+                        opponent = 0 if (player == 1) else 1
+                        for groupID in activeUnits[node][player]:
+                            for unit in activeGroups[node][player][groupID]:
+                                # Select an enemy unit for the current drone to target.
+                                if useRandomTargeting:
+                                    # TODO I'm not certain if this will work correctly
+                                    groupID = np.random.randint(activeGroups[node][opponent].count)
+                                    unitID = np.random.randint(activeUnits[node][opponent][groupID].count)
+                                # TODO Set up default and custom targeting functions
+                                elif useDefaultTargeting:
+                                    groupID, unitID = defaultTargeting(self, activeUnits)
+                                elif useCustomTargeting:
+                                    groupID, unitID = customTargeting(self, activeUnits)
+
+                                # Build damage for the targeted opponent unit. The value that gets placed or added to the value in the infliction
+                                # dictionary is the damage the relevant unit deals.
+                                if unitID in infliction[player]:
+                                    infliction[opponent][groupID][unitID] += activeGroups[node][player][groupID][0].definition.damage
+                                else:
+                                    infliction[opponent][groupID][unitID] = activeGroups[node][player][groupID][0].definition.damage
+
+                # Apply the damage that was build in the previous section.
+                for node in activeNodes:
+                    for player in self.team_starts:
+                        opponent = 0 if (player == 1) else 1
+                        for groupID in infliction[opponent]:
+                            for unitID in infliction[opponent][groupID]:
+                                # Find the unit type that is being targeted and its current health.
+                                targetUnit = activeUnits[node][opponent][groupID][unitID]
+                                targetHealth = targetUnit[2]
+
+                                # Calculate the node defense bonus.
+                                nodeControlled = 1 if node.controlledBy == opponent else 0
+                                fortBonus = 1 if ('DEFEND' in node.resource) else 0
+                                nodeDefense = (nodeControlled + fortBonus) * node.defense
+
+                                # Pull the base damage from the infliction array.
+                                baseDamage = infliction[opponent][groupID][unitID]
+                                
+                                # Calculate the true damage that will be applied to the targeted unit.
+                                trueDamage = (10.0 * baseDamage) / (targetHealth + nodeDefense)
+
+                                # Finally, apply the damage.
+                                targetUnit[2] = targetUnit[2] - trueDamage
+
+                                # Check if the application of this damage results in the death of the drone. If so,
+                                # remove the drone from relevant lists and disable the group if it was the last drone alive.
+                                if targetUnit[2] <= 0:
+                                    groupID.count = groupID.count - 1
+
+                                    if groupID.units[targetUnit[0]].count == 0:
+                                        groupID.speed.remove(targetUnit.definition.speed)
+
+                                    if groupID.count == 0:
+                                        self.players[opponent].groups[groupID].destroyed = True
+                                        self.players[opp_pid].groups[tgt_gid].moving = False
+                                        self.players[opp_pid].groups[tgt_gid].ready = False
+
+                        
+
+    def defaultTargeting(self, activeUnits):
+        return
+
+    def customTargeting(self, activeUnits):
+        return
+                        
+    def combatOld(self):
         ## Apply combat
         # Combat occurs before movement - a fleeing group could still be within
         # targeting range during the same turn; arriving units need to get
         # bearings before attacking anything.
         all_dmg = {}
         useRandomTargeting = False
+        useDefaultTargeting = True
+        targetLowestFirst = True
 
         for node in self.evgMap.nodes:
             # player_gids stores a list of players that are currently at the given node
@@ -908,6 +1028,9 @@ class EvergladesGame:
             counts = {}
             tgt_gids = {}
             counts_units = {}
+
+            # ADDED
+            unit_references = {}
 
             # Determine which players occupy this node
             for player in self.team_starts:
@@ -927,16 +1050,23 @@ class EvergladesGame:
                             count = 0
                             counts_units[player][gid] = []
 
-                            # TODO: Look into units to see if there's a way to make individual.
-                            # groups.units does not hold a reference to each individual unit. It holds a reference to GROUPS of unit types. So all strikers are grouped
-                            # together as one unit in the units list, for instance.
                             for i, unit in enumerate(self.players[player].groups[gid].units):
+                                # ADDED
+                                # Add the unit(s) to the unit_references dictionary.
+                                unit_references[player][i] = unit
+
                                 # Very odd. unit holds a reference to many units of one type. unit.unitHealth is a list with health from each drone in that sub-group.
                                 for j in range(len(unit.unitHealth)):
                                     # If the individual unit is alive, add it to counts_units to keep track of what unit groups are available for combat.
                                     if unit.unitHealth[j] > 0 :
                                         counts_units[player][gid].append(i)
                                         count += 1
+                                    # ADDED
+                                    # If the unit is dead, remove it from the unit_references list by updating the count and the unitHealth array.
+                                    else:
+                                        unit_references[player][i].count = unit_references[player][i].count - 1
+                                        unit_references[player][i].unitHealth = unit_references[player][i].unitHealth[unit_references[player][i].unitHealth > 0]
+
                             # Note how many units are available for combat from the given player.
                             counts[player].append(count)
 
@@ -985,8 +1115,14 @@ class EvergladesGame:
                             # to have drones intelligently target an enemy unit.
                             if (useRandomTargeting):
                                 uid = np.random.randint(opp_player_units)
-                            else:
-                                uid = findValidTarget(opp_pid)
+                            # If the user wants to use the default targeting system, then all drones will attack enemies with the lowest health first.
+                           # elif (useDefaultTargeting):
+                              #  uid = findValidTarget(targetHealth(opp_pid, unit_references, targetLowestFirst))
+                            # Otherwise, if useRandomTargeting and useDefaultTargeting is false, then the user would write their own function called customTarget()
+                            # This function would take in the opponent's player id and the list of unit_references. It would return an integer indicative of the index
+                            # the drones should look to for their attack.
+                            #else:
+                               # uid = findValidTarget(customTarget(opp_pid, unit_references))
 
                             # Initialize or apply more damage to the selected opposing unit.
                             if uid in infliction[pid]:
@@ -1117,7 +1253,7 @@ class EvergladesGame:
     # Gets opp_pid, the groups of the opponent that are at this node, and a list/array of drones that are "marked for death" i.e. they will definitely die, and so
     # drones looking for a target should pick the next-best drone that fits their targeting criteria
     # Pass a value that is indicative of the starting index that this funciton should look at to get the drone with the lowest health.
-    def findValidTarget(opp_pid):
+    # def findValidTarget(opp_pid):
         # Get the health of all the enemy units across all enemy groups currently at the node.
         # Create an array of all enemy units and sort it based off of each individual unit's health.
         # Go to the index of the unit with the lowest health. This index would start at 0 and increment as drones are "marked for death"
