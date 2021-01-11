@@ -4,8 +4,8 @@
         {
             "Name": "Tank",
             "Attributes": [
-                "Tank Health"
-            ]
+                "Increased Health",
+                "Increased Health"            ]
         },
         {
             "Name": "Striker",

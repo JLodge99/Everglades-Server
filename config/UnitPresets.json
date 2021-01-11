@@ -23,12 +23,17 @@
                 "Militia",
                 "Militia",
                 "Militia",
-                "Increased Speed"
+                "Increased Damage"
             ]
         },
         {
             "Name": "Rapid Response",
-            "Attributes": []
+            "Attributes": [
+                "Militia",
+                "Militia",
+                "Militia",
+                "Increased Speed"
+            ]
         }
     ]
 }
