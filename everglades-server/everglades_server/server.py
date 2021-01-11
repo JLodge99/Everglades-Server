@@ -25,6 +25,10 @@ class EvergladesGame:
         self.output_dir = kwargs.get('output_dir')
         #config_file = kwargs.get(
 
+        # 0 = Disable 
+        # 1 = Enable
+        self.enableWind = 0
+
         # Initialize game
         if os.path.exists(map_file):
             self.board_init(map_file)
@@ -50,10 +54,11 @@ class EvergladesGame:
         assert( os.path.isdir(self.output_dir) ), 'Output directory does not exist \
                 and could not be created'
 
-
         # Initialize output arrays, to be written to file at game completion
         # Needs the map name to be populated before initialization
         self.output_init()
+
+        
 
     def board_init(self,map_file):
         """
@@ -64,12 +69,12 @@ class EvergladesGame:
             self.map_dat = json.load(fid)
 
         # Load in GameSetup.json file
-        print("lmao: ", self.setup_file)
         with open(self.setup_file) as f:
             self.setup = json.load(f)
 
         Xsize = self.map_dat['Xsize']
         Ysize = self.map_dat['Ysize']
+        #Zsize = self.map_dat['Zsize']
 
         # Seed value used for wind Stochasticity from game setup
         windSeed = self.setup['Stochasticity']
@@ -126,41 +131,39 @@ class EvergladesGame:
         # Recreate game board
         node_num = 1
 
-        for n in self.evgMap.nodes:
-            id = n.ID
-            if id != 1 and id != (Xsize * Ysize + 2):
-                (x,y) = nodePos[id]
-                self.evgMap2d[y][x] = node_num
-                node_num += 1
+        if self.enableWind == 1:
+            for n in self.evgMap.nodes:
+                id = n.ID
+                if id != 1 and id != (Xsize * Ysize + 2):
+                    (x,y) = nodePos[id]
+                    self.evgMap2d[y][x] = node_num
+                    node_num += 1
 
-        # Add base nodes
-        self.evgMap2d[int(Ysize/2)][0] = 0
-        self.evgMap2d[int(Ysize/2)][Xsize + 1] = node_num
+            # Add base nodes
+            self.evgMap2d[int(Ysize/2)][0] = 0
+            self.evgMap2d[int(Ysize/2)][Xsize + 1] = node_num
 
-        # Create wind magnifier dict
-        self.winds = wind.exec(self.evgMap2d, Xsize + 2, Ysize, windSeed)
+            # Create wind magnifier dict
+            self.winds = wind.exec(self.evgMap2d, Xsize + 2, Ysize, windSeed)
 
         # Convert p0 nodes numbering to p1
         # Need method to do this when boards are not hand-designed
 
         array = []
 
-        array.append(Ysize*Xsize + 2)
-
         #Reverse the node list
-        i = Xsize - 1
-        while i >= 0:
-            j = 0
-            while j < Ysize:
-                if j + (Ysize * i) + 2 in arrayIDs:
-                    array.append(j + (Ysize * i) + 2)
-                j = j + 1
-            i = i - 1
+        array = self.map_key1[::-1]
+        # i = Xsize - 1
+        # while i >= 0:
+        #     j = 0
+        #     while j < Ysize:
+        #         print("check: ", j + (Ysize * i) + 2)
+        #         if j + (Ysize * i) + 2 in arrayIDs:
+        #             array.append(j + (Ysize * i) + 2)
+        #         j = j + 1
+        #     i = i - 1
 
-        array.append(1)
-
-        print(self.map_key1)
-        print(array)
+        # array.append(1)
 
         self.p1_node_map = array
 
@@ -518,7 +521,7 @@ class EvergladesGame:
 
         ## Check progress
         # Time expiration
-        if self.current_turn >= 150:
+        if self.current_turn >= self.setup['TurnLimit']:
             status = end_states['TimeExpired']
         # Annihilation
         elif np.sum(counts) == 0:
@@ -1094,18 +1097,20 @@ class EvergladesGame:
                         start_idx = int( np.squeeze(np.where(self.map_key1 == group.location)) )
                         end_idx = int( np.squeeze(np.where(self.map_key1 == group.travel_destination)) )
 
-                        wind_value = self.winds[(start_idx, end_idx)]
+                        if self.enableWind == 1:
+                            wind_value = self.winds[(start_idx, end_idx)]
 
-                        if group.distance_remaining >= .5:
-                            wind_mag = self.winds[(start_idx, end_idx)][0]
+                            if group.distance_remaining >= .5:
+                                wind_mag = self.winds[(start_idx, end_idx)][0]
 
+                            else:
+                                wind_mag = self.winds[(start_idx, end_idx)][1]
+                            # Apply amount moved
+                            # BUG - if group consists of different unit types, it won't move properly
+                            # print("groupspeed: ", group.speed[0], " windmag: ", wind_mag)
+                            group.distance_remaining -= (group.speed[0] + group.speed[0] * wind_mag)
                         else:
-                            wind_mag = self.winds[(start_idx, end_idx)][1]
-
-                        # Apply amount moved
-                        # BUG - if group consists of different unit types, it won't move properly
-                        group.distance_remaining -= (group.speed[0] + group.speed[0] * wind_mag)
-
+                            group.distance_remaining -= group.speed[0]
                         # Check for arrival
                         if group.distance_remaining <= 0:
                             # ARRIVED
