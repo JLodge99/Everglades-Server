@@ -3,14 +3,14 @@
     "units": [
         {
             "Name": "Tank",
-            "Health": 1,
+            "Health": 3.0,
             "Damage": 1,
             "Speed": 1,
             "Speed_Controlled_Ally": 0,
-            "Speed_Controlled_Enemy": 0.5,
+            "Speed_Controlled_Enemy": 0,
             "Control": 1,
             "Recon": 0,
-            "Cost": 0.16666666666666666
+            "Cost": 1.0
         },
         {
             "Name": "Striker",
