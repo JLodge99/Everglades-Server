@@ -5,8 +5,8 @@
             "Name": "Increased Health",
             "Effect": "Health",
             "Description": "Increases HP by 100%\n",
-            "Modifier": 2.0,
-            "isMult": 1,
+            "Modifier": 1.0,
+            "isMult": 0,
             "ModifierPriority": 1,
             "Cost": 3
         },
@@ -14,8 +14,8 @@
             "Name": "Increased Speed",
             "Effect": "Speed",
             "Description": "Increases Speed by 100%\n",
-            "Modifier": 2.0,
-            "isMult": 1,
+            "Modifier": 1.0,
+            "isMult": 0,
             "ModifierPriority": 1,
             "Cost": 3
         },
@@ -23,8 +23,8 @@
             "Name": "Increased Damage",
             "Effect": "Damage",
             "Description": "Increases damage by 100%\n",
-            "Modifier": 2.0,
-            "isMult": 1,
+            "Modifier": 1.0,
+            "isMult": 0,
             "ModifierPriority": 1,
             "Cost": 3
         },
@@ -38,13 +38,22 @@
             "Cost": 3
         },
         {
-            "Name": "Tank Health",
-            "Effect": "Health",
-            "Description": "Placeholder till priority system set up\n",
-            "Modifier": 3.0,
-            "isMult": 1,
-            "ModifierPriority": 1,
-            "Cost": 6
+            "Name": "Militia",
+            "Effect": "Speed_Controlled_Ally",
+            "Description": "Units movement speed between ally controlled nodes is increased.\n",
+            "Modifier": 0.5,
+            "isMult": 0,
+            "ModifierPriority": 0,
+            "Cost": 1
+        },
+        {
+            "Name": "Guerrilla ",
+            "Effect": "Speed_Controlled_Enemy",
+            "Description": "Units movement speed between enemy controlled nodes is increased.\n",
+            "Modifier": 0.5,
+            "isMult": 0,
+            "ModifierPriority": 0,
+            "Cost": 1
         }
     ]
 }

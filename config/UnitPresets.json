@@ -5,7 +5,9 @@
             "Name": "Warrior",
             "Attributes": [
                 "Increased Damage",
-                "Increased Damage"
+                "Militia",
+                "Militia",
+                "Militia"
             ]
         },
         {
@@ -14,6 +16,19 @@
                 "Increased Speed",
                 "Increased Health"
             ]
+        },
+        {
+            "Name": "Militia",
+            "Attributes": [
+                "Militia",
+                "Militia",
+                "Militia",
+                "Increased Speed"
+            ]
+        },
+        {
+            "Name": "Rapid Response",
+            "Attributes": []
         }
     ]
 }

@@ -328,6 +328,9 @@ def GenerateUnitDefinition(name, attributeList):
     jsonData["Health"] = 1
     jsonData["Damage"] = 1
     jsonData["Speed"] = 1
+    jsonData["Speed_Controlled_Ally"] = 0
+    jsonData["Speed_Controlled_Enemy"] = 0
+    jsonData["Speed"] = 1
     jsonData["Control"] = 1
     jsonData["Recon"] = 0
     jsonData["Cost"] = 0

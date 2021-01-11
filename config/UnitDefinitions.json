@@ -1,59 +1,49 @@
 {
-    "__type": "Unit_Attributes",
-    "Attributes": [
+    "__type": "Units",
+    "units": [
         {
-            "Name": "Increased Health",
-            "Effect": "Health",
-            "Description": "Increases HP by 100%\n",
-            "Modifier": 1.0,
-            "isMult": 0,
-            "ModifierPriority": 1,
-            "Cost": 3
+            "Name": "Tank",
+            "Health": 1,
+            "Damage": 1,
+            "Speed": 1,
+            "Speed_Controlled_Ally": 0,
+            "Speed_Controlled_Enemy": 0.5,
+            "Control": 1,
+            "Recon": 0,
+            "Cost": 0.16666666666666666
         },
         {
-            "Name": "Increased Speed",
-            "Effect": "Speed",
-            "Description": "Increases Speed by 100%\n",
-            "Modifier": 1.0,
-            "isMult": 0,
-            "ModifierPriority": 1,
-            "Cost": 3
+            "Name": "Striker",
+            "Health": 1,
+            "Damage": 2.0,
+            "Speed": 2.0,
+            "Speed_Controlled_Ally": 0,
+            "Speed_Controlled_Enemy": 0,
+            "Control": 1,
+            "Recon": 0,
+            "Cost": 1.0
         },
         {
-            "Name": "Increased Damage",
-            "Effect": "Damage",
-            "Description": "Increases damage by 100%\n",
-            "Modifier": 1.0,
-            "isMult": 0,
-            "ModifierPriority": 1,
-            "Cost": 3
+            "Name": "Controller",
+            "Health": 2.0,
+            "Damage": 1,
+            "Speed": 2.0,
+            "Speed_Controlled_Ally": 0,
+            "Speed_Controlled_Enemy": 0,
+            "Control": 1,
+            "Recon": 0,
+            "Cost": 1.0
         },
         {
-            "Name": "Recon Ability",
-            "Effect": "Recon",
-            "Description": "Used to set recon definition. DO NOT use on any other unit, it will not work. \n",
-            "Modifier": 1.0,
-            "isMult": 0,
-            "ModifierPriority": 1,
-            "Cost": 3
-        },
-        {
-            "Name": "Militia",
-            "Effect": "Speed_Controlled_Ally",
-            "Description": "Units movement speed between ally controlled nodes is increased.\n",
-            "Modifier": 0.5,
-            "isMult": 0,
-            "ModifierPriority": 0,
-            "Cost": 1
-        },
-        {
-            "Name": "Guerrilla ",
-            "Effect": "Speed_Controlled_Enemy",
-            "Description": "Units movement speed between enemy controlled nodes is increased.\n",
-            "Modifier": 0.5,
-            "isMult": 0,
-            "ModifierPriority": 0,
-            "Cost": 1
+            "Name": "Recon",
+            "Health": 1,
+            "Damage": 1,
+            "Speed": 2.0,
+            "Speed_Controlled_Ally": 0,
+            "Speed_Controlled_Enemy": 0,
+            "Control": 1,
+            "Recon": 1.0,
+            "Cost": 1.0
         }
     ]
 }
