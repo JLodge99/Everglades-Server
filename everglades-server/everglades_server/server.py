@@ -196,6 +196,10 @@ class EvergladesGame:
                 health = in_type['Health'],
                 damage = in_type['Damage'],
                 speed = in_type['Speed'],
+                speedbonus_controlled_ally = in_type['Speed_Controlled_Ally'],
+                speedbonus_controlled_enemy = in_type['Speed_Controlled_Enemy'],
+                recon = in_type['Recon'],
+
                 control = in_type['Control'],
                 cost = in_type['Cost']
             )
