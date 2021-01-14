@@ -42,7 +42,7 @@ if map_name == 'RandomMap.json':
     generate_map.exec(7)
 elif map_name == '3dmap.json':
     print("Generating 3D map")
-    generate_3dmap.exec(5, 5, 7) #(X, Y, Z)
+    generate_3dmap.exec(7, 7, 10) #(X, Y, Z)
 
 config_dir = os.path.abspath('config')
 map_file = os.path.join(config_dir, map_name)

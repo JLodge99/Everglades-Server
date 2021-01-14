@@ -89,7 +89,7 @@ def generateMap(xLen, yLen, zLen, map):
                     a = 0
                 elif map[currentPoint.z + k][currentPoint.y + directionY[i]][currentPoint.x + directionX[i]] == 0:
                     randVal = random.random()
-                    if randVal <= weight * bellCurveVal(currentPoint.z, zLen):
+                    if randVal <= weight * bellCurveVal(currentPoint.z + 1, zLen):
                         # Creating a new node
                         # print("Random: ", randVal, " Weight: ", weight, " numPossibleConnections: ", numPossibleConnections)
                         # print("Adding new point")
@@ -157,8 +157,8 @@ def generateMap(xLen, yLen, zLen, map):
     nodeCount *= 2
 
     # Generate if the is a center plane. When zLen is odd
-    # if zLen % 2 != 0:
-    #     generateCenterPlane(xLen, yLen, zLen, map)
+    if zLen % 2 != 0:
+        generateCenterPlane(xLen, yLen, zLen, map)
     return False
 
 # Center Plane Function
@@ -315,7 +315,6 @@ def getNodeID(point, xLen, yLen, zLen):
     return (point.y * xLen) + point.x + (xLen * yLen * point.z) + 1
 
 def bellCurveVal(x, zLen):
-    x += 1
     return - ( pow((x / ((zLen + 1) / 2)) - 1, 2)) + 1
 
 def exec(xLen, yLen, zLen):

@@ -64,7 +64,7 @@ def genConnMags(xsize, ysize, map, conn, wind):
 
 							conn[(node2, node1)] = [round(node2_mag * .2,3), round(node1_mag * .2,3)]
 
-	return;
+	return
 
 # Creates a vector array for the wind
 def createWindArray(xsize, ysize, octaves=1, offset=0, mirrored=True):
@@ -116,62 +116,34 @@ def createWindArray(xsize, ysize, octaves=1, offset=0, mirrored=True):
 	return wind
 
 def create3DWindArray(xsize, ysize, zsize, octaves=2, offset=0, mirrored=True):
-	wind = []
-	magnitude = 5
+	wind = [[[(0, 0, 0) for x in range(xsize)] for y in range(ysize)] for z in range(zsize)]
+	magnitude = 2
 	freq  = 16 * octaves
-
+	print("Postoffset", offset)
+	print("Freq", freq)
 	# Mirrors the wind vector field
 	if mirrored:
-		xsize_half = int(xsize / 2)
-
-		for z in range(zsize):
-			page = []
-			for y in range(ysize):
-				row = []
-				# Creates vectors using Perlin noise as angle for vector in radians
-				for x in range(xsize):
-					noise = snoise3((x + offset)/freq, (y+offset)/freq, (z+offset)/freq, octaves, persistence=.1, lacunarity=5)
-					angle = noise * 2 * math.pi
-					print("Noise: ", noise)
-					print("Angle: ", angle)
-					x_dir = magnitude * math.sin(angle) * math.cos(angle)
-					y_dir = magnitude * math.sin(angle) * math.sin(angle)
-					z_dir = magnitude * math.cos(angle)
-
-					if x < xsize_half:
-						row.append((round(x_dir,3),round(y_dir,3)))
-					# Makes middle row have no vectors to ensure fairness
-					elif x == xsize_half:
-						row.append((0,0))
-
-					else:
-						(x,y) = row[xsize - 1 - x]
-						row.append((-x,y))
-
-				page.append(row)
-			wind.append(page)
-
+		zlength = int(zsize/2)
 	else:
-		for z in range(zsize):
-			page = []
-			for y in range(ysize):
-				row = []
-				for x in range(xsize):
-					noise = snoise3((x + offset)/freq, (y+offset)/freq, (z+offset)/freq, octaves, persistence=.2) * pow(10, 2)
-					#angle = noise * 2 * math.pi + math.pi/4
-					angle = noise * 2 * math.pi + math.pi/4
-					phi = noise * math.pi
-					#print("Noise: ", noise)
-					#print("Anglesdf: ", angle)
-					x_dir = magnitude * math.sin(angle) * math.cos(angle)
-					y_dir = magnitude * math.sin(angle) * math.sin(angle)
-					z_dir = magnitude * math.cos(angle)
-					#print("X: ", x_dir, "Y: ", y_dir, "Z: ", z_dir)
-					#row.append((round(x_dir,4), round(y_dir,4), round(z_dir,4)))
-					row.append((x_dir, y_dir, z_dir))
-
-				page.append(row)
-			wind.append(page)
+		zlength = zsize
+	print("half:", int(zsize/2))
+	for z in range(zlength):
+		page = []
+		for y in range(ysize):
+			row = []
+			for x in range(xsize):
+				noise = snoise3((x + offset)/freq, (y+offset)/freq, (z+offset)/freq, octaves=1, persistence=1)
+				print(noise)
+				theta = (noise * 2 * math.pi)# + math.pi/4
+				phi = noise * math.pi
+				x_dir = magnitude * math.sin(phi) * math.cos(theta)
+				y_dir = magnitude * math.sin(phi) * math.sin(theta)
+				z_dir = magnitude * math.cos(phi)
+				wind[z][y][x] = (round(x_dir, 4), round(y_dir, 4), round(z_dir, 4))
+				print("z:", z, "y:", y, "x:", x)
+				if mirrored:
+					(x_mirror, y_mirror, z_mirror) = wind[z][y][x]
+					wind[(zsize - 1) - z][y][x] = (x_mirror, y_mirror, -z_mirror)
 
 	return wind
 
@@ -208,7 +180,7 @@ def create3DWindArray(xsize, ysize, zsize, octaves=2, offset=0, mirrored=True):
 def gen3DVecMap(w, count):
 
 	fig = plt.figure()
-	ax = fig.add_subplot(projection='3d')
+	ax = fig.add_subplot(projection='3d', azim = -45)
 
 	for z in range(5):
 		for y in range(5):
@@ -219,7 +191,11 @@ def gen3DVecMap(w, count):
 	filename = "model{}.pdf".format(count)
 	winddir = os.path.abspath('windmodels')
 	output = os.path.join(winddir, filename)
-	plt.savefig(output)
+	ax.set_xlabel("X Axis")
+	ax.set_ylabel("Y Axis")
+	ax.set_zlabel("Z Axis")
+	#plt.xticks(rotation=45)
+	#plt.savefig(output)
 	plt.show()
 	plt.close()
 
@@ -243,6 +219,8 @@ def exec(map, xsize, ysize, seed=0):
 # 	print(offset)
 # 	gen3DVecMap(create3DWindArray(5,5,5,offset,mirrored=False), i)
 
+#r.seed(121)
 offset = int(r.random() * 10000)
-
-gen3DVecMap(create3DWindArray(5,5,5,offset,mirrored=False), 0)
+print("Preoffset", offset)
+nice = 5
+gen3DVecMap(create3DWindArray(nice,nice,nice,5,offset,mirrored=True), 0)

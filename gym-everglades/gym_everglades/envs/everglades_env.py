@@ -13,23 +13,39 @@ import os.path
 class EvergladesEnv(gym.Env):
 
     def __init__(self):
-        setup_file = os.path.join(os.path.abspath('config'), 'GameSetup.json')
+        config_dir = os.path.abspath('config')
+        setup_file = os.path.join(config_dir, 'GameSetup.json')
         with open(setup_file) as f:
             self.setup = json.load(f)
+
+        map_filename = os.path.join(config_dir, self.setup['MapFile'])
+        with open(map_filename) as f:
+            self.mapfile = json.load(f)
+            
+        unitdef_file = os.path.join(config_dir, self.setup['UnitFile'])
+        with open(unitdef_file) as f:
+            self.unitdef = json.load(f)
+
         # Game parameters
         self.num_turns = self.setup['TurnLimit']
         self.num_units = 100
         self.num_groups = 12
-        self.num_nodes = 11
+        self.num_nodes = len(self.mapfile['nodes'])
         self.num_actions_per_turn = 7
-        self.unit_classes = ['controller', 'striker', 'tank', 'recon']
+        
+        self.unit_classes = []
+        for unit in self.unitdef['units']:
+            self.unit_classes.append(unit["Name"])
+        unitlength = len(self.unit_classes)
 
         # Integers are used to represent the unit type (e.g. 0: controller, 1: striker).
         # With 4 types of units, a group containing all 4 would have the maximum value
         # for this part of the observation space. If each unit is designated by index, then
         # this integer would be 3210.
-        self.unit_config_high = 3210
-
+        temp = ""
+        for i in reversed(range(unitlength)):
+            temp += str(i)
+        self.unit_config_high = int(temp)
 
         # Define the action space
         self.action_space = Tuple((Discrete(self.num_groups), Discrete(self.num_nodes + 1)) * self.num_actions_per_turn)
