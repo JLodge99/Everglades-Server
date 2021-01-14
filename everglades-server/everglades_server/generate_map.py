@@ -286,6 +286,7 @@ def GenerateJsonFile(size, map):
     jsonData["MapName"] = "Random"
     jsonData["Xsize"] = size
     jsonData["Ysize"] = size
+    jsonData["Zsize"] = 0
     jsonData["nodes"] = nodes
 
     with open(outputFile, 'w', encoding='utf-8') as f:
