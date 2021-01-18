@@ -5,11 +5,13 @@ import datetime
 import pdb
 
 import numpy as np
+import random
 import random as r
 import re
 
 from everglades_server.definitions import *
 from everglades_server import wind
+from collections import defaultdict 
 
 class EvergladesGame:
     """
@@ -900,8 +902,17 @@ class EvergladesGame:
 
         contestedNodeFound = False
 
-        activeGroups = {}
-        activeUnits = {}
+        # Small helper function that helps create multi-dimensional dictionaries.
+        def multi_dict(K, type): 
+            if K == 1: 
+                return defaultdict(type) 
+            else: 
+                return defaultdict(lambda: multi_dict(K-1, type)) 
+
+        activeGroups = multi_dict(2, list)
+        activeGroupsList = []
+
+        activeUnits = multi_dict(3, list)
         activeNodes = []
         groupList = []
 
@@ -918,14 +929,16 @@ class EvergladesGame:
                     contestedNodeFound = True
                     # Build a list of squadrons that are available for combat at this node.
                     for groupID in node.groups[player]:
+                        groupsAtNode = []
                         # Only count a group as being available for combat if they are not moving and are alive. Moving units neither give or receive damage.
                         if (self.players[player].groups[groupID].moving == False) and (self.players[player].groups[groupID].destroyed == False):
-                            activeGroups[node][player].append(groupID)
+                            groupsAtNode.append(groupID)
                             activeNodes.append(node)
                         
                         unitIndex = 0
                         # Find all units that are alive on both sides and add them to the dictionary for targeting use.
                         for unitType in self.players[player].groups[groupID].units:
+                            unitInfoList = []
                             for unitID in range(len(unitType.unitHealth)):
                                 # If the given unit is alive, then add it to the active unit dictionary.
                                 if unitType.unitHealth[unitID] > 0:
@@ -933,12 +946,15 @@ class EvergladesGame:
                                     # activeUnits[node][player][groupID][unitType][unitID] = unitType
                                     # Store the unit type, its ID within the unitHealth array, and the unit's health.
                                     unitInfo = (unitType, unitIndex, unitType.unitHealth[unitID])
-                                    activeUnits[node][player][groupID].append(unitInfo)
+                                    unitInfoList.append(unitInfo)
                                     unitIndex = unitIndex + 1
+
+                        activeUnits[node][player][groupID] = unitInfoList
+                        activeGroups[node][player] = groupsAtNode
 
             # If the above code block has found a contested node, then combat will start to be simulated with the active groups.
             if contestedNodeFound == True:
-                infliction = {}
+                infliction = multi_dict(3, int)
 
                 # Start building the damage for each drone currently at the node.
                 # Damage has to be built before actually applying it so that all drones at the given node have a chance of dealing damage before dying.
@@ -948,24 +964,43 @@ class EvergladesGame:
                         # Get the opponent player's ID.
                         opponent = 0 if (player == 1) else 1
                         for groupID in activeUnits[node][player]:
-                            for unit in activeGroups[node][player][groupID]:
+                            for unit in range(len(activeUnits[node][player][groupID])):
                                 # Select an enemy unit for the current drone to target.
+
+                                # TODO Move bulk of the rest of this function into a separate file for random targeting
+                                # Call function from separate file, parsing the activeUnits array into it
+                                # Return a list or array of tuples called actionList or something that shows what units will attack what other units
+                                # Process the actions, checking to make sure no units attack twice, and apply damage
                                 if useRandomTargeting:
-                                    # TODO I'm not certain if this will work correctly
-                                    groupID = np.random.randint(activeGroups[node][opponent].count)
-                                    unitID = np.random.randint(activeUnits[node][opponent][groupID].count)
+                                    random.seed()
+                                    oppGroupIndex = 0 if (len(activeGroups[node][opponent]) <= 1) else (random.randint(0, len(activeGroups[node][opponent])) - 1)
+                                    oppUnitIndex = 0 if (len(activeUnits[node][opponent][oppGroupIndex]) <= 1) else (random.randint(0, len(activeUnits[node][opponent][oppGroupIndex])) - 1)
+
+                                    groupUnitList = activeGroups[node][opponent]
+
+                                    # Break if the chosen group does not exist, for some reaosn.
+                                    if not groupUnitList:
+                                        break
+
+                                    oppGroupID = groupUnitList[oppGroupIndex]
+
+                                    activeUnitList = activeUnits[node][opponent][oppGroupID]
+                                    oppUnitID = activeUnitList[oppUnitIndex]
                                 # TODO Set up default and custom targeting functions
                                 elif useDefaultTargeting:
-                                    groupID, unitID = defaultTargeting(self, activeUnits)
+                                    oppGroupID, oppUnitID = defaultTargeting(self, activeUnits)
                                 elif useCustomTargeting:
-                                    groupID, unitID = customTargeting(self, activeUnits)
+                                    oppGroupID, oppUnitID = customTargeting(self, activeUnits)
+
+                                attackingUnit = activeUnits[node][player][groupID]
 
                                 # Build damage for the targeted opponent unit. The value that gets placed or added to the value in the infliction
                                 # dictionary is the damage the relevant unit deals.
+                                # The 0 after the unit index indicates that we want a reference to the unit, given from the tuple defined earlier.
                                 if unitID in infliction[player]:
-                                    infliction[opponent][groupID][unitID] += activeGroups[node][player][groupID][0].definition.damage
+                                    infliction[opponent][oppGroupID][oppUnitID] += attackingUnit[unit][0].definition.damage
                                 else:
-                                    infliction[opponent][groupID][unitID] = activeGroups[node][player][groupID][0].definition.damage
+                                    infliction[opponent][oppGroupID][oppUnitID] = attackingUnit[unit][0].definition.damage
 
                 # Apply the damage that was build in the previous section.
                 for node in activeNodes:
@@ -974,7 +1009,13 @@ class EvergladesGame:
                         for groupID in infliction[opponent]:
                             for unitID in infliction[opponent][groupID]:
                                 # Find the unit type that is being targeted and its current health.
-                                targetUnit = activeUnits[node][opponent][groupID][unitID]
+                                targetGroup = activeUnits[node][opponent][groupID]
+
+                                # If the list is empty, move on to the next group.
+                                if not targetGroup:
+                                    break
+
+                                targetUnit = list(targetGroup[unitID[1]])
                                 targetHealth = targetUnit[2]
 
                                 # Calculate the node defense bonus.
@@ -988,8 +1029,15 @@ class EvergladesGame:
                                 # Calculate the true damage that will be applied to the targeted unit.
                                 trueDamage = (10.0 * baseDamage) / (targetHealth + nodeDefense)
 
+
+
+                                print("Applied", trueDamage, "to player", opponent, "'s", targetUnit[0].unitType, "at position ", targetUnit[1])
+                                
+
                                 # Finally, apply the damage.
                                 targetUnit[2] = targetUnit[2] - trueDamage
+
+                                print("Current health of unit:", targetUnit[2])
 
                                 # Check if the application of this damage results in the death of the drone. If so,
                                 # remove the drone from relevant lists and disable the group if it was the last drone alive.
