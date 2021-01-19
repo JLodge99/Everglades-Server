@@ -83,7 +83,7 @@ def __loadJsonFileLoadout(playerIdentifier):
     dFile = os.path.join(outputLocation, loadoutFile)
     if (playerIdentifier < 0 or not os.path.exists(os.path.abspath(loadoutFile))):
         print("Loading failed")
-        with open(os.path.abspath(defaultLoadoutFile)) as f:
+        with open(os.path.abspath(os.path.join(outputLocation, defaultLoadoutFile))) as f:
             data = json.load(f)
     else:
         print("Loading found")
@@ -148,7 +148,16 @@ def GetLoadoutTypeArray(playerIdentifier):
     return __getLoadoutTypeArrayViaJSON(loadedData)
 
 
+# Converts JSON with array of strings into an object
+def ConvertLoadoutToObject(playerIdentifier):
+    unit_configs = {}
+    loadout = GetLoadoutTypeArray(playerIdentifier)
 
+    for i in range(len(loadout)):
+        group_units = loadout[i]       ## Get each group
+        unit_configs[i] = [(x) for x in set(group_units)]  ## Returns [('drone type', count),...]
+
+    return unit_configs
 
 
 
