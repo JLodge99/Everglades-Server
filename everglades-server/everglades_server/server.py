@@ -1098,7 +1098,17 @@ class EvergladesGame:
                         end_idx = int( np.squeeze(np.where(self.map_key1 == group.travel_destination)) )
                         
 
-                        speed = group.speed[0]
+                        # Determine the speed of the squad
+                        # OLD: Gave the speed of the first unit in the squad, effectively random
+                        # speed = group.speed[0]
+                        # NEW: Speed of squadron is speed of slowest unit
+                        speed = 99999999
+                        for x in group.speed
+                        {
+                            if speed > x
+                                speed = x
+                        }
+                        
                         playerNum = player
                         
                         if self.evgMap.nodes[start_idx].controlledBy == playerNum and self.evgMap.nodes[end_idx].controlledBy == playerNum: 
