@@ -27,7 +27,7 @@ class EvergladesGame:
 
         # 0 = Disable 
         # 1 = Enable
-        self.enableWind = 1
+        self.enableWind = 0
 
         # Initialize game
         if os.path.exists(map_file):
