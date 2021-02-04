@@ -16,6 +16,7 @@ from collections import defaultdict
 class EvergladesGame:
     """
     """
+
     def __init__(self, **kwargs):
         # Get configuration locations
         config_path = kwargs.get('config_dir')
@@ -204,9 +205,16 @@ class EvergladesGame:
                 control = in_type['Control'],
                 cost = in_type['Cost']
             )
+            # HEY FUTURE GROUPS, LISTEN UP!
+            # This unit_types list is the MOST important list in this entire project! (I think it is, at least)
+            # It contains all static information on each unit type. So if you want to access a unit's base health attribute,
+            # you would do unit_types[0].health - no weird wacky backflips required to get there.
+            # Understand that we're coming from a project which came in a somewhat convoluted state, so this will make your lives easier! (hopefully)
             self.unit_types.append(unit_type)
             #pdb.set_trace()
+            # This dictionary returns the unit type's lowercase name (e.g. 'striker') when given its int unit ID
             self.unit_ids[uid] = unit_type.unitType.lower()
+            # This dictionary returns the unit type's uit ID when given the uit type's lowercase name
             self.unit_names[unit_type.unitType.lower()] = uid
             uid += 1
         # end unit type creation
@@ -280,74 +288,74 @@ class EvergladesGame:
 
                     unit_id = self.unit_names[in_type]
 
-                    # Cost counter to make sure the total unit allocation is correct
-                    # Total cost limit was set by multiplying the maximum number of units,
-                    # 100, by base cost of 1.
-                    counter += (self.unit_types[unit_id].cost * in_count)
-                    assert(counter <= 100), 'Total cost cannot exceed 100'
+                    newGroup.counts[unit_id] = in_count
 
-                    newUnit = EvgUnit(
-                            unitType = in_type,
-                            count = in_count
-                    )
+                    # Instantiate a new unit for however many times that unit appears in the group.
+                    for unitInstance in range(in_count):
 
-                    newGroup.count += in_count
+                        # Cost counter to make sure the total unit allocation is correct
+                        # Total cost limit was set by multiplying the maximum number of units,
+                        # 100, by base cost of 1.p
+                        counter += (self.unit_types[unit_id].cost * in_count)
 
-                    # Set each definition field according to unit_types. These are defaults.
-                    newUnit.definition.unitType = self.unit_types[unit_id].unitType
-                    newUnit.definition.health = self.unit_types[unit_id].health
-                    newUnit.definition.damage = self.unit_types[unit_id].damage
-                    newUnit.definition.speed = self.unit_types[unit_id].speed
-                    newUnit.definition.control = self.unit_types[unit_id].control
-                    newUnit.definition.cost = self.unit_types[unit_id].cost
+                        # TODO: Temporarily disabled
+                        # assert(counter <= 100), 'Total cost cannot exceed 100'
+                        #print(type(pair))
+                        #print(unitIndex)
+                        newUnit = EvgUnit(
+                                unitType = in_type,
+                                currentHealth = self.unit_types[unit_id].health,
+                                currentSpeed = self.unit_types[unit_id].speed,
+                        )
 
-                    # If unit type is Recon, we need to change the speed value to decrease
-                    # as the range value increases. An explicit mapping of range to speed would be:
-                    # (1, 3), (2, 2), (3, 1). Also, set the mode and range if provided. Default mode
-                    # is passive, default range is 1, and default speed is 3.
-                    if newUnit.unitType == "recon":
-                        hasRecon = True
-                        newUnit.wavelength = ""
-                        assert(type(player_dat[player]['sensor_config']) is dict), 'Sensor configuration must be a dictionary'
+                        # If unit type is Recon, we need to change the speed value to decrease
+                        # as the range value increases. An explicit mapping of range to speed would be:
+                        # (1, 3), (2, 2), (3, 1). Also, set the mode and range if provided. Default mode
+                        # is passive, default range is 1, and default speed is 3.
+                        if self.unit_types[unit_id] == "recon":
+                            hasRecon = True
+                            newUnit.wavelength = ""
+                            assert(type(player_dat[player]['sensor_config']) is dict), 'Sensor configuration must be a dictionary'
 
-                        if gid in player_dat[player]['sensor_config']:
-                            # Check format and values
-                            assert(type(player_dat[player]['sensor_config'][gid]) is list), 'Group\'s sensor configuration value must be a list'
-                            assert(type(player_dat[player]['sensor_config'][gid][0]) is str), 'Mode must be a string'
-                            assert(player_dat[player]['sensor_config'][gid][0] in ('active', 'passive')), 'Mode must be active or passive'
-                            assert(type(player_dat[player]['sensor_config'][gid][1]) is int), 'Range must be an integer'
-                            assert(1 <= player_dat[player]['sensor_config'][gid][1] <= 3), 'Range must be between 1 and 3, inclusive'
+                            if gid in player_dat[player]['sensor_config']:
+                                # Check format and values
+                                assert(type(player_dat[player]['sensor_config'][gid]) is list), 'Group\'s sensor configuration value must be a list'
+                                assert(type(player_dat[player]['sensor_config'][gid][0]) is str), 'Mode must be a string'
+                                assert(player_dat[player]['sensor_config'][gid][0] in ('active', 'passive')), 'Mode must be active or passive'
+                                assert(type(player_dat[player]['sensor_config'][gid][1]) is int), 'Range must be an integer'
+                                assert(1 <= player_dat[player]['sensor_config'][gid][1] <= 3), 'Range must be between 1 and 3, inclusive'
 
-                            newUnit.mode = player_dat[player]['sensor_config'][gid][0]
-                            newUnit.range = player_dat[player]['sensor_config'][gid][1]
-                            newUnit.definition.speed = 4 - newUnit.range
+                                newUnit.mode = player_dat[player]['sensor_config'][gid][0]
+                                newUnit.range = player_dat[player]['sensor_config'][gid][1]
+                                newUnit.currentSpeed = 4 - newUnit.range
 
-                            if newUnit.mode == 'active':
-                                assert(type(player_dat[player]['sensor_config'][gid][2]) is str), 'Wavelength must be a string'
-                                # Wavelength must be of the form X.XX
-                                assert(re.match('\d[.]\d\d$',player_dat[player]['sensor_config'][gid][2])), 'Wavelength must be of the form X.XX'
-                                assert(0.37 <= float(player_dat[player]['sensor_config'][gid][2]) <= 2.50), 'Wavelength must be between 0.37 and 2.50, inclusive'
+                                if newUnit.mode == 'active':
+                                    assert(type(player_dat[player]['sensor_config'][gid][2]) is str), 'Wavelength must be a string'
+                                    # Wavelength must be of the form X.XX
+                                    assert(re.match('\d[.]\d\d$',player_dat[player]['sensor_config'][gid][2])), 'Wavelength must be of the form X.XX'
+                                    assert(0.37 <= float(player_dat[player]['sensor_config'][gid][2]) <= 2.50), 'Wavelength must be between 0.37 and 2.50, inclusive'
 
-                                newUnit.wavelength = str(player_dat[player]['sensor_config'][gid][2])
-                        else:
-                            newUnit.mode = "passive"
-                            newUnit.range = 1
+                                    newUnit.wavelength = str(player_dat[player]['sensor_config'][gid][2])
+                            else:
+                                newUnit.mode = "passive"
+                                newUnit.range = 1
 
-                        sensorString = '[{};{};{};{}]'.format(newUnit.mode,
-                                                           newUnit.range,
-                                                           newUnit.definition.speed,
-                                                           newUnit.wavelength)
+                            sensorString = '[{};{};{};{}]'.format(newUnit.mode,
+                                                            newUnit.range,
+                                                            self.unit_types[unit_id].speed,
+                                                            newUnit.wavelength)
 
-                    newGroup.units.append(newUnit)
+                        newGroup.units.append(newUnit)
 
-                    in_type = in_type.capitalize()
-                    out_type.append(in_type)
-                    out_count.append(in_count)
+                        in_type = in_type.capitalize()
+                        out_type.append(in_type)
+                        out_count.append(in_count)
+                    # End Unit loop
 
-                    newGroup.speed.append(newUnit.definition.speed)
+                    newGroup.speed.append(self.unit_types[unit_id].speed)
                     newGroup.mapUnitID.append(map_units)
                     map_units += in_count
-                # End Unit loop
+                 # End Unit Type loop
 
                 if not hasRecon:
                     sensorString = '[;;;]'
@@ -512,10 +520,22 @@ class EvergladesGame:
 
         # Add unit points to player scores
         for i, pid in enumerate(self.team_starts):
-            for i, group in enumerate(self.players[pid].groups):
+            for group in self.players[pid].groups:
                 if group.destroyed == False:
-                    counts[pid] += np.sum( [i.count for i in group.units] )
-                    scores[pid] += np.sum( [(i.count * i.definition.cost) for i in group.units] )
+                    counts[pid] = len(group.units)
+                    
+                    for unitTypeIndex in range(len(self.unit_types)):
+                        if unitTypeIndex in group.counts:
+                            scores[pid] += group.counts[unitTypeIndex] * self.unit_types[unitTypeIndex].cost
+                    
+                    print("counts:", counts[pid])
+                    print("scores:", scores[pid])
+
+
+
+                    #scores[pid] += sum(len(group.units) * )
+                    #counts[pid] += np.sum( [i.count for i in group.units] )
+                    #scores[pid] += np.sum( [(i.count * i.definition.cost) for i in group.units] )
 
         ## Check progress
         # Time expiration
@@ -895,7 +915,7 @@ class EvergladesGame:
         #print(state)
         return state
 
-    def combat(self):
+    def combatNew(self):
         useRandomTargeting = True
         useDefaultTargeting = False
         useCustomTargeting = False
@@ -1060,7 +1080,7 @@ class EvergladesGame:
     def customTargeting(self, activeUnits):
         return
                         
-    def combatOld(self):
+    def combat(self):
         ## Apply combat
         # Combat occurs before movement - a fleeing group could still be within
         # targeting range during the same turn; arriving units need to get
@@ -1387,9 +1407,10 @@ class EvergladesGame:
                         if self.players[pid].groups[gid].moving == False:
                             ctr += 1
                             for unit in self.players[pid].groups[gid].units:
-                                count = unit.count
-                                xer = unit.definition.control
-                                points[pid] += count * xer
+                                #count = unit.count
+                                #xer = unit.definition.control
+                                unitTypeID = self.unit_names[unit.unitType.lower()]
+                                points[pid] += self.unit_types[unitTypeID].control
                     if ctr >= 1:
                         controllers.append(pid)
 
