@@ -300,8 +300,7 @@ class EvergladesGame:
 
                         # TODO: Temporarily disabled
                         # assert(counter <= 100), 'Total cost cannot exceed 100'
-                        #print(type(pair))
-                        #print(unitIndex)
+
                         newUnit = EvgUnit(
                                 unitType = in_type,
                                 currentHealth = self.unit_types[unit_id].health,
@@ -938,25 +937,29 @@ class EvergladesGame:
         # =-----------------=
         # Comb through all nodes in the map to find contested nodes.
         for node in self.evgMap.nodes:
-            print(node.ID)
             for player in self.team_starts:
                 groupsAtNode = []
                 for groupID in node.groups[player]:
-                    print(node.groups[player])
                     activeUnitList = []
-                    if self.players[player].groups[groupID].moving == False and self.players[player].groups[groupID].destroyed == False:
-                       #print("Adding", groupID)
+                    # Check to see if there is at least a group from each player at the given node. If not, the node is not contested, so
+                    # move on and evaluate another node.
+                    if (len(node.groups[0]) > 0 and len(node.groups[1]) == 0) or (len(node.groups[0]) == 0 and len(node.groups[1]) > 0):
+                        break
+                    # Otherwise, the node is contested, though we should still ensure that the groups "at" the node are neither moving nor dead.
+                    # Moving groups do not engage in combat, nor can they be engaged by an enemy
+                    # Destroyed groups are still indicated as being at a node, but of course cannot engage in combat.
+                    elif self.players[player].groups[groupID].moving == False and self.players[player].groups[groupID].destroyed == False:
                         groupsAtNode.append(groupID)
+                        # Go through all units in the given group to build a list of all units within the group that are alive.
                         for unitIndex, unit in enumerate(self.players[player].groups[groupID].units):
                             if unit.currentHealth > 0:
                                 unit.unitIndex = unitIndex
                                 activeUnitList.append(unit)
-                        
+                        # Add the built unit list to the activeUnits dictionary
                         if len(activeUnitList) > 0:
-                            #print(activeUnitList)
                             activeUnits[player][groupID] = activeUnitList
+                # Add the list of groups at this node for the given player to the activeGroups dictionary.
                 if len(groupsAtNode) > 0:
-                    #print(groupsAtNode)
                     activeGroups[player] = groupsAtNode
 
             # =-----------------=
@@ -964,7 +967,6 @@ class EvergladesGame:
             # =-----------------=
             # If the above code block has found a contested node, then combat will start to be simulated with the active groups.
             if (len(activeGroups[0]) > 0) and (len(activeGroups[1]) > 0):
-                print("~~~~~~CONTESTED NODE FOUND~~~~~~~~~~~~~")
                 infliction = multi_dict(3, int)
                 combatActions = []
 
@@ -991,6 +993,8 @@ class EvergladesGame:
                     oppUnitID = action[2]
                     baseDamage = action[3]
 
+                    # Build the damage. The infliction dictionary contains all the necessary integer base damage values
+                    # to be applied to all drones that were targeted in the Construction phase.
                     if oppUnitID in infliction[opponentID][oppGroupID]:
                         infliction[opponentID][oppGroupID][oppUnitID] += baseDamage
                     else:
@@ -1004,7 +1008,6 @@ class EvergladesGame:
                     opponent = 0 if (player == 1) else 1
                     for groupID in infliction[opponent]:
                         for unitID in infliction[opponent][groupID]:
-                            #print("groupID:", groupID, "unitID:", unitID)
                             targetUnit = unitID
                             targetHealth = unitID.currentHealth
 
@@ -1033,10 +1036,13 @@ class EvergladesGame:
                             if targetUnit.currentHealth <= 0:
                                 affectedGroup.counts[targetUnitTypeID] -= 1
 
+                                # If all drones of one type are dead within the group, remove their speed modifier value for
+                                # movement reasons.
                                 if affectedGroup.counts[targetUnitTypeID] == 0:
                                     affectedGroup.speed.remove(targetUnitType.speed)
 
-                                if sum(affectedGroup.counts) <= 0:
+                                # If all drones in the group are dead, update necessary values.
+                                if sum(affectedGroup.counts.values()) <= 0:
                                     self.players[opponent].groups[groupID].destroyed = True
                                     self.players[opponent].groups[groupID].moving = False
                                     self.players[opponent].groups[groupID].ready = False
@@ -1052,36 +1058,13 @@ class EvergladesGame:
                 for attackingUnit in activeUnits[player][groupID]:
                     random.seed()
 
-                    # HEY IDIOT TODO
-                    # activeUnits[int(0 or 1)][int (0 indexed)]
-
-                    # print("player:", player)
-                    # print("groupID:", groupID)
-                    # print("attackingUnit ID:", attackingUnit.unitIndex)
-
-                    # print("Length of player units:", len(activeUnits[player][groupID]))
-                    
-
-                    # opp is shorthand for opponent
-                    oppGroupIndex = random.randrange(0, len(activeGroups[opponent]))
-                    oppGroupID = random.choice(activeGroups[opponent])
-
-                    #print("Length of opponent units:", len(activeUnits[opponent][oppGroupID]))
-                    # print("oppGroupIndex:", oppGroupIndex)
-                    # print("OppGroupID:", oppGroupID)
-                    # print(len(activeUnits[opponent][oppGroupID]))
-                    #print(activeUnits[opponent][oppGroupID])
-
-                    oppUnitID = random.choice(activeUnits[opponent][oppGroupID])
-                    
-                    #print("oppUnitIndex:", oppUnitID)
-
-                    # Get some indexes for the target group and unit.
+                    # Get a random group from the list of the opponent's groups at the given node.
                     oppGroupList = activeGroups[opponent]
-                    oppGroupID = oppGroupList[oppGroupIndex]
+                    oppGroupID = random.choice(oppGroupList)
 
+                    # Get a random unit from that group.
                     oppUnitList = activeUnits[opponent][oppGroupID]
-                    oppUnitID = oppUnitList[oppGroupID]
+                    oppUnitID = random.choice(oppUnitList)
 
                     # Get the attacking unit's ID and base damage.
                     unitTypeID = self.unit_names[attackingUnit.unitType.lower()]
