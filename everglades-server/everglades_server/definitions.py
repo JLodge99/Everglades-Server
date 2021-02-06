@@ -52,6 +52,7 @@ class EvgGroup:
 class EvgUnit:
     def __init__(self, **kwargs):
         self.unitType = kwargs.get('unitType', None)
+        self.unitIndex = kwargs.get('unitIndex', 0)
         self.currentHealth = kwargs.get('currentHealth', 0)
         self.currentSpeed = kwargs.get('currentSpeed', 0)
 
