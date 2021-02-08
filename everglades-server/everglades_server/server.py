@@ -1100,14 +1100,17 @@ class EvergladesGame:
 
                         # Determine the speed of the squad
                         # OLD: Gave the speed of the first unit in the squad, effectively random
-                        # speed = group.speed[0]
+                        speed = group.speed[0]
                         # NEW: Speed of squadron is speed of slowest unit
+                        # Commenting out so Zack can bugtest
+                        """{
                         speed = 99999999
-                        for x in group.speed
+                        for x in group.speed:
                         {
-                            if speed > x
+                            if (speed > x):
                                 speed = x
                         }
+                        """
                         
                         playerNum = player
                         
