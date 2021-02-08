@@ -34,15 +34,15 @@ if len(sys.argv) > 3:
 # 3dmap.json     -  3D
 # RandomMap.json -  2D
 
-#map_name = '3dmap.json'
-map_name = 'RandomMap.json'
+map_name = '3dmap.json'
+#map_name = 'RandomMap.json'
 
 if map_name == 'RandomMap.json':
     print("Generating 2D map")
     generate_map.exec(7)
 elif map_name == '3dmap.json':
     print("Generating 3D map")
-    generate_3dmap.exec(5, 3, 5) #(X, Y, Z)
+    generate_3dmap.exec(7, 7, 10) #(X, Y, Z)
 
 config_dir = os.path.abspath('config')
 map_file = os.path.join(config_dir, map_name)

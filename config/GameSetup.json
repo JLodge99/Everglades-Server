@@ -1,6 +1,7 @@
 {
     "__type": "Setup",
     "MapFile": "DemoMap.json",
+    "MapType": "3D",
     "UnitFile": "UnitDefinitions.json",
     "PlayerFile": "PlayerConfig.json",
     "UnitBudget": 100,

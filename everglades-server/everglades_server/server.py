@@ -74,7 +74,7 @@ class EvergladesGame:
 
         Xsize = self.map_dat['Xsize']
         Ysize = self.map_dat['Ysize']
-        #Zsize = self.map_dat['Zsize']
+        Zsize = self.map_dat['Zsize']
 
         # Seed value used for wind Stochasticity from game setup
         windSeed = self.setup['Stochasticity']
@@ -83,13 +83,21 @@ class EvergladesGame:
         nodePos = {}
 
         # Add positions of every node
-        for row in range(0, Xsize):
-            for col in range(0, Ysize):
-                nodePos[(col + 2) + (Ysize * row)] = (row + 1, col)
+        if self.map_dat["Type"] == "2D":
+            for row in range(0, Xsize):
+                for col in range(0, Ysize):
+                        nodePos[(col + 2) + (Ysize * row)] = (row + 1, col)
+        elif self.map_dat["Type"] == "3D":
+            for z in range(Zsize):
+                for y in range(Ysize):
+                    for x in range(Xsize):
+                        conNodeId = (y * Xsize) + x + (Xsize * Ysize * z) + 1
+                        nodePos[conNodeId] = (x, y, z)
 
         # Initialize maps
         self.evgMap = EvgMap(self.map_dat['MapName'])
         self.evgMap2d = [[-1 for x in range(Xsize + 2)] for y in range(Ysize)]
+        self.evgMap3d = [[[-1 for x in range(Xsize)] for y in range(Ysize)] for z in range(Zsize)]
 
         self.team_starts = {}
         # Two different types of map keys. Note that they may both be the same
@@ -132,19 +140,32 @@ class EvergladesGame:
         node_num = 1
 
         if self.enableWind == 1:
-            for n in self.evgMap.nodes:
-                id = n.ID
-                if id != 1 and id != (Xsize * Ysize + 2):
-                    (x,y) = nodePos[id]
-                    self.evgMap2d[y][x] = node_num
+            print("Wind enabled")
+            if self.map_dat["Type"] == "3D":
+                node_num = 0
+                for n in self.evgMap.nodes:
+                    id = n.ID
+                    (x,y,z) = nodePos[id]
+                    self.evgMap3d[z][y][x] = node_num
                     node_num += 1
 
-            # Add base nodes
-            self.evgMap2d[int(Ysize/2)][0] = 0
-            self.evgMap2d[int(Ysize/2)][Xsize + 1] = node_num
+                # Create wind magnifier dict
+                self.winds = wind.exec3D(self.evgMap3d, Xsize, Ysize, Zsize, windSeed)
 
-            # Create wind magnifier dict
-            self.winds = wind.exec(self.evgMap2d, Xsize + 2, Ysize, windSeed)
+            elif self.map_dat["Type"] == "2D":
+                for n in self.evgMap.nodes:
+                    id = n.ID
+                    if id != 1 and id != (Xsize * Ysize + 2):
+                        (x,y) = nodePos[id]
+                        self.evgMap2d[y][x] = node_num
+                        node_num += 1
+
+                # Add base nodes
+                self.evgMap2d[int(Ysize/2)][0] = 0
+                self.evgMap2d[int(Ysize/2)][Xsize + 1] = node_num
+
+                # Create wind magnifier dict
+                self.winds = wind.exec2D(self.evgMap2d, Xsize + 2, Ysize, windSeed)
 
         # Convert p0 nodes numbering to p1
         # Need method to do this when boards are not hand-designed
