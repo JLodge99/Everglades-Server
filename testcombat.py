@@ -15,15 +15,9 @@ from everglades_server import generate_3dmap
 ## Input Variables
 # Agent files must include a class of the same name with a 'get_action' function
 # Do not include './' in file path
-if len(sys.argv) > 1:
-    agent0_file = 'agents/' + sys.argv[1]
-else:
-    agent0_file = 'agents/random_actions'
+agent0_file = 'agents/reggtest'
     
-if len(sys.argv) > 2:
-    agent1_file = 'agents/' + sys.argv[2]
-else:
-    agent1_file = 'agents/random_actions'
+agent1_file = 'agents/reggtest'
 
 if len(sys.argv) > 3:
     map_name = sys.argv[3] + '.json'
@@ -34,15 +28,15 @@ if len(sys.argv) > 3:
 # 3dmap.json     -  3D
 # RandomMap.json -  2D
 
-map_name = '3dmap.json'
+map_name = 'reggtestmap.json'
 #map_name = 'RandomMap.json'
 
-if map_name == 'RandomMap.json':
-    print("Generating 2D map")
-    generate_map.exec(7)
-elif map_name == '3dmap.json':
-    print("Generating 3D map")
-    generate_3dmap.exec(7, 7, 10) #(X, Y, Z)
+# if map_name == 'RandomMap.json':
+#     print("Generating 2D map")
+#     generate_map.exec(7)
+# elif map_name == '3dmap.json':
+#     print("Generating 3D map")
+#     generate_3dmap.exec(7, 7, 10) #(X, Y, Z)
 
 config_dir = os.path.abspath('config')
 map_file = os.path.join(config_dir, map_name)

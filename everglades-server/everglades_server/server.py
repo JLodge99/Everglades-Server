@@ -5,15 +5,18 @@ import datetime
 import pdb
 
 import numpy as np
+import random
 import random as r
 import re
 
 from everglades_server.definitions import *
 from everglades_server import wind
+from collections import defaultdict 
 
 class EvergladesGame:
     """
     """
+
     def __init__(self, **kwargs):
         # Get configuration locations
         config_path = kwargs.get('config_dir')
@@ -223,9 +226,16 @@ class EvergladesGame:
                 control = in_type['Control'],
                 cost = in_type['Cost']
             )
+            # HEY FUTURE GROUPS, LISTEN UP!
+            # This unit_types list is the MOST important list in this entire project! (I think it is, at least)
+            # It contains all static information on each unit type. So if you want to access a unit's base health attribute,
+            # you would do unit_types[0].health - no weird wacky backflips required to get there.
+            # Understand that we're coming from a project which came in a somewhat convoluted state, so this will make your lives easier! (hopefully)
             self.unit_types.append(unit_type)
             #pdb.set_trace()
+            # This dictionary returns the unit type's lowercase name (e.g. 'striker') when given its int unit ID
             self.unit_ids[uid] = unit_type.unitType.lower()
+            # This dictionary returns the unit type's uit ID when given the uit type's lowercase name
             self.unit_names[unit_type.unitType.lower()] = uid
             uid += 1
         # end unit type creation
@@ -299,74 +309,73 @@ class EvergladesGame:
 
                     unit_id = self.unit_names[in_type]
 
-                    # Cost counter to make sure the total unit allocation is correct
-                    # Total cost limit was set by multiplying the maximum number of units,
-                    # 100, by base cost of 1.
-                    counter += (self.unit_types[unit_id].cost * in_count)
-                    assert(counter <= 100), 'Total cost cannot exceed 100'
+                    newGroup.counts[unit_id] = in_count
 
-                    newUnit = EvgUnit(
-                            unitType = in_type,
-                            count = in_count
-                    )
+                    # Instantiate a new unit for however many times that unit appears in the group.
+                    for unitInstance in range(in_count):
 
-                    newGroup.count += in_count
+                        # Cost counter to make sure the total unit allocation is correct
+                        # Total cost limit was set by multiplying the maximum number of units,
+                        # 100, by base cost of 1.p
+                        counter += (self.unit_types[unit_id].cost * in_count)
 
-                    # Set each definition field according to unit_types. These are defaults.
-                    newUnit.definition.unitType = self.unit_types[unit_id].unitType
-                    newUnit.definition.health = self.unit_types[unit_id].health
-                    newUnit.definition.damage = self.unit_types[unit_id].damage
-                    newUnit.definition.speed = self.unit_types[unit_id].speed
-                    newUnit.definition.control = self.unit_types[unit_id].control
-                    newUnit.definition.cost = self.unit_types[unit_id].cost
+                        # TODO: Temporarily disabled
+                        # assert(counter <= 100), 'Total cost cannot exceed 100'
 
-                    # If unit type is Recon, we need to change the speed value to decrease
-                    # as the range value increases. An explicit mapping of range to speed would be:
-                    # (1, 3), (2, 2), (3, 1). Also, set the mode and range if provided. Default mode
-                    # is passive, default range is 1, and default speed is 3.
-                    if newUnit.unitType == "recon":
-                        hasRecon = True
-                        newUnit.wavelength = ""
-                        assert(type(player_dat[player]['sensor_config']) is dict), 'Sensor configuration must be a dictionary'
+                        newUnit = EvgUnit(
+                                unitType = in_type,
+                                currentHealth = self.unit_types[unit_id].health,
+                                currentSpeed = self.unit_types[unit_id].speed,
+                        )
 
-                        if gid in player_dat[player]['sensor_config']:
-                            # Check format and values
-                            assert(type(player_dat[player]['sensor_config'][gid]) is list), 'Group\'s sensor configuration value must be a list'
-                            assert(type(player_dat[player]['sensor_config'][gid][0]) is str), 'Mode must be a string'
-                            assert(player_dat[player]['sensor_config'][gid][0] in ('active', 'passive')), 'Mode must be active or passive'
-                            assert(type(player_dat[player]['sensor_config'][gid][1]) is int), 'Range must be an integer'
-                            assert(1 <= player_dat[player]['sensor_config'][gid][1] <= 3), 'Range must be between 1 and 3, inclusive'
+                        # If unit type is Recon, we need to change the speed value to decrease
+                        # as the range value increases. An explicit mapping of range to speed would be:
+                        # (1, 3), (2, 2), (3, 1). Also, set the mode and range if provided. Default mode
+                        # is passive, default range is 1, and default speed is 3.
+                        if self.unit_types[unit_id] == "recon":
+                            hasRecon = True
+                            newUnit.wavelength = ""
+                            assert(type(player_dat[player]['sensor_config']) is dict), 'Sensor configuration must be a dictionary'
 
-                            newUnit.mode = player_dat[player]['sensor_config'][gid][0]
-                            newUnit.range = player_dat[player]['sensor_config'][gid][1]
-                            newUnit.definition.speed = 4 - newUnit.range
+                            if gid in player_dat[player]['sensor_config']:
+                                # Check format and values
+                                assert(type(player_dat[player]['sensor_config'][gid]) is list), 'Group\'s sensor configuration value must be a list'
+                                assert(type(player_dat[player]['sensor_config'][gid][0]) is str), 'Mode must be a string'
+                                assert(player_dat[player]['sensor_config'][gid][0] in ('active', 'passive')), 'Mode must be active or passive'
+                                assert(type(player_dat[player]['sensor_config'][gid][1]) is int), 'Range must be an integer'
+                                assert(1 <= player_dat[player]['sensor_config'][gid][1] <= 3), 'Range must be between 1 and 3, inclusive'
 
-                            if newUnit.mode == 'active':
-                                assert(type(player_dat[player]['sensor_config'][gid][2]) is str), 'Wavelength must be a string'
-                                # Wavelength must be of the form X.XX
-                                assert(re.match('\d[.]\d\d$',player_dat[player]['sensor_config'][gid][2])), 'Wavelength must be of the form X.XX'
-                                assert(0.37 <= float(player_dat[player]['sensor_config'][gid][2]) <= 2.50), 'Wavelength must be between 0.37 and 2.50, inclusive'
+                                newUnit.mode = player_dat[player]['sensor_config'][gid][0]
+                                newUnit.range = player_dat[player]['sensor_config'][gid][1]
+                                newUnit.currentSpeed = 4 - newUnit.range
 
-                                newUnit.wavelength = str(player_dat[player]['sensor_config'][gid][2])
-                        else:
-                            newUnit.mode = "passive"
-                            newUnit.range = 1
+                                if newUnit.mode == 'active':
+                                    assert(type(player_dat[player]['sensor_config'][gid][2]) is str), 'Wavelength must be a string'
+                                    # Wavelength must be of the form X.XX
+                                    assert(re.match('\d[.]\d\d$',player_dat[player]['sensor_config'][gid][2])), 'Wavelength must be of the form X.XX'
+                                    assert(0.37 <= float(player_dat[player]['sensor_config'][gid][2]) <= 2.50), 'Wavelength must be between 0.37 and 2.50, inclusive'
 
-                        sensorString = '[{};{};{};{}]'.format(newUnit.mode,
-                                                           newUnit.range,
-                                                           newUnit.definition.speed,
-                                                           newUnit.wavelength)
+                                    newUnit.wavelength = str(player_dat[player]['sensor_config'][gid][2])
+                            else:
+                                newUnit.mode = "passive"
+                                newUnit.range = 1
 
-                    newGroup.units.append(newUnit)
+                            sensorString = '[{};{};{};{}]'.format(newUnit.mode,
+                                                            newUnit.range,
+                                                            self.unit_types[unit_id].speed,
+                                                            newUnit.wavelength)
 
-                    in_type = in_type.capitalize()
-                    out_type.append(in_type)
-                    out_count.append(in_count)
+                        newGroup.units.append(newUnit)
 
-                    newGroup.speed.append(newUnit.definition.speed)
+                        in_type = in_type.capitalize()
+                        out_type.append(in_type)
+                        out_count.append(in_count)
+                    # End Unit loop
+
+                    newGroup.speed.append(self.unit_types[unit_id].speed)
                     newGroup.mapUnitID.append(map_units)
                     map_units += in_count
-                # End Unit loop
+                 # End Unit Type loop
 
                 if not hasRecon:
                     sensorString = '[;;;]'
@@ -531,10 +540,17 @@ class EvergladesGame:
 
         # Add unit points to player scores
         for i, pid in enumerate(self.team_starts):
-            for i, group in enumerate(self.players[pid].groups):
+            for group in self.players[pid].groups:
                 if group.destroyed == False:
-                    counts[pid] += np.sum( [i.count for i in group.units] )
-                    scores[pid] += np.sum( [(i.count * i.definition.cost) for i in group.units] )
+                    counts[pid] += len(group.units)
+                    
+                    for unitTypeIndex in range(len(self.unit_types)):
+                        if unitTypeIndex in group.counts:
+                            scores[pid] += group.counts[unitTypeIndex] * self.unit_types[unitTypeIndex].cost
+
+                    #scores[pid] += sum(len(group.units) * )
+                    #counts[pid] += np.sum( [i.count for i in group.units] )
+                    #scores[pid] += np.sum( [(i.count * i.definition.cost) for i in group.units] )
 
         ## Check progress
         # Time expiration
@@ -660,8 +676,7 @@ class EvergladesGame:
 
             for gid in node.groups[opp_pid]:
                 group = self.players[opp_pid].groups[gid]
-                for unit in group.units:
-                    state[idx+3] += unit.count
+                state[idx+3] = len(group.units)
 
             idx += 4
         # end per-node state build
@@ -694,8 +709,8 @@ class EvergladesGame:
             health = 0
             unit_types = []
             for unit in group.units:
-                units_alive += np.sum( unit.unitHealth > 0 )
-                health += np.sum( unit.unitHealth )
+                units_alive += np.sum( unit.currentHealth > 0 )
+                health += np.sum( unit.currentHealth )
                 unit_types.append(self.unit_names[unit.unitType.lower()])
 
             location = group.location
@@ -789,7 +804,7 @@ class EvergladesGame:
                 enemyMode = "none"
                 # Loop through the  enemyGroup's units to fill the enemyUnits array
                 for unit in enemyGroup.units:
-                    enemyUnits[self.unit_names[unit.unitType]] = unit.count
+                    enemyUnits[self.unit_names[unit.unitType.lower()]] = enemyGroup.counts[self.unit_names[unit.unitType.lower()]]
                     # While looping, get the mode of the recon unit(s) if any
                     if unit.unitType == 'recon':
                         enemyMode = unit.mode
@@ -913,24 +928,205 @@ class EvergladesGame:
 
         #print(state)
         return state
-
-
+    
+    # The combat function is called every turn. There are three main components to it:
+    # 1. DETECTION    - Search (in linear time) all nodes on the gameboard for a node that is contested.
+    # 2. CONSTRUCTION - Use callback functions to get each individual drone's target and add up the damage to be applied to each drone on both sides.
+    # 3. DESTRUCTION  - Apply the damage built from the previous step and eliminate drones and groups as needed.
     def combat(self):
+        useRandomTargeting = True
+        useDefaultTargeting = False
+        useCustomTargeting = False
+
+        contestedNodeFound = False
+
+        # Small helper function that helps create multi-dimensional dictionaries.
+        def multi_dict(K, type): 
+            if K == 1: 
+                return defaultdict(type) 
+            else: 
+                return defaultdict(lambda: multi_dict(K-1, type)) 
+
+        activeGroups = {}
+        activeGroups[0] = []
+        activeGroups[1] = []
+
+        activeUnits = multi_dict(2, list)
+
+        # =-----------------=
+        # DETECTION
+        # =-----------------=
+        # Comb through all nodes in the map to find contested nodes.
+        for node in self.evgMap.nodes:
+            for player in self.team_starts:
+                groupsAtNode = []
+                for groupID in node.groups[player]:
+                    activeUnitList = []
+                    # Check to see if there is at least a group from each player at the given node. If not, the node is not contested, so
+                    # move on and evaluate another node.
+                    if (len(node.groups[0]) > 0 and len(node.groups[1]) == 0) or (len(node.groups[0]) == 0 and len(node.groups[1]) > 0):
+                        break
+                    # Otherwise, the node is contested, though we should still ensure that the groups "at" the node are neither moving nor dead.
+                    # Moving groups do not engage in combat, nor can they be engaged by an enemy
+                    # Destroyed groups are still indicated as being at a node, but of course cannot engage in combat.
+                    elif self.players[player].groups[groupID].moving == False and self.players[player].groups[groupID].destroyed == False:
+                        groupsAtNode.append(groupID)
+                        # Go through all units in the given group to build a list of all units within the group that are alive.
+                        for unitIndex, unit in enumerate(self.players[player].groups[groupID].units):
+                            if unit.currentHealth > 0:
+                                unit.unitIndex = unitIndex
+                                activeUnitList.append(unit)
+                        # Add the built unit list to the activeUnits dictionary
+                        if len(activeUnitList) > 0:
+                            activeUnits[player][groupID] = activeUnitList
+                # Add the list of groups at this node for the given player to the activeGroups dictionary.
+                if len(groupsAtNode) > 0:
+                    activeGroups[player] = groupsAtNode
+
+            # =-----------------=
+            # CONSTRUCTION
+            # =-----------------=
+            # If the above code block has found a contested node, then combat will start to be simulated with the active groups.
+            if (len(activeGroups[0]) > 0) and (len(activeGroups[1]) > 0):
+                infliction = multi_dict(3, int)
+                combatActions = []
+
+                # Start building the damage for each drone currently at the node.
+                # Damage has to be built before actually applying it so that all drones at the given node have a chance of dealing damage before dying.
+                # Applying damage now would unfairly favor drones that appear first in their respective activeUnit lists.
+
+                # Call function from separate file, parsing the activeUnits array into it
+                # Return a list or array of tuples called actionList or something that shows what units will attack what other units
+                # Process the actions, checking to make sure no units attack twice, and apply damage
+                if useRandomTargeting:
+                    combatActions = self.randomTargeting(activeGroups, activeUnits)
+                elif useDefaultTargeting:
+                    combatActions = defaultTargeting(activeUnits)
+                elif useCustomTargeting:
+                    combatActions = customTargeting(activeUnits)
+
+                # Build damage for each action inside of combat actions.
+                # Base damage is tracked by the inflictions array.
+                for action in combatActions:
+                    # Deconstruct the tuple for easy access (and so it makes more sense when a human looks at this code)
+                    opponentID = action[0]
+                    oppGroupID = action[1]
+                    oppUnitID = action[2]
+                    baseDamage = action[3]
+
+                    # Build the damage. The infliction dictionary contains all the necessary integer base damage values
+                    # to be applied to all drones that were targeted in the Construction phase.
+                    if oppUnitID in infliction[opponentID][oppGroupID]:
+                        infliction[opponentID][oppGroupID][oppUnitID] += baseDamage
+                    else:
+                        infliction[opponentID][oppGroupID][oppUnitID] = baseDamage
+
+                # =-----------------=
+                # DESTRUCTION
+                # =-----------------=
+                # Apply the damage that was build in the previous section.
+                for player in self.team_starts:
+                    opponent = 0 if (player == 1) else 1
+                    for groupID in infliction[opponent]:
+                        for unitID in infliction[opponent][groupID]:
+                            targetUnit = unitID
+                            targetHealth = unitID.currentHealth
+
+                            # Get this for reference later on in the function.
+                            targetUnitTypeID = self.unit_names[unitID.unitType.lower()]
+                            targetUnitType = self.unit_types[targetUnitTypeID]
+
+                            # Calculate the node defense bonus.
+                            nodeControlled = 1 if node.controlledBy == opponent else 0
+                            fortBonus = 1 if ('DEFEND' in node.resource) else 0
+                            nodeDefense = (nodeControlled + fortBonus) * node.defense
+
+                            # Pull the base damage from the infliction array.
+                            baseDamage = infliction[opponent][groupID][unitID]
+                            
+                            # Calculate the true damage that will be applied to the targeted unit.
+                            trueDamage = (10.0 * baseDamage) / (targetHealth + nodeDefense)
+
+                            # Finally, apply the damage.
+                            targetUnit.currentHealth -= trueDamage
+
+                            affectedGroup = self.players[opponent].groups[groupID]
+
+                            # Check if the application of this damage results in the death of the drone. If so,
+                            # remove the drone from relevant lists and disable the group if it was the last drone alive.
+                            if targetUnit.currentHealth <= 0:
+                                affectedGroup.counts[targetUnitTypeID] -= 1
+
+                                # If all drones of one type are dead within the group, remove their speed modifier value for
+                                # movement reasons.
+                                if affectedGroup.counts[targetUnitTypeID] == 0:
+                                    affectedGroup.speed.remove(targetUnitType.speed)
+
+                                # If all drones in the group are dead, update necessary values.
+                                if sum(affectedGroup.counts.values()) <= 0:
+                                    self.players[opponent].groups[groupID].destroyed = True
+                                    self.players[opponent].groups[groupID].moving = False
+                                    self.players[opponent].groups[groupID].ready = False
+
+    # As its name implies, this targeting function selects random units from random units to apply damage to.
+    def randomTargeting(self, activeGroups, activeUnits):
+        combatActions = []
+
+        for player in self.team_starts:
+            # Get the opponent player's ID.
+            opponent = 0 if (player == 1) else 1
+            for groupID in activeUnits[player]:
+                for attackingUnit in activeUnits[player][groupID]:
+                    random.seed()
+
+                    # Get a random group from the list of the opponent's groups at the given node.
+                    oppGroupList = activeGroups[opponent]
+                    oppGroupID = random.choice(oppGroupList)
+
+                    # Get a random unit from that group.
+                    oppUnitList = activeUnits[opponent][oppGroupID]
+                    oppUnitID = random.choice(oppUnitList)
+
+                    # Get the attacking unit's ID and base damage.
+                    unitTypeID = self.unit_names[attackingUnit.unitType.lower()]
+                    damage = self.unit_types[unitTypeID].damage
+
+                    # Build the action and append it to combatActions
+                    action = (opponent, oppGroupID, oppUnitID, damage)
+                    combatActions.append(action)
+
+        return combatActions
+
+    def defaultTargeting(self, activeUnits):
+        return
+
+    def customTargeting(self, activeUnits):
+        return
+                        
+    def combatOld(self):
         ## Apply combat
         # Combat occurs before movement - a fleeing group could still be within
         # targeting range during the same turn; arriving units need to get
         # bearings before attacking anything.
         all_dmg = {}
+        useRandomTargeting = False
+        useDefaultTargeting = True
+        targetLowestFirst = True
 
         for node in self.evgMap.nodes:
+            # player_gids stores a list of players that are currently at the given node
             player_gids = {}
             counts = {}
             tgt_gids = {}
             counts_units = {}
 
+            # ADDED
+            unit_references = {}
+
             # Determine which players occupy this node
             for player in self.team_starts:
                 #pdb.set_trace()
+                # If there is at least one squadron present of the given player at this node, start doing some stuff.
                 if len(node.groups[player]) > 0:
                     player_gids[player] = []
                     counts[player] = []
@@ -938,7 +1134,7 @@ class EvergladesGame:
 
                     # Build a list of groups that are available for combat
                     for gid in node.groups[player]:
-                        # Discount groups in transit
+                        # Discount groups in transit. Groups that moving to the node do not get to participate in combat. They neither give or receive damage.
                         if self.players[player].groups[gid].moving == False:
                             player_gids[player].append(gid)
                             # BUG - if group consists of different units combat is not applied to all
@@ -946,22 +1142,34 @@ class EvergladesGame:
                             counts_units[player][gid] = []
 
                             for i, unit in enumerate(self.players[player].groups[gid].units):
+
+                                # Very odd. unit holds a reference to many units of one type. unit.unitHealth is a list with health from each drone in that sub-group.
                                 for j in range(len(unit.unitHealth)):
+                                    # If the individual unit is alive, add it to counts_units to keep track of what unit groups are available for combat.
                                     if unit.unitHealth[j] > 0 :
                                         counts_units[player][gid].append(i)
                                         count += 1
+                                    # ADDED
+                                    # If the unit is dead, remove it from the unit_references list by updating the count and the unitHealth array.
+                                    else:
+                                        unit_references[player][i].count = unit_references[player][i].count - 1
+                                        unit_references[player][i].unitHealth = unit_references[player][i].unitHealth[unit_references[player][i].unitHealth > 0]
 
+                            # Note how many units are available for combat from the given player.
                             counts[player].append(count)
 
                     # Remove empty list to make combat application work
+                    # If the node is not being contested, get rid of the absent player from player_gids and keep going.
                     if len(player_gids[player]) == 0:
                         player_gids.pop(player)
                     # end group loop
             # end player loop
 
             # Only enter combat if previous conditions hold true
+            # There needs to be at least 2 players at the node in order for combat to happen.
             if len(player_gids) >= 2:
                 #pdb.set_trace()
+
                 # Build a damage dictionary
                 #   keys = player ids
                 #   values = array with the opposing unit id that each unit targeted
@@ -972,19 +1180,39 @@ class EvergladesGame:
                 # Build damage
                 for pid in player_gids:
                     # Only works for two players right now
+                    # Get the total number of units the opposing player has at this node and
+                    # what the current player has at this node.
                     opp_pid = np.where( pids != pid )[0][0]
                     opp_player_units = np.sum( counts[opp_pid] )
                     player_units = np.sum( counts[pid] )
 
+                    # opp_gid = player_gids[opp_id] <- Use to get reference to target opponent group
+
                     infliction[pid] = {}
                     nulled_ids[pid] = {}
                     #pdb.set_trace()
+                    # This is what actually picks the targeting.
                     for i, gid in enumerate(player_gids[pid]):
                         nulled_ids[pid][i] = []
                         for j in range(counts[pid][i]):
+                            # Get a reference to one of the sub-groups of one type of unit in the current player's current group
                             unittype_idx = counts_units[pid][gid][j]
                             unittype = self.players[pid].groups[gid].units[unittype_idx]
-                            uid = np.random.randint(opp_player_units)
+
+                            # If useRandomTargeting is true, have units pick a random unit to deal damage to. Otherwise, use a certain targeting scheme
+                            # to have drones intelligently target an enemy unit.
+                            if (useRandomTargeting):
+                                uid = np.random.randint(opp_player_units)
+                            # If the user wants to use the default targeting system, then all drones will attack enemies with the lowest health first.
+                           # elif (useDefaultTargeting):
+                              #  uid = findValidTarget(targetHealth(opp_pid, unit_references, targetLowestFirst))
+                            # Otherwise, if useRandomTargeting and useDefaultTargeting is false, then the user would write their own function called customTarget()
+                            # This function would take in the opponent's player id and the list of unit_references. It would return an integer indicative of the index
+                            # the drones should look to for their attack.
+                            #else:
+                               # uid = findValidTarget(customTarget(opp_pid, unit_references))
+
+                            # Initialize or apply more damage to the selected opposing unit.
                             if uid in infliction[pid]:
                                 infliction[pid][uid] += unittype.definition.damage
                             else:
@@ -992,6 +1220,7 @@ class EvergladesGame:
                 # end player loop
                 #pdb.set_trace()
 
+                # all_dmg is used for output purposes.
                 all_dmg[node.ID] = {pid:{'groups':[], 'units':[], 'health':[]} for pid in self.team_starts}
 
                 # Apply damage - separate so units don't die before they get to apply their damage
@@ -1003,9 +1232,12 @@ class EvergladesGame:
                     for tgt_idx in sorted( infliction[pid].keys() ):
                         # Determine which opposing group was affected
                         tgt_dmg = infliction[pid][tgt_idx]
+                        # uid = tgt_group = tgt_idx (in the grand scheme of things)
+                        # It will get incremented tf the conditional tgt_idx < counts... is false
                         tgt_group = 0
                         found = False
 
+                        # Loop through the counts of the opponent's group ids to find the group that has the unit we're looking for.
                         while found == False:
                             if tgt_idx < counts[opp_pid][tgt_group]:
                                 #pdb.set_trace()
@@ -1018,6 +1250,7 @@ class EvergladesGame:
                                 tgt_armor = tgt_unit.definition.health
                                 tgt_cntrl = 1 if node.controlledBy == opp_pid else 0
 
+                                # Determine fort bonus for attacking
                                 fort_bns = 1 if ('DEFEND' in node.resource) else 0
                                 strct_def = node.defense
                                 node_def = (tgt_cntrl + fort_bns) * strct_def
@@ -1036,20 +1269,23 @@ class EvergladesGame:
                                     if tgt_idx < np.sum(unit.unitHealth > 0):
                                         break
                                     tgt_idx -= np.sum(unit.unitHealth > 0)
-
+                                
+                                # Working assumption: tgt_unit_idx is individual unit
                                 tgt_unit_idx = np.argwhere( tgt_unit.unitHealth > 0 )[tgt_idx]
+                                # Subtract the total amount of calculated damage from the selected unit
                                 tgt_unit.unitHealth[tgt_unit_idx] -= loss
 
                                 outgroup = group.mapGroupID
                                 outunit = group.mapUnitID[tgt_unit_type_idx] + tgt_unit_idx
 
-                                # Remove from node groups if dead
+                                # Remove units from the group if they are dead.
                                 if tgt_unit.unitHealth[tgt_unit_idx] <= 0:
                                     outhealth = 0.
                                     tgt_unit.unitHealth[tgt_unit_idx] = 0
                                     tgt_unit.count -= 1
                                     group.count -= 1
 
+                                    # If the sub-group has no members remove that group's speed from the overall squadron.
                                     if tgt_unit.count == 0:
                                         group.speed.remove(tgt_unit.definition.speed)
 
@@ -1074,6 +1310,7 @@ class EvergladesGame:
                                         self.output['GROUP_Disband'].append(outstr)
                                 else:
                                     outhealth = tgt_armor * (tgt_unit.unitHealth[tgt_unit_idx] / 100.)
+
                                 outhealthstr = '{:.6f}'.format(float(outhealth))
                                 all_dmg[node.ID][opp_pid]['groups'].append(int(outgroup))
                                 all_dmg[node.ID][opp_pid]['units'].append(int(outunit))
@@ -1099,6 +1336,17 @@ class EvergladesGame:
                 #pdb.set_trace()
             # end if combat check
         # end node loop
+
+    # This will return an int indicative of the unit ID.
+    # Gets opp_pid, the groups of the opponent that are at this node, and a list/array of drones that are "marked for death" i.e. they will definitely die, and so
+    # drones looking for a target should pick the next-best drone that fits their targeting criteria
+    # Pass a value that is indicative of the starting index that this funciton should look at to get the drone with the lowest health.
+    # def findValidTarget(opp_pid):
+        # Get the health of all the enemy units across all enemy groups currently at the node.
+        # Create an array of all enemy units and sort it based off of each individual unit's health.
+        # Go to the index of the unit with the lowest health. This index would start at 0 and increment as drones are "marked for death"
+        # If the target drone dies, increment the starting index
+        
 
     def movement(self):
         ## Apply group movements
@@ -1179,9 +1427,10 @@ class EvergladesGame:
                         if self.players[pid].groups[gid].moving == False:
                             ctr += 1
                             for unit in self.players[pid].groups[gid].units:
-                                count = unit.count
-                                xer = unit.definition.control
-                                points[pid] += count * xer
+                                #count = unit.count
+                                #xer = unit.definition.control
+                                unitTypeID = self.unit_names[unit.unitType.lower()]
+                                points[pid] += self.unit_types[unitTypeID].control
                     if ctr >= 1:
                         controllers.append(pid)
 
@@ -1370,16 +1619,22 @@ class EvergladesGame:
 
                     for opp_gid in node.groups[opp_pid]:
                         opp_group = self.players[opp_pid].groups[opp_gid]
+                        # Unit count list
+                        uc = []
+
+                        for unitID in range(len(self.unit_types)):
+                            if unitID in opp_group.counts:
+                                uc.append(opp_group.counts[unitID])
 
                         for unit in opp_group.units:
                             in_ut = unit.unitType
                             ut = in_ut[0].upper() + in_ut[1:]
-                            uc = unit.count
+
                             if opp_group.moving == False:
                                 # Append as group staying put
                                 if -1 in opp_k[nid]:
                                     opp_k[nid][-1]['unitTypes'].append(ut)
-                                    opp_k[nid][-1]['unitCount'].append(uc)
+                                    opp_k[nid][-1]['unitCount'] = uc
 
                                 else:
                                     opp_k[nid][-1] = {'unitTypes':[ut],
@@ -1395,7 +1650,7 @@ class EvergladesGame:
                                 if knowledge[dst_idx] > 0:
                                     if dst_idx in opp_k[nid]:
                                         opp_k[nid][dst_idx]['unitTypes'].append(ut)
-                                        opp_k[nid][dst_idx]['unitCount'].append(uc)
+                                        opp_k[nid][dst_idx]['unitCount'] = uc
 
                                     else:
                                         opp_k[nid][dst_idx] = {'unitTypes':[ut],
