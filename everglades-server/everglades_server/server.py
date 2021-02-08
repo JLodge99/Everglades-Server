@@ -83,11 +83,11 @@ class EvergladesGame:
         nodePos = {}
 
         # Add positions of every node
-        if self.setup['MapType'] == "2D":
+        if self.map_dat["Type"] == "2D":
             for row in range(0, Xsize):
                 for col in range(0, Ysize):
                         nodePos[(col + 2) + (Ysize * row)] = (row + 1, col)
-        elif self.setup['MapType'] == "3D":
+        elif self.map_dat["Type"] == "3D":
             for z in range(Zsize):
                 for y in range(Ysize):
                     for x in range(Xsize):
@@ -140,7 +140,8 @@ class EvergladesGame:
         node_num = 1
 
         if self.enableWind == 1:
-            if self.setup['MapType'] == "3D":
+            print("Wind enabled")
+            if self.map_dat["Type"] == "3D":
                 node_num = 0
                 for n in self.evgMap.nodes:
                     id = n.ID
@@ -151,7 +152,7 @@ class EvergladesGame:
                 # Create wind magnifier dict
                 self.winds = wind.exec3D(self.evgMap3d, Xsize, Ysize, Zsize, windSeed)
 
-            elif self.setup['MapType'] == "2D":
+            elif self.map_dat["Type"] == "2D":
                 for n in self.evgMap.nodes:
                     id = n.ID
                     if id != 1 and id != (Xsize * Ysize + 2):

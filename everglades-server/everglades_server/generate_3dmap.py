@@ -293,6 +293,7 @@ def generateJsonFile(xLen, yLen, zLen, map):
     jsonData["Xsize"] = xLen
     jsonData["Ysize"] = yLen
     jsonData["Zsize"] = zLen
+    jsonData["Type"] = "3D"
     jsonData["nodes"] = nodes
     FileO = open(os.path.join(config_dir, "3dmap.json"), "w")
     FileO.write(json.dumps(jsonData, indent = 4))
