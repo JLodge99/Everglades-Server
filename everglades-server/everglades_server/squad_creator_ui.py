@@ -147,8 +147,6 @@ def checkNumInput(S):
 
 def updateNum():
     global selectIndex
-    if(selectIndex < 0)
-        return
     squadIndex = int(ddtext.get())-1
     squadNums[squadIndex][selectIndex] = numVar.get()
     updateUnitList()

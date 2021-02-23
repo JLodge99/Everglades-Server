@@ -1113,14 +1113,14 @@ class EvergladesGame:
                         """
                         
                         playerNum = player
-                        
+                        """
                         if self.evgMap.nodes[start_idx].controlledBy == playerNum and self.evgMap.nodes[end_idx].controlledBy == playerNum: 
                             speed += group.units[0].definitions.speedbonus_controlled_ally
 
                         # If the player is not moving between enemy territory
                         elif self.evgMap.nodes[start_idx].controlledBy != playerNum and self.evgMap.nodes[end_idx].controlledBy != playerNum: 
                             speed += group.units[0].definition.speedbonus_controlled_enemy
-
+                        """
                         
 
                         # Perform wind calculations if enabled
