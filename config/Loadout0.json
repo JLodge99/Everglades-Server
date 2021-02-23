@@ -4,358 +4,120 @@
         {
             "Squad": [
                 {
-                    "Type": "striker"
-                },
-                {
-                    "Type": "recon"
-                },
-                {
-                    "Type": "striker"
-                },
-                {
-                    "Type": "striker"
-                },
-                {
-                    "Type": "striker"
-                },
-                {
-                    "Type": "striker"
-                },
-                {
-                    "Type": "striker"
-                },
-                {
-                    "Type": "striker"
-                }
-            ],
-            "ReconInfo": {
-                "Type": "active",
-                "Range": 3,
-                "Wavelength": 0.3
-            }
-        },
-        {
-            "Squad": [
-                {
-                    "Type": "recon"
-                },
-                {
-                    "Type": "striker"
-                },
-                {
-                    "Type": "striker"
-                },
-                {
-                    "Type": "striker"
-                },
-                {
-                    "Type": "striker"
-                },
-                {
-                    "Type": "striker"
-                },
-                {
-                    "Type": "striker"
-                },
-                {
-                    "Type": "striker"
-                }
-            ],
-            "ReconInfo": {
-                "Type": "active",
-                "Range": 1,
-                "Wavelength": 1.3
-            }
-        },
-        {
-            "Squad": [
-                {
-                    "Type": "striker"
-                },
-                {
-                    "Type": "striker"
-                },
-                {
-                    "Type": "striker"
-                },
-                {
-                    "Type": "striker"
-                },
-                {
-                    "Type": "striker"
-                },
-                {
-                    "Type": "striker"
-                },
-                {
-                    "Type": "striker"
-                },
-                {
-                    "Type": "striker"
+                    "Type": "striker",
+                    "Count": 8
                 }
             ]
         },
         {
             "Squad": [
                 {
-                    "Type": "striker"
-                },
-                {
-                    "Type": "striker"
-                },
-                {
-                    "Type": "striker"
-                },
-                {
-                    "Type": "striker"
-                },
-                {
-                    "Type": "striker"
-                },
-                {
-                    "Type": "striker"
-                },
-                {
-                    "Type": "striker"
-                },
-                {
-                    "Type": "striker"
+                    "Type": "striker",
+                    "Count": 8
                 }
             ]
         },
         {
             "Squad": [
                 {
-                    "Type": "striker"
+                    "Type": "striker",
+                    "Count": 4
                 },
                 {
-                    "Type": "striker"
-                },
-                {
-                    "Type": "striker"
-                },
-                {
-                    "Type": "striker"
-                },
-                {
-                    "Type": "striker"
-                },
-                {
-                    "Type": "striker"
-                },
-                {
-                    "Type": "striker"
-                },
-                {
-                    "Type": "striker"
+                    "Type": "tank",
+                    "Count": 4
                 }
             ]
         },
         {
             "Squad": [
                 {
-                    "Type": "striker"
+                    "Type": "striker",
+                    "Count": 4
                 },
                 {
-                    "Type": "striker"
-                },
-                {
-                    "Type": "striker"
-                },
-                {
-                    "Type": "striker"
-                },
-                {
-                    "Type": "striker"
-                },
-                {
-                    "Type": "striker"
-                },
-                {
-                    "Type": "striker"
-                },
-                {
-                    "Type": "striker"
+                    "Type": "tank",
+                    "Count": 4
                 }
             ]
         },
         {
             "Squad": [
                 {
-                    "Type": "tank"
+                    "Type": "tank",
+                    "Count": 4
                 },
                 {
-                    "Type": "tank"
+                    "Type": "recon",
+                    "Count": 2
                 },
                 {
-                    "Type": "tank"
+                    "Type": "striker",
+                    "Count": 1
                 },
                 {
-                    "Type": "tank"
-                },
-                {
-                    "Type": "tank"
-                },
-                {
-                    "Type": "tank"
-                },
-                {
-                    "Type": "tank"
-                },
-                {
-                    "Type": "tank"
+                    "Type": "controller",
+                    "Count": 1
                 }
             ]
         },
         {
             "Squad": [
                 {
-                    "Type": "tank"
-                },
-                {
-                    "Type": "tank"
-                },
-                {
-                    "Type": "tank"
-                },
-                {
-                    "Type": "tank"
-                },
-                {
-                    "Type": "tank"
-                },
-                {
-                    "Type": "tank"
-                },
-                {
-                    "Type": "tank"
-                },
-                {
-                    "Type": "tank"
+                    "Type": "tank",
+                    "Count": 8
                 }
             ]
         },
         {
             "Squad": [
                 {
-                    "Type": "tank"
-                },
-                {
-                    "Type": "tank"
-                },
-                {
-                    "Type": "tank"
-                },
-                {
-                    "Type": "tank"
-                },
-                {
-                    "Type": "tank"
-                },
-                {
-                    "Type": "tank"
-                },
-                {
-                    "Type": "tank"
-                },
-                {
-                    "Type": "tank"
+                    "Type": "tank",
+                    "Count": 8
                 }
             ]
         },
         {
             "Squad": [
                 {
-                    "Type": "tank"
-                },
-                {
-                    "Type": "tank"
-                },
-                {
-                    "Type": "tank"
-                },
-                {
-                    "Type": "tank"
-                },
-                {
-                    "Type": "tank"
-                },
-                {
-                    "Type": "tank"
-                },
-                {
-                    "Type": "tank"
-                },
-                {
-                    "Type": "tank"
+                    "Type": "tank",
+                    "Count": 8
                 }
             ]
         },
         {
             "Squad": [
                 {
-                    "Type": "tank"
-                },
-                {
-                    "Type": "tank"
-                },
-                {
-                    "Type": "tank"
-                },
-                {
-                    "Type": "tank"
-                },
-                {
-                    "Type": "tank"
-                },
-                {
-                    "Type": "tank"
-                },
-                {
-                    "Type": "tank"
-                },
-                {
-                    "Type": "tank"
+                    "Type": "tank",
+                    "Count": 8
                 }
             ]
         },
         {
             "Squad": [
                 {
-                    "Type": "controller"
+                    "Type": "tank",
+                    "Count": 8
+                }
+            ]
+        },
+        {
+            "Squad": [
+                {
+                    "Type": "tank",
+                    "Count": 8
+                }
+            ]
+        },
+        {
+            "Squad": [
+                {
+                    "Type": "recon",
+                    "Count": 3
                 },
                 {
-                    "Type": "controller"
-                },
-                {
-                    "Type": "controller"
-                },
-                {
-                    "Type": "controller"
-                },
-                {
-                    "Type": "controller"
-                },
-                {
-                    "Type": "controller"
-                },
-                {
-                    "Type": "controller"
-                },
-                {
-                    "Type": "controller"
-                },
-                {
-                    "Type": "controller"
-                },
-                {
-                    "Type": "controller"
-                },
-                {
-                    "Type": "controller"
-                },
-                {
-                    "Type": "controller"
+                    "Type": "tank",
+                    "Count": 8
                 }
             ]
         }

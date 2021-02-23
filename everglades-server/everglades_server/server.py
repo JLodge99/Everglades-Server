@@ -223,6 +223,10 @@ class EvergladesGame:
                 health = in_type['Health'],
                 damage = in_type['Damage'],
                 speed = in_type['Speed'],
+                speedbonus_controlled_ally = in_type['Speed_Controlled_Ally'],
+                speedbonus_controlled_enemy = in_type['Speed_Controlled_Enemy'],
+                recon = in_type['Recon'],
+
                 control = in_type['Control'],
                 cost = in_type['Cost']
             )
@@ -1361,7 +1365,34 @@ class EvergladesGame:
                         # Get information for adjustments
                         start_idx = int( np.squeeze(np.where(self.map_key1 == group.location)) )
                         end_idx = int( np.squeeze(np.where(self.map_key1 == group.travel_destination)) )
+                        
 
+                        # Determine the speed of the squad
+                        # OLD: Gave the speed of the first unit in the squad, effectively random
+                        speed = group.speed[0]
+                        # NEW: Speed of squadron is speed of slowest unit
+                        # Commenting out so Zack can bugtest
+                        """{
+                        speed = 99999999
+                        for x in group.speed:
+                        {
+                            if (speed > x):
+                                speed = x
+                        }
+                        """
+                        
+                        playerNum = player
+                        """
+                        if self.evgMap.nodes[start_idx].controlledBy == playerNum and self.evgMap.nodes[end_idx].controlledBy == playerNum: 
+                            speed += group.units[0].definitions.speedbonus_controlled_ally
+
+                        # If the player is not moving between enemy territory
+                        elif self.evgMap.nodes[start_idx].controlledBy != playerNum and self.evgMap.nodes[end_idx].controlledBy != playerNum: 
+                            speed += group.units[0].definition.speedbonus_controlled_enemy
+                        """
+                        
+
+                        # Perform wind calculations if enabled
                         if self.enableWind == 1:
                             wind_value = self.winds[(start_idx, end_idx)]
 
@@ -1373,9 +1404,18 @@ class EvergladesGame:
                             # Apply amount moved
                             # BUG - if group consists of different unit types, it won't move properly
                             # print("groupspeed: ", group.speed[0], " windmag: ", wind_mag)
-                            group.distance_remaining -= (group.speed[0] + group.speed[0] * wind_mag)
+
+
+                            # group.distance_remaining -= (group.speed[0] + group.speed[0] * wind_mag)
+                            group.distance_remaining -= (speed + (speed * wind_mag))
+
+
                         else:
-                            group.distance_remaining -= group.speed[0]
+                            group.distance_remaining -= speed
+
+
+
+
                         # Check for arrival
                         if group.distance_remaining <= 0:
                             # ARRIVED

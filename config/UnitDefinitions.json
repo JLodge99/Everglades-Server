@@ -1,37 +1,49 @@
 {
-   "__type":"Units",
-   "units":[
+    "__type": "Units",
+    "units": [
         {
-            "Name": "Controller",
-            "Health": 2,
+            "Name": "Tank",
+            "Health": 3.0,
             "Damage": 1,
             "Speed": 1,
-            "Control": 2,
-            "Cost": 1
+            "Speed_Controlled_Ally": 0,
+            "Speed_Controlled_Enemy": 0,
+            "Control": 1,
+            "Recon": 0,
+            "Cost": 1.0
         },
         {
             "Name": "Striker",
             "Health": 1,
-            "Damage": 2,
-            "Speed": 2,
+            "Damage": 2.0,
+            "Speed": 2.0,
+            "Speed_Controlled_Ally": 0,
+            "Speed_Controlled_Enemy": 0,
             "Control": 1,
-            "Cost": 1
+            "Recon": 0,
+            "Cost": 1.0
         },
         {
-            "Name": "Tank",
-            "Health": 3,
+            "Name": "Controller",
+            "Health": 2.0,
             "Damage": 1,
-            "Speed": 1,
+            "Speed": 2.0,
+            "Speed_Controlled_Ally": 0,
+            "Speed_Controlled_Enemy": 0,
             "Control": 1,
-            "Cost": 1
+            "Recon": 0,
+            "Cost": 1.0
         },
         {
             "Name": "Recon",
             "Health": 1,
             "Damage": 1,
-            "Speed": 3,
+            "Speed": 2.0,
+            "Speed_Controlled_Ally": 0,
+            "Speed_Controlled_Enemy": 0,
             "Control": 1,
-            "Cost": 1
-        } 
+            "Recon": 1.0,
+            "Cost": 1.0
+        }
     ]
 }
