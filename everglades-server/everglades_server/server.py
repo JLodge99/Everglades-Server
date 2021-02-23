@@ -332,7 +332,7 @@ class EvergladesGame:
                         # as the range value increases. An explicit mapping of range to speed would be:
                         # (1, 3), (2, 2), (3, 1). Also, set the mode and range if provided. Default mode
                         # is passive, default range is 1, and default speed is 3.
-                        if self.unit_types[unit_id] == "recon":
+                        if self.unit_ids[unit_id] == "recon":
                             hasRecon = True
                             newUnit.wavelength = ""
                             assert(type(player_dat[player]['sensor_config']) is dict), 'Sensor configuration must be a dictionary'
@@ -780,7 +780,7 @@ class EvergladesGame:
         # Collect groupIDs that contain recon units, their locations, and their destinations.
         for group in player.groups:
             for unit in group.units:
-                if unit.unitType == 'recon' and unit.count > 0:
+                if unit.unitType == 'recon' and unit.currentHealth > 0:
                     groupNodes[group.groupID] = (group.location, group.travel_destination)
 
         # Loop through enemy player's groups
