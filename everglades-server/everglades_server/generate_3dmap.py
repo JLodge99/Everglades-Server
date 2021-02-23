@@ -14,9 +14,9 @@ class Point:
 directionX = [0, 0, 1, 1, 1, 0, -1, -1, -1]
 directionY = [0, -1, -1, 0, 1, 1, 1, 0, -1]
 nodeCount = 0
-nodeDensityWeight = .5
-nodeCreatedWeight = 1
-nodeFailedWeight = .4
+nodeDensityWeight = .1
+nodeCreatedWeight = .5
+nodeFailedWeight = .1
 fortressWeight = 0.2
 watchtowerWeight = 0.8
 nodeDistance = 3
@@ -38,16 +38,19 @@ def createCube(xLen, yLen, zLen):
     return map
 
 # Main function
-def generateMap(xLen, yLen, zLen, map):
+# Recommended settings for weight
+# Bellcurve Enable:   Weightinit should be .3 - .9
+# Bellcurve Disable:  Weightinit should be .1 - .3
+def generateMap(xLen, yLen, zLen, map, weightinit, bellcurve):
     global nodeCount
     queue = Queue()
     startingPoint = Point(int(xLen/2), int(yLen/2), 0)
 
     # Starting point is the middle of the plane of layer 0
     map[startingPoint.z][startingPoint.y][startingPoint.x] = 1
-
     queue.put(startingPoint)
     nodeCount = 1
+
     while not queue.empty():
         currentPoint = queue.get()
         numPossibleConnections = 17
@@ -71,9 +74,8 @@ def generateMap(xLen, yLen, zLen, map):
         if numPossibleConnections == 0:
             continue
 
-        # print(numPossibleConnections)
         # weight = nodeDensityWeight/numPossibleConnections
-        weight = .1
+        weight = weightinit
         
         # Iterate through the possible connections, creating a node from a random chance
         # k = 0 is the current layer and k = 1 is next layer
@@ -89,10 +91,11 @@ def generateMap(xLen, yLen, zLen, map):
                     a = 0
                 elif map[currentPoint.z + k][currentPoint.y + directionY[i]][currentPoint.x + directionX[i]] == 0:
                     randVal = random.random()
-                    if randVal <= weight:
+                    totalBell = (bellCurveVal(currentPoint.z + 1, zLen) * bellCurveVal(currentPoint.y + 1, yLen) * bellCurveVal(currentPoint.x + 1, xLen))
+                    tempweight = weightinit * totalBell
+
+                    if randVal <= (tempweight if bellcurve else weight):
                         # Creating a new node
-                        # print("Random: ", randVal, " Weight: ", weight, " numPossibleConnections: ", numPossibleConnections)
-                        # print("Adding new point")
                         nodeTypeRandVal = random.random()
 
                         # Set node type
@@ -107,13 +110,19 @@ def generateMap(xLen, yLen, zLen, map):
                         newPoint = Point(currentPoint.x + directionX[i], currentPoint.y + directionY[i], currentPoint.z + k)
                         queue.put(newPoint)
                         nodeCount += 1
-                        weight = weight - (nodeCreatedWeight/numPossibleConnections)
+
+                        # weight = weight - (nodeCreatedWeight/numPossibleConnections)
+                        weight -= nodeCreatedWeight
+
                         if weight < 0:
                             weight = 0
                     else:
                         # Node not created, increase weight to prevent dead ends
                         map[currentPoint.z + k][currentPoint.y + directionY[i]][currentPoint.x + directionX[i]] = -1
-                        weight = weight + (nodeFailedWeight/numPossibleConnections) * 2
+
+                        # weight = weight + (nodeFailedWeight/numPossibleConnections)
+                        weight += nodeFailedWeight
+
                         if weight > 1:
                             weight = 1
                 i += 1
@@ -138,6 +147,7 @@ def generateMap(xLen, yLen, zLen, map):
         if sanityCheck == 0:
             print("WARNING LAYER ", i, " HAS NO NODES")
             regenerate = True
+            return True
         i += 1
 
     # Mirror map to opposite side to create fair board
@@ -157,13 +167,14 @@ def generateMap(xLen, yLen, zLen, map):
 
     # Generate if the is a center plane. When zLen is odd
     if zLen % 2 != 0:
-        generateCenterPlane(xLen, yLen, zLen, map)
+        generateCenterPlane(xLen, yLen, zLen, map, weightinit)
+    return False
 
 # Center Plane Function
-def generateCenterPlane(xLen, yLen, zLen, map):
+def generateCenterPlane(xLen, yLen, zLen, map, weightinit):
     zCenter = int(zLen / 2)
     # weight = (nodeDensityWeight / 17)
-    weight = .1
+    weight = weightinit
     global nodeCount
     nodeCenterCount = 0
 
@@ -194,11 +205,13 @@ def generateCenterPlane(xLen, yLen, zLen, map):
                 nodeCount += 1
                 nodeCenterCount += 1
                 weight = weight - (nodeCreatedWeight/17)
+
                 if weight < 0:
                     weight = 0
             else:
                 map[zCenter][currentPoint.y][currentPoint.x] = -1
                 weight = weight + (nodeFailedWeight/17)
+
                 if weight < 0:
                     weight = 0
             j += 1
@@ -280,6 +293,7 @@ def generateJsonFile(xLen, yLen, zLen, map):
     jsonData["Xsize"] = xLen
     jsonData["Ysize"] = yLen
     jsonData["Zsize"] = zLen
+    jsonData["Type"] = "3D"
     jsonData["nodes"] = nodes
     FileO = open(os.path.join(config_dir, "3dmap.json"), "w")
     FileO.write(json.dumps(jsonData, indent = 4))
@@ -312,37 +326,19 @@ def discoverConnections(map, point, xLen, yLen, zLen):
 def getNodeID(point, xLen, yLen, zLen):
     return (point.y * xLen) + point.x + (xLen * yLen * point.z) + 1
 
-def exec(xLen, yLen, zLen):
-    map = createCube(xLen, yLen, zLen)
-    generateMap(xLen, yLen, zLen, map)
+# Bellcurve functions returns a value (0,1]
+def bellCurveVal(x, zLen):
+    return - ( pow((x / ((zLen + 1) / 2)) - 1, 2)) + 1
+
+# Main execute function
+def exec(xLen, yLen, zLen, weight = .1, bellcurve = False):
+    loop = True
+    while loop:
+        map = createCube(xLen, yLen, zLen)
+        loop = generateMap(xLen, yLen, zLen, map, weight, bellcurve)
+        print("Empty node, regenerating")
     generateJsonFile(xLen, yLen, zLen, map)
 
-# x = 5
-# y = 3
-# z = 5
-# map = createCube(x, y, z)
-# generateMap(x, y, z, map)
-# generateCenterPlane(x, y, z, map)
-# print("Nodes: {}".format(nodeCount))
-# #printMap(map)
-
-# temp = {"x": x, "y": y, "z": z, "gameboard":map}
-# mapjson = json.dumps(temp, sort_keys=True, indent = 4)
-# #mapjson = json.dumps(map)
-
-# # FileO = open(os.path.abspath('config/3dmap.json'), "w")
-# # FileO.write(mapjson)
-# # FileO.close()
-
-# generateJsonFile(x, y, z, map)
-# # print("done")
-
-# #print(arry)
-# printMap(map)
-
-
-
-# TODO
-# What if a layer has no nodes?
-# Bell curve node generation
-# Keep weight hardcoded at .1 or revert to nodeDensityWeight/numPossibleConnections
+# Testing statements
+# exec(5, 5, 7)
+# print("Nodecount: ", nodeCount)

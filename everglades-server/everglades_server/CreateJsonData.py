@@ -161,7 +161,6 @@ def ConvertLoadoutToObject(playerIdentifier):
 
 
 
-
 # -------------------------------------
 #   Attribute Creation
 # -------------------------------------
