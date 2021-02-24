@@ -1,6 +1,6 @@
 import sys
 import tkinter as tk
-from CreateJsonData import *
+from everglades_server.CreateJsonData import *
 
 thismodule = sys.modules[__name__]
 
