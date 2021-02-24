@@ -21,6 +21,9 @@ fortressWeight = 0.2
 watchtowerWeight = 0.8
 nodeDistance = 3
 config_dir = os.path.abspath('config')
+setup_file = os.path.join(config_dir, 'GameSetup.json')
+with open(setup_file) as f:
+    setup = json.load(f)
 
 # Prints each 2D array in the 3D array
 def printMap(map):
@@ -295,7 +298,7 @@ def generateJsonFile(xLen, yLen, zLen, map):
     jsonData["Zsize"] = zLen
     jsonData["Type"] = "3D"
     jsonData["nodes"] = nodes
-    FileO = open(os.path.join(config_dir, "3dmap.json"), "w")
+    FileO = open(os.path.join(config_dir, setup["MapFile"]), "w")
     FileO.write(json.dumps(jsonData, indent = 4))
     FileO.close()
 

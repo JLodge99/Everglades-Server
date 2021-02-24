@@ -1,8 +1,8 @@
 # Wind Library for Everglades Games
 
+#import matplotlib.pyplot as plt
 import sys
 from noise import pnoise2, snoise2, snoise3, pnoise3
-import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 import math
@@ -216,33 +216,33 @@ def create3DWindArray(xsize, ysize, zsize, octaves=2, offset=0, mirrored=True):
 #
 # 	f.close()
 
-# Generates an interpretation of wind vector map using MatPlotLib
-def genVecMap(w):
-	fig, ax = plt.subplots(figsize=(9,7))
+# # Generates an interpretation of wind vector map using MatPlotLib
+# def genVecMap(w):
+# 	fig, ax = plt.subplots(figsize=(9,7))
 
-	for y in range(7):
-		for x in range(9):
-			(x_dir, y_dir) = w[y][x]
-			ax.quiver(x,y,x_dir,y_dir)
+# 	for y in range(7):
+# 		for x in range(9):
+# 			(x_dir, y_dir) = w[y][x]
+# 			ax.quiver(x,y,x_dir,y_dir)
 
-	plt.show()
+# 	plt.show()
 
-def gen3DVecMap(w, xsize, ysize, zsize):
-	fig = plt.figure()
-	ax = fig.add_subplot(projection='3d', azim = -45)
+# def gen3DVecMap(w, xsize, ysize, zsize):
+# 	fig = plt.figure()
+# 	ax = fig.add_subplot(projection='3d', azim = -45)
 
-	for z in range(zsize):
-		for y in range(ysize):
-			for x in range(xsize):
-				(x_dir, y_dir, z_dir) = w[z][y][x]
-				ax.quiver(x,y,z,x_dir,y_dir,z_dir, length = .3, normalize=True)
+# 	for z in range(zsize):
+# 		for y in range(ysize):
+# 			for x in range(xsize):
+# 				(x_dir, y_dir, z_dir) = w[z][y][x]
+# 				ax.quiver(x,y,z,x_dir,y_dir,z_dir, length = .3, normalize=True)
 
-	ax.set_xlabel("X Axis")
-	ax.set_ylabel("Y Axis")
-	ax.set_zlabel("Z Axis")
+# 	ax.set_xlabel("X Axis")
+# 	ax.set_ylabel("Y Axis")
+# 	ax.set_zlabel("Z Axis")
 
-	plt.show()
-	plt.close()
+# 	plt.show()
+# 	plt.close()
 
 # Main 2d function that creates vector field
 def exec2D(map, xsize, ysize, seed=0):

@@ -26,11 +26,6 @@ class EvergladesGame:
         self.debug = kwargs.get('debug', False)
         self.player_names = kwargs.get('pnames')
         self.output_dir = kwargs.get('output_dir')
-        #config_file = kwargs.get(
-
-        # 0 = Disable 
-        # 1 = Enable
-        self.enableWind = 0
 
         # Initialize game
         if os.path.exists(map_file):
@@ -81,6 +76,10 @@ class EvergladesGame:
 
         # Seed value used for wind Stochasticity from game setup
         windSeed = self.setup['Stochasticity']
+
+        # 0 = Disable 
+        # 1 = Enable
+        self.enableWind = self.setup["enableWind"]
 
         # Positions of every node in board
         nodePos = {}
