@@ -731,7 +731,7 @@ class EvergladesGame:
             unit_types.sort(reverse = True)
 
             # Convert the list to a string and then to an integer
-            unit_types = int(''.join([str(digit) for digit in unit_types]))
+            unit_types = 3 #int(''.join([str(digit) for digit in unit_types]))
             # Fixed to allow mixed units
             state[idx+1] = unit_types
             state[idx+2] = (health * 1.) / units_alive if (units_alive > 0) else 0
