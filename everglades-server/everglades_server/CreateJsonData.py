@@ -81,12 +81,13 @@ def __loadJsonFileLoadout(playerIdentifier):
     fileName = outputFileLoadout + str(playerIdentifier) + outputFileLoadoutEnd
     loadoutFile = os.path.join(outputLocation, fileName)
     dFile = os.path.join(outputLocation, loadoutFile)
+
     if (playerIdentifier < 0 or not os.path.exists(os.path.abspath(loadoutFile))):
-        print("Loading failed")
+        print("Default Loadout used for agent ", playerIdentifier)
         with open(os.path.abspath(os.path.join(outputLocation, defaultLoadoutFile))) as f:
             data = json.load(f)
     else:
-        print("Loading found")
+        #print("Loading found")
         with open(os.path.abspath(loadoutFile)) as f:
             data = json.load(f)
 
@@ -109,14 +110,17 @@ def CheckIfValidLoadout(loadout):
         squadCount = squadCount + 1
 
         if CheckIfValidSquad(loadout[i]) == False:
+            print("Invalid Loadout: Squad invalid")
             return False
 
         for j in range(len(loadout[i])):
                 droneCount += loadout[i][j][1]
 
     if squadCount != 12: #TODO: Pull value from settings file
+        print("Invalid Loadout: Squad Size Invalid")
         return False
     if droneCount != 100: #TODO: Pull value from settings file 
+        print("Invalid Loadout: Drone Count Invalid")
         return False
 
     return True
@@ -139,6 +143,7 @@ def GetLoadout(playerIdentifier):
     if CheckIfValidLoadout(__getLoadoutTypeArrayViaJSON(loadedJSON)):
         return loadedJSON
     else:
+        print("Loadout not accepted for agent ", playerIdentifier)
         return __loadJsonFileLoadout(-1) #Gets the default loadout
 
 #Call this function for an array of arrays storing the unit types
