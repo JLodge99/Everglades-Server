@@ -9,6 +9,10 @@ class Point:
         self.y = 0
 
 #Global Variables
+config_dir = os.path.abspath('config')
+setup_file = os.path.join(config_dir, 'GameSetup.json')
+with open(setup_file) as f:
+    setup = json.load(f)
 outputFile = os.path.abspath('config/RandomMap.json')
 
 nodeDensityWeight = 2
@@ -286,10 +290,12 @@ def GenerateJsonFile(size, map):
     jsonData["MapName"] = "Random"
     jsonData["Xsize"] = size
     jsonData["Ysize"] = size
+    jsonData["Zsize"] = 0
+    jsonData["Type"] = "2D"
     jsonData["nodes"] = nodes
-
-    with open(outputFile, 'w', encoding='utf-8') as f:
-              json.dump(jsonData, f, ensure_ascii=False, indent=4)
+    FileO = open(os.path.join(config_dir, setup["MapFile"]), "w")
+    FileO.write(json.dumps(jsonData, indent = 4))
+    FileO.close()
 
 #Main
 def exec(size):

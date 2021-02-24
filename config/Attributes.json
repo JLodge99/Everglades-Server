@@ -1,0 +1,59 @@
+{
+    "__type": "Unit_Attributes",
+    "Attributes": [
+        {
+            "Name": "Increased Health",
+            "Effect": "Health",
+            "Description": "Increases HP by 100%\n",
+            "Modifier": 1.0,
+            "isMult": 0,
+            "ModifierPriority": 1,
+            "Cost": 3
+        },
+        {
+            "Name": "Increased Speed",
+            "Effect": "Speed",
+            "Description": "Increases Speed by 100%\n",
+            "Modifier": 1.0,
+            "isMult": 0,
+            "ModifierPriority": 1,
+            "Cost": 3
+        },
+        {
+            "Name": "Increased Damage",
+            "Effect": "Damage",
+            "Description": "Increases damage by 100%\n",
+            "Modifier": 1.0,
+            "isMult": 0,
+            "ModifierPriority": 1,
+            "Cost": 3
+        },
+        {
+            "Name": "Recon Ability",
+            "Effect": "Recon",
+            "Description": "Used to set recon definition. DO NOT use on any other unit, it will not work. \n",
+            "Modifier": 1.0,
+            "isMult": 0,
+            "ModifierPriority": 1,
+            "Cost": 3
+        },
+        {
+            "Name": "Militia",
+            "Effect": "Speed_Controlled_Ally",
+            "Description": "Units movement speed between ally controlled nodes is increased.\n",
+            "Modifier": 0.5,
+            "isMult": 0,
+            "ModifierPriority": 0,
+            "Cost": 1
+        },
+        {
+            "Name": "Guerrilla ",
+            "Effect": "Speed_Controlled_Enemy",
+            "Description": "Units movement speed between enemy controlled nodes is increased.\n",
+            "Modifier": 0.5,
+            "isMult": 0,
+            "ModifierPriority": 0,
+            "Cost": 1
+        }
+    ]
+}

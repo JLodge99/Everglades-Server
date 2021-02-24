@@ -1,0 +1,39 @@
+{
+    "__type": "Units_in_Attribute_Format",
+    "Units": [
+        {
+            "Name": "Warrior",
+            "Attributes": [
+                "Increased Damage",
+                "Militia",
+                "Militia",
+                "Militia"
+            ]
+        },
+        {
+            "Name": "Mobile Heavy",
+            "Attributes": [
+                "Increased Speed",
+                "Increased Health"
+            ]
+        },
+        {
+            "Name": "Militia",
+            "Attributes": [
+                "Militia",
+                "Militia",
+                "Militia",
+                "Increased Damage"
+            ]
+        },
+        {
+            "Name": "Rapid Response",
+            "Attributes": [
+                "Militia",
+                "Militia",
+                "Militia",
+                "Increased Speed"
+            ]
+        }
+    ]
+}

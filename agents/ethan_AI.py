@@ -5,6 +5,8 @@ import json
 from gym_everglades.envs import everglades_env
 from everglades_server import CreateJsonData
 
+# COPY AND PASTED RANDOM ACTIONS SCRIPT
+
 class random_actions:
     def __init__(self, action_space, player_num, map_name):
         self.action_space = action_space
@@ -29,7 +31,6 @@ class random_actions:
         #   3 - Recon
         self.unit_config = CreateJsonData.ConvertLoadoutToObject(player_num)
         print("Successfully loaded player", player_num, "loadout")
-
         # Default Output Format:
         #{
         #    0: [('controller',1), ('striker', 4), ('recon', 1)],# 6
@@ -64,7 +65,6 @@ class random_actions:
             9: ['active', 3, '0.77'],
             11: ['passive', 3]
         }
-
     # end __init__
 
     def get_action(self, obs):
@@ -79,3 +79,6 @@ class random_actions:
         action[:, 1] = np.random.choice(self.nodes_array, self.num_actions, replace=False)
         #print(action)
         return action
+
+
+     

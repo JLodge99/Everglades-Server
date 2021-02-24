@@ -1,12 +1,17 @@
 {
     "__type": "Setup",
-    "MapFile": "DemoMap.json",
+    "MapFile": "Map.json",
+    "MapType": "3D",
+    "Agents": [
+        "random_actions.py",
+        "random_actions.py"
+    ],
     "UnitFile": "UnitDefinitions.json",
-    "PlayerFile": "PlayerConfig.json",
     "UnitBudget": 100,
     "TurnLimit": 150,
     "CaptureBonus": 1000,
-    "Stochasticity": 0,
+    "enableWind": true,
+    "Stochasticity": 15054,
     "FocusTurnMin": 4,
     "FocusTurnMax": 6,
     "FocusHeatMovement": 15,
