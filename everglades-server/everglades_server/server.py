@@ -370,10 +370,11 @@ class EvergladesGame:
 
                         newGroup.units.append(newUnit)
 
-                        in_type = in_type.capitalize()
-                        out_type.append(in_type)
-                        out_count.append(in_count)
                     # End Unit loop
+
+                    in_type = in_type.capitalize()
+                    out_type.append(in_type)
+                    out_count.append(in_count)
 
                     newGroup.speed.append(self.unit_types[unit_id].speed)
                     newGroup.mapUnitID.append(map_units)
