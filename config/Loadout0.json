@@ -48,16 +48,12 @@
                     "Count": 4
                 },
                 {
-                    "Type": "recon",
+                    "Type": "striker",
                     "Count": 2
                 },
                 {
-                    "Type": "striker",
-                    "Count": 1
-                },
-                {
                     "Type": "controller",
-                    "Count": 1
+                    "Count": 2
                 }
             ]
         },
@@ -112,12 +108,8 @@
         {
             "Squad": [
                 {
-                    "Type": "recon",
-                    "Count": 4
-                },
-                {
                     "Type": "tank",
-                    "Count": 8
+                    "Count": 12
                 }
             ]
         }
