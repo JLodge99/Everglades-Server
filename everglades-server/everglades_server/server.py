@@ -8,6 +8,7 @@ import numpy as np
 import random
 import random as r
 import re
+from shutil import copyfile
 
 from everglades_server.definitions import *
 from everglades_server import wind
@@ -30,7 +31,9 @@ class EvergladesGame:
         # Initialize game
         if os.path.exists(map_file):
             self.board_init(map_file)
+            self.mappath = map_file
         elif os.path.exists(os.path.join(config_path, map_file)):
+            self.mappath = map_file
             self.board_init(map_file)
         else:
             # Exit with error
@@ -1728,16 +1731,19 @@ class EvergladesGame:
     def write_output(self):
         for key in self.output.keys():
             #pdb.set_trace()
-            key_dir = self.dat_dir + '/' + str(key)
+            key_dir = self.dat_dir + '\\' + str(key)
             oldmask = os.umask(000)
             os.mkdir(key_dir,mode=0o777)
             os.umask(oldmask)
             assert( os.path.isdir(key_dir) ), 'Could not create telemetry {} output directory'.format(key)
 
-            key_file = key_dir + '/' + 'Telem_' + key
+            key_file = key_dir + '\\' + 'Telem_' + key
             with open(key_file, 'w') as fid:
                 writer = csv.writer(fid, delimiter='\n')
                 writer.writerow(self.output[key])
+
+        copyfile(self.mappath, os.path.join(self.dat_dir, os.path.basename(self.mappath)))
+        print("Copied map json")
 
 
 
