@@ -26,12 +26,15 @@ map_name = "Map.json"
 wind = True
 ########################################################################################################
 
+# Recommended settings for weight
+# Bellcurve Enable:   Weightinit should be .3 - .9
+# Bellcurve Disable:  Weightinit should be .1 - .3
 if mapType == '2D':
     print("Generating 2D map")
     generate_map.exec(7)
 elif mapType == '3D':
     print("Generating 3D map")
-    generate_3dmap.exec(7, 7, 10)
+    generate_3dmap.exec(5, 5, 10, weight=.4, bellcurve=True)
 
 config_dir = os.path.abspath('config')
 map_file = os.path.join(config_dir, map_name)
