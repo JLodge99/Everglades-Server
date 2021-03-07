@@ -1122,7 +1122,8 @@ class EvergladesGame:
 
                         # Apply amount moved
                         # BUG - if group consists of different unit types, it won't move properly
-                        group.distance_remaining -= (group.speed[0] + group.speed[0])# * wind_mag)
+                        #group.distance_remaining -= (group.speed[0] + group.speed[0])# * wind_mag)
+                        group.distance_remaining -= group.speed[0]
 
                         # Check for arrival
                         if group.distance_remaining <= 0:
