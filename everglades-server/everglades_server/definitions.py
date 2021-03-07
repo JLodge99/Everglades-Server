@@ -35,6 +35,7 @@ class EvgPlayer:
 class EvgGroup:
     def __init__(self, **kwargs):
         self.groupID = kwargs.get('groupID',-1)
+        self.universalIndex = kwargs.get('universalIndex', 0)
         self.mapGroupID = kwargs.get('mapGroupID',-1)
         self.location = kwargs.get('location',-1)
         self.ready = False
@@ -52,7 +53,10 @@ class EvgGroup:
 class EvgUnit:
     def __init__(self, **kwargs):
         self.unitType = kwargs.get('unitType', None)
+        # Unit index is the local index of the unit within its respective group list.
+        # Universal index is the unit's unique ID across all units in the game.
         self.unitIndex = kwargs.get('unitIndex', 0)
+        self.universalIndex = kwargs.get('universalIndex', 0)
         self.currentHealth = kwargs.get('currentHealth', 0)
         self.currentSpeed = kwargs.get('currentSpeed', 0)
 

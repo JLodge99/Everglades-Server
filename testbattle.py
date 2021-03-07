@@ -17,21 +17,21 @@ from everglades_server import generate_3dmap
 ## Input Variables
 # Agent files must include a class of the same name with a 'get_action' function
 # Do not include './' in file path
-agent0_file = 'agents/random_actions'
-agent1_file = 'agents/random_actions'
+agent0_file = 'agents/reggtest'
+agent1_file = 'agents/reggtest'
 
 # Choose which map you want by setting map_name "3D" or "2D"
 mapType = "3D"
-map_name = "Map.json"
+map_name = "reggtestmap.json"
 wind = True
 ########################################################################################################
 
-if mapType == '2D':
-    print("Generating 2D map")
-    generate_map.exec(7)
-elif mapType == '3D':
-    print("Generating 3D map")
-    generate_3dmap.exec(7, 7, 10)
+# if mapType == '2D':
+#     print("Generating 2D map")
+#     generate_map.exec(7)
+# elif mapType == '3D':
+#     print("Generating 3D map")
+#     generate_3dmap.exec(7, 7, 10)
 
 config_dir = os.path.abspath('config')
 map_file = os.path.join(config_dir, map_name)

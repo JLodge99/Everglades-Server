@@ -1,0 +1,56 @@
+{
+    "__type": "Map:#Everglades_MapJSONDef",
+    "MapName": "3DRandom",
+    "Type": "2D",
+    "Xsize": 3,
+    "Ysize": 3,
+    "Zsize": 0,
+    "nodes": [
+        {
+            "Connections": [
+                {
+                    "ConnectedID": 5,
+                    "Distance": 3
+                }
+            ],
+            "ID": 1,
+            "Radius": 1,
+            "StructureDefense": 1.25,
+            "TeamStart": 0,
+            "ControlPoints": 500,
+            "Resource": []
+        },
+        {
+            "Connections": [
+                {
+                    "ConnectedID": 1,
+                    "Distance": 3
+                },
+                {
+                    "ConnectedID": 9,
+                    "Distance": 3
+                }
+            ],
+            "ID": 5,
+            "Radius": 1,
+            "StructureDefense": 1.5,
+            "TeamStart": -1,
+            "ControlPoints": 100,
+            "Resource": []
+        },
+        {
+            "Connections": [
+                {
+                    "ConnectedID": 5,
+                    "Distance": 3
+                }
+            ],
+            "ID": 9,
+            "Radius": 1,
+            "StructureDefense": 1,
+            "TeamStart": 1,
+            "ControlPoints": 500,
+            "Resource": []
+        }
+    ]
+}

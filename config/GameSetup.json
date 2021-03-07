@@ -1,6 +1,6 @@
 {
     "__type": "Setup",
-    "MapFile": "Map.json",
+    "MapFile": "reggtestmap.json",
     "MapType": "3D",
     "Agents": [
         "random_actions.py",
@@ -10,7 +10,7 @@
     "UnitBudget": 100,
     "TurnLimit": 150,
     "CaptureBonus": 1000,
-    "enableWind": true,
+    "enableWind": false,
     "Stochasticity": 15054,
     "FocusTurnMin": 4,
     "FocusTurnMax": 6,
