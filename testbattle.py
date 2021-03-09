@@ -61,6 +61,7 @@ gamesetup["MapType"] = mapType
 gamesetup["Agents"] = ["random_actions.py", "random_actions.py"]
 gamesetup["UnitFile"] = "UnitDefinitions.json"
 gamesetup["UnitBudget"] = 100
+gamesetup["LoadoutPresetLevel"] = 1 #TODO: Read In
 gamesetup["TurnLimit"] = 150
 gamesetup["CaptureBonus"] = 1000
 gamesetup["enableWind"] = wind

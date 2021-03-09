@@ -13,6 +13,7 @@ from shutil import copyfile
 from everglades_server.definitions import *
 from everglades_server import wind
 from collections import defaultdict 
+from everglades_server.CreateJsonData import *
 
 class EvergladesGame:
     """
@@ -27,6 +28,7 @@ class EvergladesGame:
         self.debug = kwargs.get('debug', False)
         self.player_names = kwargs.get('pnames')
         self.output_dir = kwargs.get('output_dir')
+
 
         # Initialize game
         if os.path.exists(map_file):
@@ -249,6 +251,8 @@ class EvergladesGame:
     def game_init(self, player_dat):
         """
         """
+
+        GenerateUnitDefinitions(self.setup['LoadoutPresetLevel'])
 
         # Open up connections
         # Wait for two players

@@ -44,6 +44,50 @@
             "Control": 1,
             "Recon": 1.0,
             "Cost": 1.0
+        },
+        {
+            "Name": "Warrior",
+            "Health": 1,
+            "Damage": 2.0,
+            "Speed": 1,
+            "Speed_Controlled_Ally": 1.5,
+            "Speed_Controlled_Enemy": 0,
+            "Control": 1,
+            "Recon": 0,
+            "Cost": 1.0
+        },
+        {
+            "Name": "Mobile Heavy",
+            "Health": 2.0,
+            "Damage": 1,
+            "Speed": 2.0,
+            "Speed_Controlled_Ally": 0,
+            "Speed_Controlled_Enemy": 0,
+            "Control": 1,
+            "Recon": 0,
+            "Cost": 1.0
+        },
+        {
+            "Name": "Militia",
+            "Health": 1,
+            "Damage": 2.0,
+            "Speed": 1,
+            "Speed_Controlled_Ally": 1.5,
+            "Speed_Controlled_Enemy": 0,
+            "Control": 1,
+            "Recon": 0,
+            "Cost": 1.0
+        },
+        {
+            "Name": "Rapid Response",
+            "Health": 1,
+            "Damage": 1,
+            "Speed": 2.0,
+            "Speed_Controlled_Ally": 1.5,
+            "Speed_Controlled_Enemy": 0,
+            "Control": 1,
+            "Recon": 0,
+            "Cost": 1.0
         }
     ]
 }
