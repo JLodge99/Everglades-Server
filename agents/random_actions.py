@@ -28,7 +28,7 @@ class random_actions:
         #   2 - Tank
         #   3 - Recon
         self.unit_config = CreateJsonData.ConvertLoadoutToObject(player_num)
-        print("Successfully loaded player", player_num, "loadout")
+        print("Loaded player", player_num, "loadout")
 
         # Default Output Format:
         #{
