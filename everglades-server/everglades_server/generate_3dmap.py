@@ -21,6 +21,9 @@ fortressWeight = 0.2
 watchtowerWeight = 0.8
 nodeDistance = 3
 config_dir = os.path.abspath('config')
+setup_file = os.path.join(config_dir, 'GameSetup.json')
+with open(setup_file) as f:
+    setup = json.load(f)
 
 # Prints each 2D array in the 3D array
 def printMap(map):
@@ -41,7 +44,7 @@ def createCube(xLen, yLen, zLen):
 # Recommended settings for weight
 # Bellcurve Enable:   Weightinit should be .3 - .9
 # Bellcurve Disable:  Weightinit should be .1 - .3
-def generateMap(xLen, yLen, zLen, map, weightinit, bellcurve):
+def generateMap(xLen, yLen, zLen, map, weightinit = .1, bellcurve = False):
     global nodeCount
     queue = Queue()
     startingPoint = Point(int(xLen/2), int(yLen/2), 0)
@@ -171,7 +174,7 @@ def generateMap(xLen, yLen, zLen, map, weightinit, bellcurve):
     return False
 
 # Center Plane Function
-def generateCenterPlane(xLen, yLen, zLen, map, weightinit):
+def generateCenterPlane(xLen, yLen, zLen, map, weightinit = .1):
     zCenter = int(zLen / 2)
     # weight = (nodeDensityWeight / 17)
     weight = weightinit
@@ -295,7 +298,7 @@ def generateJsonFile(xLen, yLen, zLen, map):
     jsonData["Zsize"] = zLen
     jsonData["Type"] = "3D"
     jsonData["nodes"] = nodes
-    FileO = open(os.path.join(config_dir, "3dmap.json"), "w")
+    FileO = open(os.path.join(config_dir, setup["MapFile"]), "w")
     FileO.write(json.dumps(jsonData, indent = 4))
     FileO.close()
 
@@ -333,6 +336,8 @@ def bellCurveVal(x, zLen):
 # Main execute function
 def exec(xLen, yLen, zLen, weight = .1, bellcurve = False):
     loop = True
+    if(bellcurve):
+        print("Bellcurve enabled")
     while loop:
         map = createCube(xLen, yLen, zLen)
         loop = generateMap(xLen, yLen, zLen, map, weight, bellcurve)
