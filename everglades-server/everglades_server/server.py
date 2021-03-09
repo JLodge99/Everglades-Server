@@ -335,7 +335,8 @@ class EvergladesGame:
                         newUnit = EvgUnit(
                                 unitType = in_type,
                                 universalIndex = universalUnitIndex,
-                                currentHealth = self.unit_types[unit_id].health,
+                                #currentHealth = self.unit_types[unit_id].health,
+                                currentHealth = 100.,
                                 currentSpeed = self.unit_types[unit_id].speed,
                         )
 
@@ -1068,10 +1069,8 @@ class EvergladesGame:
                             
                             # Calculate the true damage that will be applied to the targeted unit.
                             trueDamage = (10. * baseDamage) / (targetBaseHealth + nodeDefense)
-                            trueDamage = trueDamage / 100
                             appliedDamage = targetHealth - trueDamage
-                            appliedDamage = float("{:.2f}".format(appliedDamage))
-
+                            
                             # Prevent negative numbers from appearing just for the sake of making sense.
                             # A drone with -2% of it existing makes no logical sense.
                             if appliedDamage < 0.:
@@ -1079,6 +1078,7 @@ class EvergladesGame:
 
                             # Finally, apply the damage.
                             targetUnit.currentHealth = appliedDamage
+                            targetUnit.outputHealth = targetBaseHealth * (targetUnit.currentHealth / 100.)
                             affectedGroup = self.players[opponent].groups[groupID]
 
                             # Check if the application of this damage results in the death of the drone. If so,
@@ -1109,18 +1109,20 @@ class EvergladesGame:
                 # These lists get generated after damage has been applied to all drones for this turn.
                 for player in self.team_starts:
                     opponent = 0 if (player == 1) else 1
-                    unitsForOutput = []
                     groupsForOutput = []
+                    unitsForOutput = []
                     healthForOutput = []
                     for group in activeGroups[opponent]:
-                        groupsForOutput.append(self.players[opponent].groups[group].universalIndex)
                         for unit in activeUnits[opponent][group]:
+                            # If the unit had its health affected this turn, show it in the output file.
                             if infliction[opponent][group][unit] > 0:
+                                groupsForOutput.append(self.players[opponent].groups[group].universalIndex)
                                 unitsForOutput.append(unit.universalIndex)
-                                healthForOutput.append(unit.currentHealth)
+                                healthForOutput.append(float("{:.1f}".format(unit.outputHealth)))
+                        #groupsForOutput = [self.players[opponent].groups[group].universalIndex] * len(unitsForOutput)
 
                     # Build combat output message
-                    outputString = '{:.6f},{},{},{},[{}],[{}]'.format(
+                    outputString = '{:.6f},{},{},[{}],[{}],[{}]'.format(
                             self.current_turn,
                             opponent,
                             node.ID,
@@ -1133,9 +1135,7 @@ class EvergladesGame:
     # As its name implies, this targeting function selects random units from random units to apply damage to.
     def randomTargeting(self, activeGroups, activeUnits):
         combatActions = []
-
         # TODO revert the random seed to be seeded by time. 
-        #random.seed(5)
         np.random.seed(5)
 
         for player in self.team_starts:
@@ -1145,16 +1145,13 @@ class EvergladesGame:
                 for attackingUnit in activeUnits[player][groupID]:
                     # Get a random group from the list of the opponent's groups at the given node.
                     oppGroupList = activeGroups[opponent]
-                    #oppGroupID = random.choice(oppGroupList)
-                    oppGroupID = np.random.randint(len(oppGroupList))
+                    oppGroupID = np.random.choice(oppGroupList)
                     
-                    # TODO Replace [0] with [oppGroundID] after testing is finished
                     # Get a random unit from that group.
                     oppUnitList = activeUnits[opponent][oppGroupID]
-                    #oppUnitID = random.choice(oppUnitList)
-                    temp = np.random.randint(len(oppUnitList))
-                    temp2 = activeUnits[opponent][groupID]
-                    oppUnitID = temp2[temp]
+                    unitChoice = np.random.randint(len(oppUnitList))
+
+                    oppUnitID = oppUnitList[unitChoice]
 
                     #print("Player", player, "'s unit", attackingUnit.unitIndex, "is attacking unit", oppUnitID.unitIndex, "from group", oppGroupID)
                     #print("Player", player, "'s unit", attackingUnit.unitIndex, "is attacking unit", oppUnitID.unitIndex)
@@ -1438,6 +1435,7 @@ class EvergladesGame:
                         # Determine the speed of the squad
                         # OLD: Gave the speed of the first unit in the squad, effectively random
                         speed = group.speed[0]
+                        print("New:", group.speed[0])
                         # NEW: Speed of squadron is speed of slowest unit
                         # Commenting out so Zack can bugtest
                         """{
@@ -1593,7 +1591,8 @@ class EvergladesGame:
         # Output telemetry files
         date = datetime.datetime.today()
         date_frmt = date.strftime('%Y.%m.%d-%H.%M.%S')
-        self.dat_dir = self.output_dir + '/' + self.evgMap.name + '_' + date_frmt
+        #self.dat_dir = self.output_dir + '/' + self.evgMap.name + '_' + date_frmt
+        self.dat_dir = self.output_dir + '/' + date_frmt
 
         oldmask = os.umask(000)
         os.mkdir(self.dat_dir,mode=0o777)

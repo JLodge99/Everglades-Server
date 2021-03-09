@@ -947,7 +947,7 @@ class EvergladesGame:
                 infliction = {} # damage to other units
                 nulled_ids = {}
                 pids = np.array( list(self.players.keys()) )
-                #random.seed(5)
+
                 np.random.seed(5)
                 # Build damage
                 for pid in player_gids:
@@ -1005,19 +1005,10 @@ class EvergladesGame:
                                 strct_def = node.defense
                                 node_def = (tgt_cntrl + fort_bns) * strct_def
 
-                                #print("Equation: (10 * baseDamage) / (targetBaseHealth + ((nodeControlled + fortBonus) * node.defense)")
-                                #print("base Damage: ", tgt_dmg)
-                                #print("targetBaseHealth: ", tgt_armor)
-                                #print("nodeControlled: ", strct_def)
-                                #print("fortBonus: ", fort_bns)
-                                #print("node.defense: ", node.defense)
-
                                 # Determine damage. Damage equation:
                                 # ( 10 * damage infliction ) / ( (unit armor + fortress bonus) * structure defense )
                                 loss = (10. * tgt_dmg) / (tgt_armor + node_def)
 
-                                #print("trueDamage: ", loss)
-                                
                                 # Subtract damage
                                 #pdb.set_trace()
                                 if (len(nulled_ids[opp_pid][tgt_group]) > 0):
@@ -1123,6 +1114,7 @@ class EvergladesGame:
                         # Apply amount moved
                         # BUG - if group consists of different unit types, it won't move properly
                         #group.distance_remaining -= (group.speed[0] + group.speed[0])# * wind_mag)
+                        print("Old:", group.speed[0])
                         group.distance_remaining -= group.speed[0]
 
                         # Check for arrival
@@ -1233,7 +1225,8 @@ class EvergladesGame:
         # Output telemetry files
         date = datetime.datetime.today()
         date_frmt = date.strftime('%Y.%m.%d-%H.%M.%S')
-        self.dat_dir = self.output_dir + '/' + 'OLD_' + self.evgMap.name + '_' + date_frmt
+        #self.dat_dir = self.output_dir + '/' + 'OLD_' + self.evgMap.name + '_' + date_frmt
+        self.dat_dir = self.output_dir + '/' + date_frmt + "_OLD"
 
         oldmask = os.umask(000)
         os.mkdir(self.dat_dir,mode=0o777)
