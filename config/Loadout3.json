@@ -1,0 +1,101 @@
+{
+    "__type": "Loadout:#Everglades_LoadoutJSONDef",
+    "Squads": [
+        {
+            "Squad": [
+                {
+                    "Type": "striker",
+                    "Count": 8
+                }
+            ]
+        },
+        {
+            "Squad": [
+                {
+                    "Type": "striker",
+                    "Count": 8
+                }
+            ]
+        },
+        {
+            "Squad": [
+                {
+                    "Type": "striker",
+                    "Count": 8
+                }
+            ]
+        },
+        {
+            "Squad": [
+                {
+                    "Type": "striker",
+                    "Count": 8
+                }
+            ]
+        },
+        {
+            "Squad": [
+                {
+                    "Type": "striker",
+                    "Count": 8
+                }
+            ]
+        },
+        {
+            "Squad": [
+                {
+                    "Type": "striker",
+                    "Count": 8
+                }
+            ]
+        },
+        {
+            "Squad": [
+                {
+                    "Type": "striker",
+                    "Count": 8
+                }
+            ]
+        },
+        {
+            "Squad": [
+                {
+                    "Type": "striker",
+                    "Count": 8
+                }
+            ]
+        },
+        {
+            "Squad": [
+                {
+                    "Type": "striker",
+                    "Count": 8
+                }
+            ]
+        },
+        {
+            "Squad": [
+                {
+                    "Type": "striker",
+                    "Count": 8
+                }
+            ]
+        },
+        {
+            "Squad": [
+                {
+                    "Type": "striker",
+                    "Count": 8
+                }
+            ]
+        },
+        {
+            "Squad": [
+                {
+                    "Type": "striker",
+                    "Count": 12
+                }
+            ]
+        }
+    ]
+}
