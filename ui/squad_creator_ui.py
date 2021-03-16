@@ -171,6 +171,8 @@ def generateJSON():
 
 def generateRandom():
     loadout = GenerateRandomLoadout(int(ddtext22.get()))
+    for squad in loadout:
+        squad.sort()
 
     global squadUnits
     tempsquadUnits = []
@@ -193,6 +195,7 @@ def generateRandom():
                 counter = 1
             if unit == prevUnitName:
                 counter+=1
+            prevUnitName = unit
         tempsquadNums[squad].append(counter)
 
     squadUnits = tempsquadUnits
