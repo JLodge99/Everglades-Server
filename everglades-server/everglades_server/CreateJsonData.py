@@ -163,6 +163,42 @@ def ConvertLoadoutToObject(playerIdentifier):
 
     return unit_configs
 
+def __getRandomUnit(preset):
+    unitInfo = LoadAttributesBasedUnitFile(preset)
+
+
+    return random.choice(unitInfo[0])
+
+    
+# Creates a random loadout
+def GenerateRandomLoadout(preset):
+
+    loadout = []
+    numSquads = 12 #TODO: Read this in from file
+    numDrones = 100 #TODO: Read this in from file
+
+    dronePerSquad = numDrones / numSquads
+    dronesOfLastSquad = (numDrones / numSquads) + (numDrones % numSquads)
+
+
+    for squadNumber in range(0,int(numSquads - 1)):
+        dronesToAdd = dronePerSquad
+        loadout.append([])
+        unitslength = dronePerSquad
+        for unitInList in range(0,int(unitslength)):
+            unit = __getRandomUnit(preset)
+            loadout[squadNumber].append(unit)
+                
+
+
+    #Handle the last squad
+    unitslength = dronesOfLastSquad
+    loadout.append([])
+    for unitInList in range(0,int(unitslength)):
+        unit = __getRandomUnit(preset)
+        loadout[numSquads-1].append(unit)
+
+    return loadout
 
 
 
@@ -415,5 +451,6 @@ def GenerateUnitDefinitions(gameType):
 
 
 def TestingFunction():
-    GenerateUnitDefinitions(0)
+    #GenerateUnitDefinitions(0)
+    GenerateJsonFileLoadout(GenerateRandomLoadout(0), 3)
 TestingFunction()

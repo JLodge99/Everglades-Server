@@ -8,10 +8,12 @@ import numpy as np
 import random
 import random as r
 import re
+from shutil import copyfile
 
 from everglades_server.definitions import *
 from everglades_server import wind
 from collections import defaultdict 
+from everglades_server.CreateJsonData import *
 
 class EvergladesGame:
     """
@@ -27,10 +29,13 @@ class EvergladesGame:
         self.player_names = kwargs.get('pnames')
         self.output_dir = kwargs.get('output_dir')
 
+
         # Initialize game
         if os.path.exists(map_file):
             self.board_init(map_file)
+            self.mappath = map_file
         elif os.path.exists(os.path.join(config_path, map_file)):
+            self.mappath = map_file
             self.board_init(map_file)
         else:
             # Exit with error
@@ -248,6 +253,8 @@ class EvergladesGame:
         """
         """
 
+        GenerateUnitDefinitions(self.setup['LoadoutPresetLevel'])
+
         # Open up connections
         # Wait for two players
         # Assign player numbers
@@ -371,10 +378,11 @@ class EvergladesGame:
 
                         newGroup.units.append(newUnit)
 
-                        in_type = in_type.capitalize()
-                        out_type.append(in_type)
-                        out_count.append(in_count)
                     # End Unit loop
+
+                    in_type = in_type.capitalize()
+                    out_type.append(in_type)
+                    out_count.append(in_count)
 
                     newGroup.speed.append(self.unit_types[unit_id].speed)
                     newGroup.mapUnitID.append(map_units)
@@ -1728,16 +1736,19 @@ class EvergladesGame:
     def write_output(self):
         for key in self.output.keys():
             #pdb.set_trace()
-            key_dir = self.dat_dir + '/' + str(key)
+            key_dir = self.dat_dir + '\\' + str(key)
             oldmask = os.umask(000)
             os.mkdir(key_dir,mode=0o777)
             os.umask(oldmask)
             assert( os.path.isdir(key_dir) ), 'Could not create telemetry {} output directory'.format(key)
 
-            key_file = key_dir + '/' + 'Telem_' + key
+            key_file = key_dir + '\\' + 'Telem_' + key
             with open(key_file, 'w') as fid:
                 writer = csv.writer(fid, delimiter='\n')
                 writer.writerow(self.output[key])
+
+        copyfile(self.mappath, os.path.join(self.dat_dir, os.path.basename(self.mappath)))
+        print("Copied map json")
 
 
 
