@@ -182,8 +182,10 @@ def generateRandom():
     prevUnitName = ""
     counter = 0
 
-    for squad in loadout:
-        for unit in squad:
+    for squad in range(0,numSquads):
+        tempsquadNums.append([])
+        tempsquadUnits.append([])
+        for unit in loadout[squad]:
             if unit != prevUnitName:
                 if counter > 0:
                     tempsquadNums[squad].append(counter)
