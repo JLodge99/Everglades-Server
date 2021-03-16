@@ -227,8 +227,9 @@ class EvergladesGame:
                 health = in_type['Health'],
                 damage = in_type['Damage'],
                 speed = in_type['Speed'],
-                speedbonus_controlled_ally = in_type['Speed_Controlled_Ally'],
-                speedbonus_controlled_enemy = in_type['Speed_Controlled_Enemy'],
+                speedbonus_controlled_ally = in_type['SpeedBonus_Controlled_Ally'],
+                speedbonus_controlled_enemy = in_type['SpeedBonus_Controlled_Enemy'],
+                jamming = in_type['Jamming'],
                 recon = in_type['Recon'],
 
                 control = in_type['Control'],
@@ -1375,28 +1376,28 @@ class EvergladesGame:
                         
 
                         # Determine the speed of the squad
-                        # OLD: Gave the speed of the first unit in the squad, effectively random
-                        speed = group.speed[0]
-                        # NEW: Speed of squadron is speed of slowest unit
-                        # Commenting out so Zack can bugtest
-                        """{
+                        # Default value: maximum
                         speed = 99999999
-                        for x in group.speed:
-                        {
-                            if (speed > x):
-                                speed = x
-                        }
-                        """
+                        # Find lowest speed and set speed to that
+                        # Traverse the array to find the lowest speed
+                        for x in group.units:
+                            calculatedSpeed = x.definition.speed
+
+                            # If the player is moving between ally territory
+                            if x.definition.speedbonus_controlled_ally != 0 and self.evgMap.nodes[start_idx].controlledBy == playerNum and self.evgMap.nodes[end_idx].controlledBy == playerNum: 
+                                calculatedSpeed += x.definition.speedbonus_controlled_ally
+
+                            # If the player is not moving between enemy territory
+                            elif x.definition.speedbonus_controlled_enemy != 0 and self.evgMap.nodes[start_idx].controlledBy != playerNum and self.evgMap.nodes[end_idx].controlledBy != playerNum: 
+                                calculatedSpeed += x.definition.speedbonus_controlled_enemy
+
+                            
+                            if speed > calculatedSpeed:
+                                speed = calculatedSpeed
                         
                         playerNum = player
-                        """
-                        if self.evgMap.nodes[start_idx].controlledBy == playerNum and self.evgMap.nodes[end_idx].controlledBy == playerNum: 
-                            speed += group.units[0].definitions.speedbonus_controlled_ally
 
-                        # If the player is not moving between enemy territory
-                        elif self.evgMap.nodes[start_idx].controlledBy != playerNum and self.evgMap.nodes[end_idx].controlledBy != playerNum: 
-                            speed += group.units[0].definition.speedbonus_controlled_enemy
-                        """
+                        ## TODO: add jamming here
                         
 
                         # Perform wind calculations if enabled

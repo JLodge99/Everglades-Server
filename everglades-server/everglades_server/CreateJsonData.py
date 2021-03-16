@@ -81,7 +81,6 @@ def __loadJsonFileLoadout(playerIdentifier):
     fileName = outputFileLoadout + str(playerIdentifier) + outputFileLoadoutEnd
     loadoutFile = os.path.join(outputLocation, fileName)
     dFile = os.path.join(outputLocation, loadoutFile)
-
     if (playerIdentifier < 0 or not os.path.exists(os.path.abspath(loadoutFile))):
         print("Default Loadout used for agent ", playerIdentifier)
         with open(os.path.abspath(os.path.join(outputLocation, defaultLoadoutFile))) as f:
@@ -200,6 +199,7 @@ def GenerateRandomLoadout(preset):
         loadout[numSquads-1].append(unit)
 
     return loadout
+
 
 
 # -------------------------------------
@@ -378,9 +378,9 @@ def GenerateUnitDefinition(name, attributeList):
     jsonData["Health"] = 1
     jsonData["Damage"] = 1
     jsonData["Speed"] = 1
-    jsonData["Speed_Controlled_Ally"] = 0
-    jsonData["Speed_Controlled_Enemy"] = 0
-    jsonData["Speed"] = 1
+    jsonData["SpeedBonus_Controlled_Ally"] = 0
+    jsonData["SpeedBonus_Controlled_Enemy"] = 0
+    jsonData["Jamming"] = 0
     jsonData["Control"] = 1
     jsonData["Recon"] = 0
     jsonData["Cost"] = 0
