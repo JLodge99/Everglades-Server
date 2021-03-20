@@ -170,7 +170,7 @@ def generateJSON():
     GenerateJsonFileLoadout(loadout, playerIdentifier)
 
 def generateRandom():
-    loadout = GenerateRandomLoadout(ddtext22.get())
+    loadout = GenerateRandomLoadout(int(ddtext22.get()))
 
     global squadUnits
     tempsquadUnits = []
