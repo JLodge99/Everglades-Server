@@ -230,6 +230,11 @@ class EvergladesGame:
                 speedbonus_controlled_ally = in_type['SpeedBonus_Controlled_Ally'],
                 speedbonus_controlled_enemy = in_type['SpeedBonus_Controlled_Enemy'],
                 jamming = in_type['Jamming'],
+                commander_damage = in_type['Commander_Damage'],
+                commander_speed = in_type['Commander_Speed'],
+                commander_control = in_type['Commander_Control'],
+                self_repair = in_type['Self_Repair'],
+
                 recon = in_type['Recon'],
 
                 control = in_type['Control'],
@@ -1378,6 +1383,8 @@ class EvergladesGame:
                         # Determine the speed of the squad
                         # Default value: maximum
                         speed = 99999999
+                        playerNum = player
+
                         # Find lowest speed and set speed to that
                         # Traverse the array to find the lowest speed
                         for x in group.units:
@@ -1395,10 +1402,14 @@ class EvergladesGame:
                             if speed > calculatedSpeed:
                                 speed = calculatedSpeed
                         
-                        playerNum = player
 
                         ## TODO: add jamming here
-                        
+                        ## Psudocode
+                        ## [UNCONFIRMED STEP] (1) Loop through current group, look for recon drone, if drone in squad then skip part 2. 
+                        ## (2) Loop through all enemy groups and find all Jammers. Alt, loop through saved list of all Jammers. Extract this to function call returning bool if Jammer within range of current squad
+                        ## (3) If there is a Jammer within range of the squad, half movement speed.
+                        ## <Note 1> Perhaps have this value read
+
 
                         # Perform wind calculations if enabled
                         if self.enableWind == 1:
