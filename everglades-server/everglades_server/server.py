@@ -1413,6 +1413,9 @@ class EvergladesGame:
                             if commanderSpeedBonus != 0:
                                 calculatedSpeed += commanderSpeedBonus
                             
+                            # Correctly set the unit's current speed
+                            self.currentSpeed = calculatedSpeed
+
                             if speed > calculatedSpeed:
                                 speed = calculatedSpeed
                         
