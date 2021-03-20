@@ -1388,15 +1388,17 @@ class EvergladesGame:
                         # Find lowest speed and set speed to that
                         # Traverse the array to find the lowest speed
                         for x in group.units:
-                            calculatedSpeed = x.definition.speed
+                            unitTypeID = self.unit_names[x.unitType.lower()]
+                            unitDefintion = self.unit_types[unitTypeID]
+                            calculatedSpeed = unitDefintion.speed
 
                             # If the player is moving between ally territory
-                            if x.definition.speedbonus_controlled_ally != 0 and self.evgMap.nodes[start_idx].controlledBy == playerNum and self.evgMap.nodes[end_idx].controlledBy == playerNum: 
-                                calculatedSpeed += x.definition.speedbonus_controlled_ally
+                            if unitDefintion.speedbonus_controlled_ally != 0 and self.evgMap.nodes[start_idx].controlledBy == playerNum and self.evgMap.nodes[end_idx].controlledBy == playerNum: 
+                                calculatedSpeed += unitDefintion.speedbonus_controlled_ally
 
                             # If the player is not moving between enemy territory
-                            elif x.definition.speedbonus_controlled_enemy != 0 and self.evgMap.nodes[start_idx].controlledBy != playerNum and self.evgMap.nodes[end_idx].controlledBy != playerNum: 
-                                calculatedSpeed += x.definition.speedbonus_controlled_enemy
+                            elif unitDefintion.speedbonus_controlled_enemy != 0 and self.evgMap.nodes[start_idx].controlledBy != playerNum and self.evgMap.nodes[end_idx].controlledBy != playerNum: 
+                                calculatedSpeed += unitDefintion.speedbonus_controlled_enemy
 
                             
                             if speed > calculatedSpeed:

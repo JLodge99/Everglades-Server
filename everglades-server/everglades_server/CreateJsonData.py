@@ -316,6 +316,7 @@ def GenerateAttributeBasedUnitsFile(names, attributeSlugsList):
     jsonData["__type"] = "Units_in_Attribute_Format"
     jsonData["Units"] = unitInformation
 
+    #TODO: Ethan, come back to this
     fileName = outputFileUnitPresets
     savePath = os.path.join(outputLocation, fileName)
     FileO = open(os.path.abspath('{}'.format(savePath)), "w")
