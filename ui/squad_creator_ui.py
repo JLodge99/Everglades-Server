@@ -169,6 +169,36 @@ def generateJSON():
     #print(playerIdentifier)
     GenerateJsonFileLoadout(loadout, playerIdentifier)
 
+def generateRandom():
+    loadout = GenerateRandomLoadout(ddtext22.get())
+
+    global squadUnits
+    tempsquadUnits = []
+    global squadNums
+    tempsquadNums = []
+    global numSquads
+
+    numSquads = len(loadout)
+    prevUnitName = ""
+    counter = 0
+
+    for squad in loadout:
+        for unit in squad:
+            if unit != prevUnitName:
+                if counter > 0:
+                    tempsquadNums[squad].append(counter)
+                tempsquadUnits[squad].append(unit)
+                counter = 1
+            if unit == prevUnitName:
+                counter+=1
+        tempsquadNums[squad].append(counter)
+
+    squadUnits = tempsquadUnits
+    squadNums = tempsquadNums
+
+    updateUnitList()
+    refreshDropDown()
+
 # Set-up the window and frames
 window = tk.Tk()
 window.title("EVERGLADES Squad Creator UI")
@@ -234,6 +264,13 @@ curr_squad = tk.Listbox(master=mid_frame)
 curr_squad.grid(row=1, column=0, sticky="w")
 curr_squad.bind('<<ListboxSelect>>', updateSelNum)
 
+# Delete Squad Button
+btn_delete = tk.Button(
+    master=mid_frame,
+    text="Remove Selected Unit",
+    command = deleteUnit
+)
+btn_delete.grid(row=2, column=0, pady = 10, sticky="w")
 
 right_frame = tk.Frame(master=window)
 right_frame.grid(row=0, column=2, padx=10, pady=10)
@@ -251,15 +288,6 @@ numVar.trace("w", num_callback)
 vcmd = (topright_frame.register(checkNumInput), '%S')
 ent_unitnum = tk.Entry(master=topright_frame, width=5, textvariable = numVar, validate='key', vcmd=vcmd)
 ent_unitnum.grid(row=0, column=1, sticky="e")
-
-# Delete Squad Button
-btn_delete = tk.Button(
-    master=right_frame,
-    text="Remove Selected Unit",
-    command = deleteUnit
-)
-btn_delete.grid(row=1, column=0, pady = 10)
-
 
 nameVar = tk.StringVar()
 unitname_lbl = tk.Label(master=right_frame, text="Add Unit with Name: ")
@@ -285,7 +313,7 @@ playnum_lbl.grid(row=0, column=0, sticky="w")
 
 ddtext2 = tk.StringVar()
 ddtext2.set("0")
-playnum_dd = tk.OptionMenu(foot_frame, ddtext2, "0", "1")
+playnum_dd = tk.OptionMenu(foot_frame, ddtext2, "0", "1", "2")
 playnum_dd.grid(row=0, column=1, sticky="e")
 
 btn_gen = tk.Button(
@@ -294,6 +322,24 @@ btn_gen = tk.Button(
     command = generateJSON
 )
 btn_gen.grid(row=0, column=2, sticky="e")
+
+foot_frame2 = tk.Frame(master=right_frame)
+foot_frame2.grid(row=6, column=0, pady=(15,0))
+
+playnum_lbl2 = tk.Label(master=foot_frame2, text="Preset Number: ")
+playnum_lbl2.grid(row=0, column=0, sticky="w")
+
+ddtext22 = tk.StringVar()
+ddtext22.set("0")
+playnum_dd2 = tk.OptionMenu(foot_frame2, ddtext2, "0", "1")
+playnum_dd2.grid(row=0, column=1, sticky="e")
+
+btn_gen2 = tk.Button(
+    master=foot_frame2,
+    text="Create Random Squad",
+    command = generateRandom
+)
+btn_gen2.grid(row=0, column=2, sticky="e")
 
 # Run the application
 window.mainloop()
