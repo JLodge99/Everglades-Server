@@ -1,8 +1,9 @@
 # Zachary Neidig (zackneidig@gmail.com)
 # 3/16/21
-# UI to more easily create and edit squads
+# This program is a UI used to more easily create and edit squads
 # Not perfect, there are inefficiencies (ex: updating the whole listbox when only individual entries change, sorting random squads)
-# Also once I got a weird bug involving changing squad and the numbers of units in them??? Can't reproduce, maybe it fixed itself
+# Also once during development I got a weird bug involving changing squad and the numbers of units in them??? Can't reproduce, maybe it fixed itself
+
 import sys
 import tkinter as tk
 from everglades_server.CreateJsonData import *
@@ -251,7 +252,7 @@ def generateRandom():
     ### to call the random squad function (automatically writes to json) and load loadout into UI
 
     presetNumber = int(presetselSquadDdText.get())
-    loadout = GenerateRandomLoadout(presetNumber)
+    loadout = GenerateRandomLoadout(presetNumber)   #Defined in CreateJsonData.py
 
     # Sort the random squad
     # The current (3/16/21) squad generation function creates multiple groups of count 1 of each unit type
@@ -449,8 +450,8 @@ btn_gen.grid(row=0, column=2, sticky="e")
 random_squad_frame = tk.Frame(master=right_frame)
 random_squad_frame.grid(row=6, column=0, pady=(15,0))
 
-playnum_lbl2 = tk.Label(master=random_squad_frame, text="Preset Number: ")
-playnum_lbl2.grid(row=0, column=0, sticky="w")
+presetnum_lbl = tk.Label(master=random_squad_frame, text="Preset Number: ")
+presetnum_lbl.grid(row=0, column=0, sticky="w")
 
 presetselSquadDdText = tk.StringVar()
 presetselSquadDdText.set("0")
