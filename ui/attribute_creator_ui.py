@@ -1,3 +1,7 @@
+# Zachary Neidig (zackneidig@gmail.com)
+# 3/17/21
+# This program is a UI used to more easily create and edit attributes
+
 import sys
 import tkinter as tk
 from everglades_server.CreateJsonData import *
@@ -7,15 +11,18 @@ thismodule = sys.modules[__name__]
 unitList = []
 newVarCounter = 1
 
-def loadFromFile():
-    information = LoadUnitAttributeFile()
-    ##LoadUnitAttributeFile() defined in Ethan's code
-    ##The line below is the debug data I used to make sure the functions worked as intended
-    #information = [["a", "b", "c"],["eff1", "eff2", "eff3"],["desc1","desc2","desc3"],[1.1,2.0,3.0],[0,1,0],[1,2,3],[1,2,3]]
-    for item in information:
-        unitList.append(item)
-    refreshDropDown()
+#Format:
+    ### PURPOSE: When , this function is called
+    ### to
 
+def loadFromFile():
+    ### PURPOSE: When the load data button is pressed, this function is called
+    ### to grab the attributes from the server files
+    global unitList
+    unitList = LoadUnitAttributeFile() # Defined in CreateJsonData.py, loads data from server files
+
+    # Populate dropdown with loaded data
+    refreshDropDown()
 
 def generateFile():
     GenerateUnitAttributeFile(unitList[0],unitList[1],unitList[2],unitList[3],unitList[4],unitList[5],unitList[6])
@@ -26,15 +33,6 @@ def refreshDropDown():
     sel_attr_dd['menu'].delete(0, 'end')
 
     ## Add new options
-    """
-    #Old method (numbers and not unit names)
-    newchoices = [0]*len(unitList[0])
-    for num in range(len(unitList[0])):
-        newchoices[num] = str(num+1)
-    for choice in newchoices:
-        sel_attr_dd['menu'].add_command(label=choice, command=tk._setit(ddtext, choice))
-    """
-
     if len(unitList) > 0:
         if(len(unitList[0]) > 0):
             for choice in unitList[0]:
