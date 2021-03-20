@@ -382,6 +382,10 @@ def GenerateUnitDefinition(name, attributeList):
     jsonData["SpeedBonus_Controlled_Ally"] = 0
     jsonData["SpeedBonus_Controlled_Enemy"] = 0
     jsonData["Jamming"] = 0
+    jsonData["Commander_Damage"] = 0
+    jsonData["Commander_Speed"] = 0
+    jsonData["Commander_Control"] = 0
+    jsonData["Self_Repair"] = 0
     jsonData["Control"] = 1
     jsonData["Recon"] = 0
     jsonData["Cost"] = 0
@@ -452,6 +456,6 @@ def GenerateUnitDefinitions(gameType):
 
 
 def TestingFunction():
-    #GenerateUnitDefinitions(0)
+    GenerateUnitDefinitions(0)
     GenerateJsonFileLoadout(GenerateRandomLoadout(0), 3)
 TestingFunction()

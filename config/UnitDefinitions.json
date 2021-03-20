@@ -9,6 +9,10 @@
             "SpeedBonus_Controlled_Ally": 0,
             "SpeedBonus_Controlled_Enemy": 0,
             "Jamming": 0,
+            "Commander_Damage": 0,
+            "Commander_Speed": 0,
+            "Commander_Control": 0,
+            "Self_Repair": 0,
             "Control": 1,
             "Recon": 0,
             "Cost": 1.0
@@ -21,6 +25,10 @@
             "SpeedBonus_Controlled_Ally": 0,
             "SpeedBonus_Controlled_Enemy": 0,
             "Jamming": 0,
+            "Commander_Damage": 0,
+            "Commander_Speed": 0,
+            "Commander_Control": 0,
+            "Self_Repair": 0,
             "Control": 1,
             "Recon": 0,
             "Cost": 1.0
@@ -33,6 +41,10 @@
             "SpeedBonus_Controlled_Ally": 0,
             "SpeedBonus_Controlled_Enemy": 0,
             "Jamming": 0,
+            "Commander_Damage": 0,
+            "Commander_Speed": 0,
+            "Commander_Control": 0,
+            "Self_Repair": 0,
             "Control": 1,
             "Recon": 0,
             "Cost": 1.0
@@ -45,6 +57,10 @@
             "SpeedBonus_Controlled_Ally": 0,
             "SpeedBonus_Controlled_Enemy": 0,
             "Jamming": 0,
+            "Commander_Damage": 0,
+            "Commander_Speed": 0,
+            "Commander_Control": 0,
+            "Self_Repair": 0,
             "Control": 1,
             "Recon": 1.0,
             "Cost": 1.0
@@ -57,6 +73,10 @@
             "SpeedBonus_Controlled_Ally": 1.5,
             "SpeedBonus_Controlled_Enemy": 0,
             "Jamming": 0,
+            "Commander_Damage": 0,
+            "Commander_Speed": 0,
+            "Commander_Control": 0,
+            "Self_Repair": 0,
             "Control": 1,
             "Recon": 0,
             "Cost": 1.0
@@ -69,6 +89,10 @@
             "SpeedBonus_Controlled_Ally": 0,
             "SpeedBonus_Controlled_Enemy": 0,
             "Jamming": 0,
+            "Commander_Damage": 0,
+            "Commander_Speed": 0,
+            "Commander_Control": 0,
+            "Self_Repair": 0,
             "Control": 1,
             "Recon": 0,
             "Cost": 1.0
@@ -81,6 +105,10 @@
             "SpeedBonus_Controlled_Ally": 1.5,
             "SpeedBonus_Controlled_Enemy": 0,
             "Jamming": 0,
+            "Commander_Damage": 0,
+            "Commander_Speed": 0,
+            "Commander_Control": 0,
+            "Self_Repair": 0,
             "Control": 1,
             "Recon": 0,
             "Cost": 1.0
@@ -93,6 +121,10 @@
             "SpeedBonus_Controlled_Ally": 1.5,
             "SpeedBonus_Controlled_Enemy": 0,
             "Jamming": 0,
+            "Commander_Damage": 0,
+            "Commander_Speed": 0,
+            "Commander_Control": 0,
+            "Self_Repair": 0,
             "Control": 1,
             "Recon": 0,
             "Cost": 1.0
@@ -105,9 +137,13 @@
             "SpeedBonus_Controlled_Ally": 0,
             "SpeedBonus_Controlled_Enemy": 0,
             "Jamming": 1.0,
+            "Commander_Damage": 0,
+            "Commander_Speed": 0,
+            "Commander_Control": 0,
+            "Self_Repair": 0,
             "Control": 1,
             "Recon": 0,
-            "Cost": 1.0
+            "Cost": 1.5
         }
     ]
 }
