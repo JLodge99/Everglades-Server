@@ -90,8 +90,7 @@
             "isMult": 0,
             "ModifierPriority": 1,
             "Cost": 6
-        }
-        ,
+        },
         {
             "Name": "Self_Repair",
             "Effect": "Self_Repair",
