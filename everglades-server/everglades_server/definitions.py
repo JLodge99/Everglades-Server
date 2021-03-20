@@ -69,6 +69,7 @@ class EvgUnitDefinition:
         self.commander_damage = kwargs.get('commander_damage',0)
         self.commander_speed = kwargs.get('commander_speed',0)
         self.commander_control = kwargs.get('commander_control',0)
+        self.self_repair = kwargs.get('self_repair',0)
 
         self.recon = kwargs.get('recon', 0)
         self.speedbonus_controlled_ally = kwargs.get('speedbonus_controlled_ally', 0)

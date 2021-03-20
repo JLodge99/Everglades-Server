@@ -233,6 +233,7 @@ class EvergladesGame:
                 commander_damage = in_type['Commander_Damage'],
                 commander_speed = in_type['Commander_Speed'],
                 commander_control = in_type['Commander_Control'],
+                self_repair = in_type['Self_Repair'],
 
                 recon = in_type['Recon'],
 

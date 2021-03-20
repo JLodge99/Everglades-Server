@@ -62,13 +62,13 @@
             "Modifier": 1.0,
             "isMult": 0,
             "ModifierPriority": 1,
-            "Cost": 3
+            "Cost": 6
         },
         {
             "Name": "Assault Commander",
             "Effect": "Commander_Damage",
             "Description": "Boosts the damage of allied units in the same squad by 50%. Only one Assault Commander can take effect at once\n",
-            "Modifier": 1.0,
+            "Modifier": 0.5,
             "isMult": 0,
             "ModifierPriority": 1,
             "Cost": 6
@@ -77,7 +77,7 @@
             "Name": "Speed Commander",
             "Effect": "Commander_Speed",
             "Description": "Boosts the speed of allied units in the same squad by 50%. Only one Speed Commander can take effect at once\n",
-            "Modifier": 1.0,
+            "Modifier": 0.5,
             "isMult": 0,
             "ModifierPriority": 1,
             "Cost": 6
@@ -86,7 +86,17 @@
             "Name": "Tactical Commander",
             "Effect": "Commander_Control",
             "Description": "Boosts the capture speed of allied units in the same squad by 50%. Only one Tactical Commander can take effect at once\n",
-            "Modifier": 1.0,
+            "Modifier": 0.5,
+            "isMult": 0,
+            "ModifierPriority": 1,
+            "Cost": 6
+        }
+        ,
+        {
+            "Name": "Self_Repair",
+            "Effect": "Self_Repair",
+            "Description": "Repairs 10% of lost health per round\n",
+            "Modifier": 0.1,
             "isMult": 0,
             "ModifierPriority": 1,
             "Cost": 6
