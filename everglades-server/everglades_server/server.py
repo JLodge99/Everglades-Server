@@ -12,7 +12,7 @@ from shutil import copyfile
 
 from everglades_server.definitions import *
 from everglades_server import wind
-from collections import defaultdict 
+from collections import defaultdict, deque
 from everglades_server.CreateJsonData import *
 
 class EvergladesGame:
@@ -1745,8 +1745,8 @@ class EvergladesGame:
 
         # end player loop
 
-
     def write_output(self):
+        self.isEnemyJammerInRange(0, 13)
         for key in self.output.keys():
             #pdb.set_trace()
             key_dir = self.dat_dir + '\\' + str(key)
@@ -1763,6 +1763,42 @@ class EvergladesGame:
         copyfile(self.mappath, os.path.join(self.dat_dir, os.path.basename(self.mappath)))
         print("Copied map json")
 
+    # Radius = 1 Only destination node
+    # Radius = 2 One nodes out
+    # Radius = 3 Two nodes out
+    # etc..
+    def isEnemyJammerInRange(self, player, destinationNodeID, radius = 3):
+        queue = deque()
+        nodesInRange = []
 
+        found = False
+        count = 0
+        queue.append(self.getNode(destinationNodeID))
+
+        # Get surrouding nodes based on the range and append into nodesInRange
+        for i in range(radius):
+            for queueIndex in range(len(queue)):
+                currentNode = queue.popleft()
+                if(nodesInRange.count(currentNode.ID) < 1):
+                    nodesInRange.append(currentNode.ID)
+                for connectionNodes in currentNode.connection_idxs:
+                    queue.append(self.getNode(connectionNodes))
+
+        # Get enemy player
+        enemyplayer = self.players[0 if player == 1 else 1]
+
+        # Iterate through enemies groups checking if there is a jammer in range
+        for group in enemyplayer.groups:
+            if nodesInRange.count(group.location) > 0:
+                for unit in group.units:
+                    if(unit.unitType == "jammer"):
+                        found = True
+                        count += 1
+
+        return (found, count)
+
+    # Get node from ID
+    def getNode(self, nodeID):
+        return self.evgMap.nodes[np.where(self.map_key1 == nodeID)[0][0]]
 
 # end class EvergladesGame
