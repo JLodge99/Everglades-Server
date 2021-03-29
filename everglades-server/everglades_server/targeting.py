@@ -21,11 +21,12 @@ def unravelEnemies(self,oppUnits):
         # Check each drone in each available group to assign reference to their groupID and unitID
         for index,oppUnit in enumerate(oppUnits[oppGroupID]):
             oppUnit.groupID = oppGroupID
-
+            # Get the attacking unit's ID and base damage.
+            #unitTypeID = self.unit_names[oppUnit.unitType.lower()]
+            #oppUnit.damage = self.unit_types[unitTypeID].damage
             ret.append(oppUnit)
 
     return ret
-
 
 def randomlySelect(self,combatActions,player,opponent,activeGroups,activeUnits):
 
@@ -51,9 +52,6 @@ def randomlySelect(self,combatActions,player,opponent,activeGroups,activeUnits):
 
 def lowestHealth(self,combatActions,player,opponent,activeGroups,activeUnits):
 
-    if len(activeUnits[opponent]) == 0:
-        print("IT WAS ME DIO")
-
     # activeUnits[player][groupID][unitType][unitID] = unitType
     # Create a list of ALL enemy drones
     enemyDrones = unravelEnemies(self,activeUnits[opponent])
@@ -61,15 +59,15 @@ def lowestHealth(self,combatActions,player,opponent,activeGroups,activeUnits):
     ## Sort enemy drones based on current drone's targeting priority
     enemyDrones = sorted(enemyDrones, key = lambda i: i.currentHealth)
 
-    print("Combat with ", len(enemyDrones), "drones")
+    #print("Combat with ", len(enemyDrones), "drones")
     
     for groupID in activeUnits[player]:
         for attackingUnit in activeUnits[player][groupID]:
 
-        ##  Testing to prove that the drones are sorted by lowest health            
-            # if len(enemyDrones) == 0:
+            if len(enemyDrones) == 0:
             #     print("No one is home")
-            #     return
+                 return
+            ##  Testing to prove that the drones are sorted by lowest health            
             # else:
             #     print("Drones:")
             #     for x in range(len(enemyDrones)): 
@@ -99,16 +97,14 @@ def highestHealth(self,combatActions,player,opponent,activeGroups,activeUnits):
 
     ## Sort enemy drones based on current drone's targeting priority
     enemyDrones = sorted(enemyDrones, key = lambda i: i.currentHealth,reverse=True)
-
-    #print("Attacking ",len(enemyDrones), "drones")
     
     for groupID in activeUnits[player]:
         for attackingUnit in activeUnits[player][groupID]:
 
-        #Testing to prove that the drones are sorted by lowest health            
-        # if len(enemyDrones) == 0:
+         if len(enemyDrones) == 0:
         #    print("No one is home")
-        #    return
+            return
+        #Testing to prove that the drones are sorted by highest health
         # else:
         #    print("Drones:")
         #    for x in range(len(enemyDrones)): 
@@ -117,8 +113,41 @@ def highestHealth(self,combatActions,player,opponent,activeGroups,activeUnits):
             # Get the attacking unit's ID and base damage.
             unitTypeID = self.unit_names[attackingUnit.unitType.lower()]
             damage = self.unit_types[unitTypeID].damage
-            
             targetedDrone = enemyDrones[0]
+            enemyDrones[0].currentHealth = enemyDrones[0].currentHealth - damage
+
+            # Make sure that we remove the most viable drone if it has been destroyed
+            if enemyDrones[0].currentHealth <= 0.:
+                del enemyDrones[0]
+
+            # Submit the drone's action
+            action = (opponent, targetedDrone.groupID, targetedDrone, damage)
+            combatActions.append(action)
+
+def mostLethal(self,combatActions,player,opponent,activeGroups,activeUnits):
+
+    # activeUnits[player][groupID][unitType][unitID] = unitType
+    # Create a list of ALL enemy drones
+    enemyDrones = unravelEnemies(self,activeUnits[opponent])
+
+    ## Sort enemy drones based on current drone's targeting priority
+    enemyDrones = sorted(enemyDrones, key = lambda i: (self.unit_types[self.unit_names[i.unitType.lower()]].damage, i.currentHealth), reverse=True)
+    ## Testing to prove drones are sorted by most highest damage and health
+    #for dr in enemyDrones:
+    #    print(self.unit_types[self.unit_names[dr.unitType.lower()]].damage)
+
+    for groupID in activeUnits[player]:
+        for attackingUnit in activeUnits[player][groupID]:
+
+            if len(enemyDrones) == 0:
+            #     print("No one is home")
+                return
+
+            # Get the attacking unit's ID and base damage.
+            unitTypeID = self.unit_names[attackingUnit.unitType.lower()]
+            damage = self.unit_types[unitTypeID].damage
+            targetedDrone = enemyDrones[0]
+
             enemyDrones[0].currentHealth = enemyDrones[0].currentHealth - damage
 
             # Make sure that we remove the most viable drone if it has been destroyed
