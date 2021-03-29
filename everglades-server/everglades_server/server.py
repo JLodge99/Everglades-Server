@@ -1782,7 +1782,7 @@ class EvergladesGame:
         # end player loop
 
     def write_output(self):
-        self.isEnemyJammerInRange(0, 13)
+        # Example use case: self.isEnemyJammerInRange(0, 13)
         for key in self.output.keys():
             #pdb.set_trace()
             key_dir = self.dat_dir + '\\' + str(key)
