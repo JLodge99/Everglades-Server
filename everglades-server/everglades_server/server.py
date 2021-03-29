@@ -1364,6 +1364,43 @@ class EvergladesGame:
         # Go to the index of the unit with the lowest health. This index would start at 0 and increment as drones are "marked for death"
         # If the target drone dies, increment the starting index
         
+   # Radius = 1 Only destination node
+    # Radius = 2 One nodes out
+    # Radius = 3 Two nodes out
+    # etc..
+    def isEnemyJammerInRange(self, player, destinationNodeID, radius = 3):
+        queue = deque()
+        nodesInRange = []
+
+        found = False
+        count = 0
+        queue.append(self.getNode(destinationNodeID))
+
+        # Get surrouding nodes based on the range and append into nodesInRange
+        for i in range(radius):
+            for queueIndex in range(len(queue)):
+                currentNode = queue.popleft()
+                if(nodesInRange.count(currentNode.ID) < 1):
+                    nodesInRange.append(currentNode.ID)
+                for connectionNodes in currentNode.connection_idxs:
+                    queue.append(self.getNode(connectionNodes))
+
+        # Get enemy player
+        enemyplayer = self.players[0 if player == 1 else 1]
+
+        # Iterate through enemies groups checking if there is a jammer in range
+        for group in enemyplayer.groups:
+            if nodesInRange.count(group.location) > 0:
+                for unit in group.units:
+                    if(unit.unitType == "jammer"):
+                        found = True
+                        count += 1
+
+        return (found, count)
+
+    # Get node from ID
+    def getNode(self, nodeID):
+        return self.evgMap.nodes[np.where(self.map_key1 == nodeID)[0][0]]
 
     def movement(self):
         ## Apply group movements
@@ -1405,13 +1442,12 @@ class EvergladesGame:
                                 speed = calculatedSpeed
                         
 
-                        ## TODO: add jamming here
-                        ## Psudocode
-                        ## [UNCONFIRMED STEP] (1) Loop through current group, look for recon drone, if drone in squad then skip part 2. 
-                        ## (2) Loop through all enemy groups and find all Jammers. Alt, loop through saved list of all Jammers. Extract this to function call returning bool if Jammer within range of current squad
-                        ## (3) If there is a Jammer within range of the squad, half movement speed.
-                        ## <Note 1> Perhaps have this value read
-
+                        # Reduce speed of squad if jammers are in range
+                        # Currently: reduces speed of squad by 25% for each jammer in range
+                        info = self.isEnemyJammerInRange(player, group.travel_destination) # player = player number, travel_destination = ID of destination node
+                        if info[0] == True:                         # if there is a jammer in range
+                            reduction = 0.75                        # reduction = speed change in squad for each jammer present
+                            speed *= pow(reduction, info[1])        # speed change calculation
 
                         # Perform wind calculations if enabled
                         if self.enableWind == 1:
@@ -1763,42 +1799,5 @@ class EvergladesGame:
         copyfile(self.mappath, os.path.join(self.dat_dir, os.path.basename(self.mappath)))
         print("Copied map json")
 
-    # Radius = 1 Only destination node
-    # Radius = 2 One nodes out
-    # Radius = 3 Two nodes out
-    # etc..
-    def isEnemyJammerInRange(self, player, destinationNodeID, radius = 3):
-        queue = deque()
-        nodesInRange = []
-
-        found = False
-        count = 0
-        queue.append(self.getNode(destinationNodeID))
-
-        # Get surrouding nodes based on the range and append into nodesInRange
-        for i in range(radius):
-            for queueIndex in range(len(queue)):
-                currentNode = queue.popleft()
-                if(nodesInRange.count(currentNode.ID) < 1):
-                    nodesInRange.append(currentNode.ID)
-                for connectionNodes in currentNode.connection_idxs:
-                    queue.append(self.getNode(connectionNodes))
-
-        # Get enemy player
-        enemyplayer = self.players[0 if player == 1 else 1]
-
-        # Iterate through enemies groups checking if there is a jammer in range
-        for group in enemyplayer.groups:
-            if nodesInRange.count(group.location) > 0:
-                for unit in group.units:
-                    if(unit.unitType == "jammer"):
-                        found = True
-                        count += 1
-
-        return (found, count)
-
-    # Get node from ID
-    def getNode(self, nodeID):
-        return self.evgMap.nodes[np.where(self.map_key1 == nodeID)[0][0]]
 
 # end class EvergladesGame
