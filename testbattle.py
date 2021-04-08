@@ -66,6 +66,7 @@ gamesetup["TurnLimit"] = 150
 gamesetup["CaptureBonus"] = 1000
 gamesetup["enableWind"] = wind
 gamesetup["Stochasticity"] = 15054
+gamesetup["JammerPenalty"] = 0.75
 gamesetup["FocusTurnMin"] = 4
 gamesetup["FocusTurnMax"] = 6
 gamesetup["FocusHeatMovement"] = 15

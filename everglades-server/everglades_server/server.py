@@ -86,6 +86,9 @@ class EvergladesGame:
         # 1 = Enable
         self.enableWind = self.setup["enableWind"]
 
+        # Read percentage change in group speed due to each jammer
+        self.jammerPenalty = self.setup["JammerPenalty"]
+
         # Positions of every node in board
         nodePos = {}
 
@@ -1446,7 +1449,7 @@ class EvergladesGame:
                         # Currently: reduces speed of squad by 25% for each jammer in range
                         info = self.isEnemyJammerInRange(player, group.travel_destination) # player = player number, travel_destination = ID of destination node
                         if info[0] == True:                         # if there is a jammer in range
-                            reduction = 0.75                        # reduction = speed change in squad for each jammer present
+                            reduction = self.jammerPenalty                        # reduction = speed change in squad for each jammer present
                             speed *= pow(reduction, info[1])        # speed change calculation
 
                         # Perform wind calculations if enabled

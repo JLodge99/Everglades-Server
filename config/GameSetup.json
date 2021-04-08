@@ -13,6 +13,7 @@
     "CaptureBonus": 1000,
     "enableWind": true,
     "Stochasticity": 15054,
+    "JammerPenalty": 0.75,
     "FocusTurnMin": 4,
     "FocusTurnMax": 6,
     "FocusHeatMovement": 15,
