@@ -10,7 +10,7 @@ attrList = []
 def loadFromFile():
     information = LoadAttributesBasedUnitFile(1)
     dataList = LoadUnitAttributeFile()
-    ##LoadAttributesBasedUnitFile() defined in Ethan's code
+    ##LoadAttributesBasedUnitFile() defined in CreateJsonData
     ##The line below is the debug data I used to make sure the functions worked as intended
     #information = [["a", "b", "c"],[["name1", "name2", "name3"],["name1", "name3"],["name2"]]]
     #dataList = [["name1", "name2", "name3"],["eff1", "eff2", "eff3"],["desc1","desc2","desc3"],[1.1,2,3],[0,1,0],[1,2,3],[1,2,3]]
@@ -33,14 +33,12 @@ def loadFromFile():
 
 def generateFile():
     GenerateAttributeBasedUnitsFile(unitList[0], unitList[1])
-    #print("generate file")
         
 def refreshDropDown():
     ## Remove current dropdown options
     sel_attr_dd['menu'].delete(0, 'end')
 
     ## Add new options
-    #print(unitList) #debug testing :)
     if len(unitList) > 0:
         if(len(unitList[0]) > 0):
             for choice in unitList[0]:
@@ -116,7 +114,6 @@ def removeAttribute():
         endList = len(unitList[1][attrNum])-1
         for index, item in enumerate(unitList[1][attrNum]):
             if (index >= toRemove) & (index < endList):
-                print(str(index))
                 unitList[1][attrNum][index] = unitList[1][attrNum][index+1]
         unitList[1][attrNum].pop()
         ## Update list of unit's attributes
@@ -126,7 +123,6 @@ def removeAttribute():
 
 def newUnit():
     newName = nameVar.get()
-    print(str(unitList))
     if len(unitList) == 0:
         temp = [[newName],[[]]]
         for item in temp:
@@ -134,7 +130,6 @@ def newUnit():
     else:
         unitList[0].append(newName)
         unitList[1].append([])
-    print(str(unitList))
     sel_attr_dd['menu'].add_command(label=newName, command=tk._setit(ddtext, newName))
     ddtext.set(newName)
     loadUnit()
@@ -174,7 +169,8 @@ def updateDescription(*args):
 # Set-up the window and frames
 window = tk.Tk()
 window.title("EVERGLADES Unit Creator")
-window.resizable(width=True, height=True)
+window.resizable(width=False, height=False)
+section_bg = "#D8D8D8"
 left_frame = tk.Frame(master=window)
 left_frame.grid(row=0, column=0, padx=10, pady=10)
 mid_frame = tk.Frame(master=window)
@@ -187,8 +183,10 @@ foot_frame.grid(row=0, column=3, padx=10, pady=10)
 
 # First column
 # Load and Save Button
-data_frame = tk.Frame(master=left_frame)
-data_frame.grid(row=0, column=0, sticky="w", pady = (0, 30))
+loadSaveTitle = tk.Label(master=left_frame, text="Load from / Save to Server")
+loadSaveTitle.grid(row=0, column=0, padx=(5,0),pady=(5,0), sticky="w")
+data_frame = tk.Frame(master=left_frame, bg = section_bg, bd=2, relief = "ridge", padx=15, pady=8)
+data_frame.grid(row=1, column=0, sticky="w", pady = (0, 30))
 
 btn_load = tk.Button(
     master=data_frame,
@@ -206,7 +204,7 @@ btn_make.grid(row=0, column=1)
 
 # Select Unit Dropdown
 dd_frame = tk.Frame(master=left_frame)
-dd_frame.grid(row=1, column=0, sticky="w")
+dd_frame.grid(row=2, column=0, sticky="w")
 ddtext = tk.StringVar()
 ddtext.set("")
 def dd_callback(*args):
