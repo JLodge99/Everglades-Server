@@ -59,7 +59,7 @@ class EvergladesEnv(gym.Env):
     def step(self, actions):
 
         scores, status = self.game.game_turn(actions)
-        scoresOld, statusOld = self.gameOld.game_turn(actions)
+        #scoresOld, statusOld = self.gameOld.game_turn(actions)
         observations, observationsOld = self._build_observations()
 
         reward = {i:0 for i in self.players}
@@ -127,19 +127,19 @@ class EvergladesEnv(gym.Env):
                 debug = self.debug
         )
 
-        self.gameOld = serverOld.EvergladesGame(
-                config_dir = config_dir,
-                map_file = map_file,
-                setup_file = setup_file,
-                unit_file = unit_file,
-                output_dir = output_dir,
-                pnames = player_names,
-                debug = self.debug
-        )
+        # self.gameOld = serverOld.EvergladesGame(
+        #         config_dir = config_dir,
+        #         map_file = map_file,
+        #         setup_file = setup_file,
+        #         unit_file = unit_file,
+        #         output_dir = output_dir,
+        #         pnames = player_names,
+        #         debug = self.debug
+        # )
 
         # Initialize players with selected groups
         self.game.game_init(self.player_dat)
-        self.gameOld.game_init(self.player_dat)
+        #self.gameOld.game_init(self.player_dat)
 
         # Get first game state
         observations, observationsOld = self._build_observations()
@@ -203,31 +203,31 @@ class EvergladesEnv(gym.Env):
             player_state = self.game.player_state(player)
             sensor_state = self.game.sensor_state(player)
 
-            board_stateOld = self.gameOld.board_state(player)
-            player_stateOld = self.gameOld.player_state(player)
-            sensor_stateOld = self.gameOld.sensor_state(player)
+            # board_stateOld = self.gameOld.board_state(player)
+            # player_stateOld = self.gameOld.player_state(player)
+            # sensor_stateOld = self.gameOld.sensor_state(player)
 
             # To make indexing easier
             boardLength = board_state.shape[0]
             playerLength = player_state.shape[0] - 1 # don't need the turn index
             sensorLength = sensor_state.shape[0] - 1 # don't need the turn index
 
-            boardLengthOld = board_stateOld.shape[0]
-            playerLengthOld = player_stateOld.shape[0] - 1 # don't need the turn index
-            sensorLengthOld = sensor_stateOld.shape[0] - 1 # don't need the turn index
+            # boardLengthOld = board_stateOld.shape[0]
+            # playerLengthOld = player_stateOld.shape[0] - 1 # don't need the turn index
+            # sensorLengthOld = sensor_stateOld.shape[0] - 1 # don't need the turn index
 
             state = np.zeros(boardLength + playerLength + sensorLength)
             state[0:boardLength] = board_state
             state[boardLength:boardLength + playerLength] = player_state[1:]
             state[boardLength + playerLength:boardLength + playerLength + sensorLength] = sensor_state[1:]
 
-            stateOld = np.zeros(boardLengthOld + playerLengthOld + sensorLengthOld)
-            stateOld[0:boardLength] = board_stateOld
-            stateOld[boardLengthOld:boardLengthOld + playerLengthOld] = player_stateOld[1:]
-            stateOld[boardLengthOld + playerLengthOld:boardLengthOld + playerLengthOld + sensorLengthOld] = sensor_stateOld[1:]
+            # stateOld = np.zeros(boardLengthOld + playerLengthOld + sensorLengthOld)
+            # stateOld[0:boardLength] = board_stateOld
+            # stateOld[boardLengthOld:boardLengthOld + playerLengthOld] = player_stateOld[1:]
+            # stateOld[boardLengthOld + playerLengthOld:boardLengthOld + playerLengthOld + sensorLengthOld] = sensor_stateOld[1:]
 
             observations[player] = state
-            observationsOld[player] = stateOld
+            #observationsOld[player] = stateOld
 
         return observations, observationsOld
 

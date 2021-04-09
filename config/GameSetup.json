@@ -1,7 +1,11 @@
 {
-    "__type": "Setup",
+    "__type": "static",
     "MapFile": "reggtestmap.json",
-    "MapType": "3D",
+    "MapType": "Static",
+    "Targeting": [
+        "lowestHealth",
+        "lowestHealth"
+    ],
     "Agents": [
         "random_actions.py",
         "random_actions.py"

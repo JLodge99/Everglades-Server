@@ -14,6 +14,9 @@ from everglades_server import targeting
 from everglades_server import wind
 from collections import defaultdict 
 
+# TODO remove this
+gameStatus = "none"
+
 class EvergladesGame:
     """
     """
@@ -603,6 +606,13 @@ class EvergladesGame:
         if status != 0:
             self.write_output()
 
+        if len(self.players[0].groups[1].units) > len(self.players[1].groups[13].units):
+            gameStatus = "Player 0 wins with " + scores[0] + " points and " + len(self.players[0].groups[1].units) + "units"
+        elif len(self.players[0].groups[1].units) < len(self.players[1].groups[13].units):
+            gameStatus = "Player 1 wins with " + scores[1] + " points and " + len(self.players[1].groups[13].units) + "units"
+        else:
+            gameStatus = "Stalemate"
+
         return scores, status
 
 
@@ -1028,9 +1038,9 @@ class EvergladesGame:
                     opponent = 0 if (player == 1) else 1
                     
                     if (player == 0):
-                        callback0(self,combatActions,player,opponent,activeGroups,activeUnits)
+                        callback0(self, combatActions, player, opponent, activeGroups, activeUnits, node)
                     else:
-                        callback1(self,combatActions,player,opponent,activeGroups,activeUnits)
+                        callback1(self, combatActions, player, opponent, activeGroups, activeUnits, node)
 
                 # Build damage for each action inside of combat actions.
                 # Base damage is tracked by the inflictions array.
@@ -1040,6 +1050,11 @@ class EvergladesGame:
                     oppGroupID = action[1]
                     oppUnitID = action[2]
                     baseDamage = action[3]
+
+                    # print("oppID:", opponentID)
+                    # print("oppGroupID:", oppGroupID)
+                    # print("oppUnitID:", oppUnitID)
+                    # print("baseDamage:", baseDamage)
 
                     # Build the damage. The infliction dictionary contains all the necessary integer base damage values
                     # to be applied to all drones that were targeted in the Construction phase.
@@ -1055,12 +1070,11 @@ class EvergladesGame:
                 for player in self.team_starts:
                     opponent = 0 if (player == 1) else 1
                     for groupID in infliction[opponent]:
-                        for unitID in infliction[opponent][groupID]:
-                            targetUnit = unitID
-                            targetHealth = unitID.currentHealth
+                        for targetUnit in infliction[opponent][groupID]:
+                            targetHealth = targetUnit.currentHealth
 
                             # Get this for reference later on in the function.
-                            targetUnitTypeID = self.unit_names[unitID.unitType.lower()]
+                            targetUnitTypeID = self.unit_names[targetUnit.unitType.lower()]
                             targetUnitType = self.unit_types[targetUnitTypeID]
 
                             targetBaseHealth = targetUnitType.health
@@ -1071,14 +1085,11 @@ class EvergladesGame:
                             nodeDefense = (nodeControlled + fortBonus) * node.defense
 
                             # Pull the base damage from the infliction array.
-                            baseDamage = infliction[opponent][groupID][unitID]
+                            baseDamage = infliction[opponent][groupID][targetUnit]
                             
                             # Calculate the true damage that will be applied to the targeted unit.
                             trueDamage = (10. * baseDamage) / (targetBaseHealth + nodeDefense)
-
-                            trueDamage = trueDamage / 100
                             appliedDamage = targetHealth - trueDamage
-                            appliedDamage = float("{:.2f}".format(appliedDamage))
 
                             # Prevent negative numbers from appearing just for the sake of making sense.
                             # A drone with -2% of it existing makes no logical sense.
@@ -1087,7 +1098,7 @@ class EvergladesGame:
 
                             # Finally, apply the damage.
                             targetUnit.currentHealth = appliedDamage
-
+                            targetUnit.outputHealth = targetBaseHealth * (targetUnit.currentHealth / 100.)
                             affectedGroup = self.players[opponent].groups[groupID]
 
                             # Check if the application of this damage results in the death of the drone. If so,
@@ -1121,13 +1132,18 @@ class EvergladesGame:
                     groupsForOutput = []
                     unitsForOutput = []
                     healthForOutput = []
-                    for group in activeGroups[opponent]:
-                        for unit in activeUnits[opponent][group]:
+
+                    for group in infliction[opponent]:
+                        for unit in infliction[opponent][group]:
                             # If the unit had its health affected this turn, show it in the output file.
                             if infliction[opponent][group][unit] > 0:
                                 groupsForOutput.append(self.players[opponent].groups[group].universalIndex)
                                 unitsForOutput.append(unit.universalIndex)
                                 healthForOutput.append(float("{:.1f}".format(unit.outputHealth)))
+                            # else:
+                            #     print("Issue at opp", opponent, "group", self.players[opponent].groups[group].universalIndex, "unit", unit.universalIndex)
+                            #     print(infliction[opponent][group][unit])
+
                         #groupsForOutput = [self.players[opponent].groups[group].universalIndex] * len(unitsForOutput)
 
                     # Build combat output message
@@ -1613,11 +1629,11 @@ class EvergladesGame:
                         node.controlState = node.controlPoints * pxer
                         node.controlledBy = pid
                     if node.controlledBy != -1 and neutralize:
-                        print('!!!!!!Neutralize!!!!!!!!')
-                        print(node.controlledBy)
+                        #print('!!!!!!Neutralize!!!!!!!!')
+                        #print(node.controlledBy)
                         node.controlledBy = -1
-                        print(node.controlledBy)
-                        print()
+                        #print(node.controlledBy)
+                        #print()
 
 
     def output_init(self):

@@ -84,6 +84,8 @@ def test_runGame(mapType, wind):
     elif mapType == '3D':
         print("Generating 3D map")
         generate_3dmap.exec(7, 7, 10)
+    elif mapType == 'Static':
+        print("Static map specified. No map generated.")
 
     map_file = os.path.join(config_dir, map_name)
     setup_file = os.path.join(config_dir, "GameSetup.json")
