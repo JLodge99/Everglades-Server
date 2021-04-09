@@ -235,8 +235,6 @@ class EvergladesGame:
                 jamming = in_type['Jamming'],
                 commander_damage = in_type['Commander_Damage'],
                 commander_speed = in_type['Commander_Speed'],
-                commander_control = in_type['Commander_Control'],
-                self_repair = in_type['Self_Repair'],
 
                 recon = in_type['Recon'],
 
@@ -346,6 +344,11 @@ class EvergladesGame:
                                 currentHealth = self.unit_types[unit_id].health,
                                 currentSpeed = self.unit_types[unit_id].speed,
                         )
+
+                        # Keep track of damaging commanders
+                        if self.unit_types[self.unit_names[newUnit.unitType.lower()]].commander_damage != 0:
+                            newGroup.commanderDamageCount += 1
+                            newGroup.commanderDamageModifier = self.unit_types[self.unit_names[newUnit.unitType.lower()]].commander_damage
 
                         # If unit type is Recon, we need to change the speed value to decrease
                         # as the range value increases. An explicit mapping of range to speed would be:
@@ -1063,7 +1066,9 @@ class EvergladesGame:
 
                             # Pull the base damage from the infliction array.
                             baseDamage = infliction[opponent][groupID][unitID]
-                            
+
+
+
                             # Calculate the true damage that will be applied to the targeted unit.
                             trueDamage = (10.0 * baseDamage) / (targetHealth + nodeDefense)
 
