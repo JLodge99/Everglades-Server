@@ -91,11 +91,12 @@ def __loadJsonFileLoadout(playerIdentifier):
             data = json.load(f)
 
         
-    f.close() #TODO check this line didnt break anything
+    f.close()
     
     return data
 
 
+#TODO: Update to encompass a defined squad ruleset
 def CheckIfValidSquad(squad):
 
     return True
@@ -363,11 +364,6 @@ def LoadAttributesBasedUnitFile(preset):
 #   Unit Conversion
 # -------------------------------------
 
-def sortAttributeListbyPriority(attributeList):
-
-    #TODO: Sort list. Sort by adjusted priority, lowest to highest integer value
-    # Adjusted Priority Equation: Origional Priority * 2, if isMult then -1 from result
-    return attributeList
 
 def GenerateUnitDefinition(name, attributeList):
     jsonData = {}
@@ -394,7 +390,7 @@ def GenerateUnitDefinition(name, attributeList):
 
 
 
-    sortedAttributeList = sortAttributeListbyPriority(attributeList)
+    sortedAttributeList = attributeList
     attributeFile = LoadUnitAttributeFile()
     
     costOfUnit = 0
