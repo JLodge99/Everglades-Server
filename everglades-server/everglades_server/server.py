@@ -271,7 +271,8 @@ class EvergladesGame:
     
         self.targeting0 = getattr(targeting, self.setup["Targeting"][0])
         self.targeting1 = getattr(targeting, self.setup["Targeting"][1])
-
+        universalUnitIndex = 1
+        universalGroupIndex = 1
         for player in players:
             assert(player in self.team_starts), 'Given player number not included in map configuration file starting locations'
             start_node_idx = self.team_starts[player]
@@ -288,8 +289,10 @@ class EvergladesGame:
                 newGroup = EvgGroup(
                         groupID = gid,
                         location = start_node_idx,
-                        mapGroupID = map_gid
+                        mapGroupID = map_gid,
+                        universalIndex = universalGroupIndex,
                 )
+                universalGroupIndex = universalGroupIndex + 1
 
                 # Whether there are Recon units in the group. This value updates as the configuration
                 # file is checked.
@@ -330,9 +333,11 @@ class EvergladesGame:
 
                         newUnit = EvgUnit(
                                 unitType = in_type,
-                                currentHealth = self.unit_types[unit_id].health,
+                                currentHealth = 100.,
                                 currentSpeed = self.unit_types[unit_id].speed,
+                                universalIndex = universalUnitIndex,
                         )
+                        universalUnitIndex = universalUnitIndex + 1
 
                         # If unit type is Recon, we need to change the speed value to decrease
                         # as the range value increases. An explicit mapping of range to speed would be:
@@ -1061,13 +1066,13 @@ class EvergladesGame:
 
                             # Pull the base damage from the infliction array.
                             baseDamage = infliction[opponent][groupID][unitID]
+                            # print("base damage:", baseDamage)
                             
                             # Calculate the true damage that will be applied to the targeted unit.
                             trueDamage = (10. * baseDamage) / (targetBaseHealth + nodeDefense)
-                            trueDamage = trueDamage / 100
+                            #print("true damage:", trueDamage)
                             appliedDamage = targetHealth - trueDamage
-                            appliedDamage = float("{:.2f}".format(appliedDamage))
-
+                            
                             # Prevent negative numbers from appearing just for the sake of making sense.
                             # A drone with -2% of it existing makes no logical sense.
                             if appliedDamage < 0.:
@@ -1075,6 +1080,7 @@ class EvergladesGame:
 
                             # Finally, apply the damage.
                             targetUnit.currentHealth = appliedDamage
+                            targetUnit.outputHealth = targetBaseHealth * (targetUnit.currentHealth / 100.)
                             affectedGroup = self.players[opponent].groups[groupID]
 
                             # Check if the application of this damage results in the death of the drone. If so,
@@ -1096,36 +1102,36 @@ class EvergladesGame:
                                     outputString = '{:.6f},{},{}'.format(
                                                 self.current_turn,
                                                 opponent,
-                                                0
-#                                                affectedGroup.universalIndex
+                                                affectedGroup.universalIndex
                                         )
 
                                     self.output['GROUP_Disband'].append(outputString)
-
                 # Generate the lists necessary for telemetry data output.
-    #             # These lists get generated after damage has been applied to all drones for this turn.
-    #             for player in self.team_starts:
-    #                 opponent = 0 if (player == 1) else 1
-    #                 unitsForOutput = []
-    #                 groupsForOutput = []
-    #                 healthForOutput = []
-    #                 for group in activeGroups[opponent]:
-    #                     groupsForOutput.append(self.players[opponent].groups[group].universalIndex)
-    #                     for unit in activeUnits[opponent][group]:
-    #                         if infliction[opponent][group][unit] > 0:
-    #                             unitsForOutput.append(unit.universalIndex)
-    #                             healthForOutput.append(unit.currentHealth)
+                # These lists get generated after damage has been applied to all drones for this turn.
+                for player in self.team_starts:
+                    opponent = 0 if (player == 1) else 1
+                    groupsForOutput = []
+                    unitsForOutput = []
+                    healthForOutput = []
+                    for group in activeGroups[opponent]:
+                        for unit in activeUnits[opponent][group]:
+                            # If the unit had its health affected this turn, show it in the output file.
+                            if infliction[opponent][group][unit] > 0:
+                                groupsForOutput.append(self.players[opponent].groups[group].universalIndex)
+                                unitsForOutput.append(unit.universalIndex)
+                                healthForOutput.append(float("{:.1f}".format(unit.outputHealth)))
+                        #groupsForOutput = [self.players[opponent].groups[group].universalIndex] * len(unitsForOutput)
 
-    #                 # Build combat output message
-    #                 outputString = '{:.6f},{},{},{},[{}],[{}]'.format(
-    #                         self.current_turn,
-    #                         opponent,
-    #                         node.ID,
-    #                         ';'.join(str(i) for i in groupsForOutput),
-    #                         ';'.join(str(i) for i in unitsForOutput),
-    #                         ';'.join(str(i) for i in healthForOutput),
-    #                 )
-    #                 self.output['GROUP_CombatUpdate'].append(outputString)
+                    # Build combat output message
+                    outputString = '{:.6f},{},{},[{}],[{}],[{}]'.format(
+                            self.current_turn,
+                            opponent,
+                            node.ID,
+                            ';'.join(str(i) for i in groupsForOutput),
+                            ';'.join(str(i) for i in unitsForOutput),
+                            ';'.join(str(i) for i in healthForOutput),
+                    )
+                    self.output['GROUP_CombatUpdate'].append(outputString)
     # # #####            
     def combatOld(self):
         ## Apply combat
@@ -1758,7 +1764,6 @@ class EvergladesGame:
             with open(key_file, 'w') as fid:
                 writer = csv.writer(fid, delimiter='\n')
                 writer.writerow(self.output[key])
-
 
 
 # end class EvergladesGame

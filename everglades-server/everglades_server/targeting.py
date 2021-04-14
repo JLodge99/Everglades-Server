@@ -1,6 +1,7 @@
 import random
 import random as r
 import re
+from agents import random_actions
 
 # Targeting functions take in 4 parameters:
 # - combatActions:  List of what each unit is targeting
@@ -21,9 +22,6 @@ def unravelEnemies(self,oppUnits):
         # Check each drone in each available group to assign reference to their groupID and unitID
         for index,oppUnit in enumerate(oppUnits[oppGroupID]):
             oppUnit.groupID = oppGroupID
-            # Get the attacking unit's ID and base damage.
-            #unitTypeID = self.unit_names[oppUnit.unitType.lower()]
-            #oppUnit.damage = self.unit_types[unitTypeID].damage
             ret.append(oppUnit)
 
     return ret
@@ -58,32 +56,19 @@ def lowestHealth(self,combatActions,player,opponent,activeGroups,activeUnits):
 
     ## Sort enemy drones based on current drone's targeting priority
     enemyDrones = sorted(enemyDrones, key = lambda i: i.currentHealth)
-
-    #print("Combat with ", len(enemyDrones), "drones")
     
     for groupID in activeUnits[player]:
         for attackingUnit in activeUnits[player][groupID]:
 
             if len(enemyDrones) == 0:
-            #     print("No one is home")
                  return
-            ##  Testing to prove that the drones are sorted by lowest health            
-            # else:
-            #     print("Drones:")
-            #     for x in range(len(enemyDrones)): 
-            #         print(enemyDrones[x].currentHealth)
 
             # Get the attacking unit's ID and base damage.
             unitTypeID = self.unit_names[attackingUnit.unitType.lower()]
             damage = self.unit_types[unitTypeID].damage
             
-            targetedDrone = enemyDrones[0]
-
-            enemyDrones[0].currentHealth = enemyDrones[0].currentHealth - damage
-
-            # Make sure that we remove the most viable drone if it has been destroyed
-            if enemyDrones[0].currentHealth <= 0.:
-                del enemyDrones[0]
+            # Target drone by most viable
+            targetedDrone = enemyDrones[idx % len(enemyDrones)]
 
             # Submit the drone's action
             action = (opponent, targetedDrone.groupID, targetedDrone, damage)
@@ -99,26 +84,17 @@ def highestHealth(self,combatActions,player,opponent,activeGroups,activeUnits):
     enemyDrones = sorted(enemyDrones, key = lambda i: i.currentHealth,reverse=True)
     
     for groupID in activeUnits[player]:
-        for attackingUnit in activeUnits[player][groupID]:
+        for idx, attackingUnit in enumerate(activeUnits[player][groupID]):
 
-         if len(enemyDrones) == 0:
-        #    print("No one is home")
-            return
-        #Testing to prove that the drones are sorted by highest health
-        # else:
-        #    print("Drones:")
-        #    for x in range(len(enemyDrones)): 
-        #         print(enemyDrones[x].currentHealth)
+            if len(enemyDrones) == 0:
+                return
 
             # Get the attacking unit's ID and base damage.
             unitTypeID = self.unit_names[attackingUnit.unitType.lower()]
             damage = self.unit_types[unitTypeID].damage
-            targetedDrone = enemyDrones[0]
-            enemyDrones[0].currentHealth = enemyDrones[0].currentHealth - damage
 
-            # Make sure that we remove the most viable drone if it has been destroyed
-            if enemyDrones[0].currentHealth <= 0.:
-                del enemyDrones[0]
+            # Target drone by most viable
+            targetedDrone = enemyDrones[idx % len(enemyDrones)]
 
             # Submit the drone's action
             action = (opponent, targetedDrone.groupID, targetedDrone, damage)
@@ -137,23 +113,47 @@ def mostLethal(self,combatActions,player,opponent,activeGroups,activeUnits):
     #    print(self.unit_types[self.unit_names[dr.unitType.lower()]].damage)
 
     for groupID in activeUnits[player]:
-        for attackingUnit in activeUnits[player][groupID]:
+        for idx,attackingUnit in enumerate(activeUnits[player][groupID]):
 
             if len(enemyDrones) == 0:
-            #     print("No one is home")
                 return
 
             # Get the attacking unit's ID and base damage.
             unitTypeID = self.unit_names[attackingUnit.unitType.lower()]
             damage = self.unit_types[unitTypeID].damage
-            targetedDrone = enemyDrones[0]
 
-            enemyDrones[0].currentHealth = enemyDrones[0].currentHealth - damage
-
-            # Make sure that we remove the most viable drone if it has been destroyed
-            if enemyDrones[0].currentHealth <= 0.:
-                del enemyDrones[0]
+            # Target next viable drone
+            targetedDrone = enemyDrones[idx % len(enemyDrones)] 
 
             # Submit the drone's action
             action = (opponent, targetedDrone.groupID, targetedDrone, damage)
             combatActions.append(action)
+
+def callCustomTargeting(self, combatActions, player, opponent, activeGroups, activeUnits,node):
+    # Imported from the agent script
+    # Provide a copy of the node so they can't change it
+    nodecopy = node
+    unreliableCombatActions = customTargeting(self, player, opponent, activeGroups, activeUnits, nodecopy)
+
+    #Keep a list of each attacking unit type that exists
+    attackingUnits = []
+    for groupID in activeUnits[player]:
+        for attackingUnit in enumerate(activeUnits[player][groupID]):
+            attackingUnits.append(attackingUnit)
+
+    # Ensure that the actions are not using drones that are not within the group. i.e. they're making a striker attack enemies when the group contains no strikers
+
+    for action in unreliableCombatActions:
+        # Check that damage is a number and indexes a unit type so we can get its damage, if all is good then we edit the action with the calculated damage
+        try:
+            1 + action[3]                                           # Check if value is an integer
+            attackingUnits.remove(action[3].lower())                # Check that attacking unit exists, prevents unit from atacking more than once
+            action[3] = self.unit_types[action[3].lower()].damage   # Change value to calculated damage
+        except:
+            print("Damage is not valid")
+
+    combatActions = unreliableCombatActions
+
+    # unreliableCombatActions has the same tuple structure as combatActions, except damage is replaced by the unit type that is attacking
+    # After the custom targeting funciton finishes, we need to run through combat actions and replace the unit type that's attacking with
+    # the amount of damage it deals
