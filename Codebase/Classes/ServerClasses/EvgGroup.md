@@ -18,3 +18,5 @@
 |**pathIndex**          |*int*              |This property is never referenced.                                                         |
 |**speed**              |*int*              |The speed for the group based on the units that comprise it.                               |
 |**counts**             |*dict\<int>*       |The numbers of unit types within the group.                                                |
+|**hasAttackCommander** |*bool*             |Indicates whether a group has an attack commander.                                         |
+|**hasSpeedCommander**  |*bool*             |Indicates whether a group has a speed commander.                                           |

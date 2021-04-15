@@ -41,6 +41,8 @@ class EvgGroup:
         self.ready = False
         self.moving = False
         self.destroyed = False
+        self.hasAttackCommander = False
+        self.hasSpeedCommander = False
         self.distance_remaining = 0
         self.mapUnitID = []
         self.travel_destination = -1

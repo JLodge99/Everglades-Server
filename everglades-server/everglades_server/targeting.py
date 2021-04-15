@@ -30,7 +30,7 @@ def unravelEnemies(self,oppUnits):
     return ret
 
 # This simulates the damage equation used by combat() to help better coordinate attacks.
-def predictHealth(self, targetedUnit, targetedTeam, attackingUnit, attackingTeam, node):
+def predictHealth(self, targetedUnit, targetedTeam, attackingUnit, attackingGroupID, attackingTeam, node):
     # Calculate the node defense bonus.
     nodeControlled = 1 if node.controlledBy == attackingTeam else 0
     fortBonus = 1 if ('DEFEND' in node.resource) else 0
@@ -39,6 +39,11 @@ def predictHealth(self, targetedUnit, targetedTeam, attackingUnit, attackingTeam
     # Get the attacking unit's ID and base damage.
     attackerTypeID = self.unit_names[attackingUnit.unitType.lower()]
     baseDamage = self.unit_types[attackerTypeID].damage
+
+    # If the attacking group has an attack commander, apply the damage multipler.
+    attackingGroup = self.players[attackingTeam].groups[attackingGroupID]
+    if attackingGroup.hasAttackCommander == True:
+        baseDamage *= 1.5
 
     targetTypeID = self.unit_names[attackingUnit.unitType.lower()]
     targetBaseHealth = self.unit_types[targetTypeID].health
@@ -118,7 +123,7 @@ def lowestHealth(self, combatActions, player, opponent, activeGroups, activeUnit
             else:
                 index = index + 1
 
-            predictHealth(self, targetedDrone, opponent, attackingUnit, player, node)
+            predictHealth(self, targetedDrone, opponent, attackingUnit, groupID, player, node)
             
             # Submit the drone's action
             action = (opponent, targetedDrone.groupID, targetedDrone, damage)
@@ -161,7 +166,7 @@ def highestHealth(self, combatActions, player, opponent, activeGroups, activeUni
             else:
                 index = index + 1
 
-            predictHealth(self, targetedDrone, opponent, attackingUnit, player, node)
+            predictHealth(self, targetedDrone, opponent, attackingUnit, groupID, player, node)
             
             # Submit the drone's action
             action = (opponent, targetedDrone.groupID, targetedDrone, damage)
@@ -207,7 +212,7 @@ def mostLethal(self, combatActions, player, opponent, activeGroups, activeUnits,
             else:
                 index = index + 1
 
-            predictHealth(self, targetedDrone, opponent, attackingUnit, player, node)
+            predictHealth(self, targetedDrone, opponent, attackingUnit, groupID, player, node)
             
             # Submit the drone's action
             action = (opponent, targetedDrone.groupID, targetedDrone, damage)

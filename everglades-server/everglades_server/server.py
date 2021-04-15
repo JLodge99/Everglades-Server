@@ -230,7 +230,6 @@ class EvergladesGame:
                 speedbonus_controlled_ally = in_type['Speed_Controlled_Ally'],
                 speedbonus_controlled_enemy = in_type['Speed_Controlled_Enemy'],
                 recon = in_type['Recon'],
-
                 control = in_type['Control'],
                 cost = in_type['Cost']
             )
@@ -325,8 +324,11 @@ class EvergladesGame:
                     assert(in_type in self.unit_names), 'Group type not in unit type config file'
                     assert(in_count <= 100), 'Invalid group size allocation'
 
+                    # Pass in the base string of the unit type and get back the integer ID
                     unit_id = self.unit_names[in_type]
 
+                    # Add the number of units of this type to the group's counts dictionary.
+                    # This helps keep track of how many units of one type are present in the group.
                     newGroup.counts[unit_id] = in_count
 
                     # Instantiate a new unit for however many times that unit appears in the group.
@@ -343,7 +345,6 @@ class EvergladesGame:
                         newUnit = EvgUnit(
                                 unitType = in_type,
                                 universalIndex = universalUnitIndex,
-                                #currentHealth = self.unit_types[unit_id].health,
                                 currentHealth = 100.,
                                 currentSpeed = self.unit_types[unit_id].speed,
                         )
@@ -958,10 +959,6 @@ class EvergladesGame:
     # 2. CONSTRUCTION - Use callback functions to get each individual drone's target and add up the damage to be applied to each drone on both sides.
     # 3. DESTRUCTION  - Apply the damage built from the previous step and eliminate drones and groups as needed.
     def combat(self, callback0 = None, callback1 = None):
-        useRandomTargeting = True
-        useDefaultTargeting = False
-        useCustomTargeting = False
-
         contestedNodeFound = False
 
         # Small helper function that helps create multi-dimensional dictionaries.
@@ -971,9 +968,14 @@ class EvergladesGame:
             else: 
                 return defaultdict(lambda: multi_dict(K-1, type)) 
 
+        # Keeps track of groups that are at the given node.
         activeGroups = {}
         activeGroups[0] = []
         activeGroups[1] = []
+
+        # Keeps track of attack commanders in one of the groups at the given node.
+        player0AttackCommander = False
+        player1AttackCommander = False
 
         activeUnits = multi_dict(2, list)
 
@@ -998,11 +1000,23 @@ class EvergladesGame:
                     elif self.players[player].groups[groupID].moving == False and self.players[player].groups[groupID].destroyed == False:
                         contestedNodes.append(node.ID)
                         groupsAtNode.append(groupID)
+
                         # Go through all units in the given group to build a list of all units within the group that are alive.
                         for unitIndex, unit in enumerate(self.players[player].groups[groupID].units):
                             if unit.currentHealth > 0:
                                 unit.unitIndex = unitIndex
                                 activeUnitList.append(unit)
+
+                                unitTypeID = self.unit_names[unit.unitType.lower()]
+                                # Check if the alive unit has the commander attribute. If it does, mark this group
+                                # as having a commander present.
+                                if self.unit_types[unitTypeID].commander_damage == 1 and player == 0:
+                                    player0AttackCommander = True
+                                    self.players[player].groups[groupID].hasAttackCommander = True
+                                elif self.unit_types[unitTypeID].commander_damage == 1 and player == 1:
+                                    player1AttackCommander = True
+                                    self.players[player].groups[groupID].hasAttackCommander = True
+
                         # Add the built unit list to the activeUnits dictionary
                         if len(activeUnitList) > 0:
                             activeUnits[player][groupID] = activeUnitList
@@ -1065,9 +1079,7 @@ class EvergladesGame:
                 # =-----------------=
                 # DESTRUCTION
                 # =-----------------=
-
                 #TODO remove this
-                #defeatedPlayers = []
                 damageDealtToPlayer = {}
                 killedUnits = {}
                 groupsDestroyed = {}
@@ -1076,6 +1088,7 @@ class EvergladesGame:
                 # Apply the damage that was build in the previous section.
                 for player in self.team_starts:
                     opponent = 0 if (player == 1) else 1
+                    # TODO remove these dictionaries
                     damageDealtToPlayer[opponent] = 0
                     killedUnits[opponent] = 0
                     groupsDestroyed[opponent] = 0
@@ -1096,6 +1109,12 @@ class EvergladesGame:
 
                             # Pull the base damage from the infliction array.
                             baseDamage = infliction[opponent][groupID][targetUnit]
+
+                            # If the attacking player has a commander present, give the attacking unit a damage bonus.
+                            if player == 0 and player0AttackCommander == True:
+                                baseDamage *= 1.5
+                            elif player == 1 and player1AttackCommander == True:
+                                baseDamage *= 1.5
                             
                             # Calculate the true damage that will be applied to the targeted unit.
                             trueDamage = (10. * baseDamage) / (targetBaseHealth + nodeDefense)
@@ -1158,11 +1177,6 @@ class EvergladesGame:
                                 groupsForOutput.append(self.players[opponent].groups[group].universalIndex)
                                 unitsForOutput.append(unit.universalIndex)
                                 healthForOutput.append(float("{:.1f}".format(unit.outputHealth)))
-                            # else:
-                            #     print("Issue at opp", opponent, "group", self.players[opponent].groups[group].universalIndex, "unit", unit.universalIndex)
-                            #     print(infliction[opponent][group][unit])
-
-                        #groupsForOutput = [self.players[opponent].groups[group].universalIndex] * len(unitsForOutput)
 
                     # Build combat output message
                     outputString = '{:.6f},{},{},[{}],[{}],[{}]'.format(
@@ -1184,8 +1198,6 @@ class EvergladesGame:
 
                 for player in self.team_starts:
                     opponent = 0 if (player == 1) else 1
-                    # Damage delt to opponent [opponent]
-                    # Total units killed [opponent]
                     outputFile.write(str(player) + ",")
                     outputFile.write(str(damageDealtToPlayer[opponent]) + ",")
                     outputFile.write(str(killedUnits[opponent]) + ",")
