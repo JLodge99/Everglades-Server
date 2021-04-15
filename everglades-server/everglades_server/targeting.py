@@ -52,8 +52,6 @@ def predictHealth(self, targetedUnit, targetedTeam, attackingUnit, attackingTeam
 
     targetedUnit.predictedHealth = appliedDamage
 
-
-
 # Randomly selects targets by:
 # 1. Randomly selecting a single group from enemy groups that are at the node
 # 2. Randomly selects a drone from that chosen group
@@ -219,3 +217,24 @@ def mostLethal(self, combatActions, player, opponent, activeGroups, activeUnits,
             # then there is no reason to continue targeting.
             if index >= len(enemyDrones):
                 return
+
+def callCustomTargeting(self, combatActions, player, opponent, activeGroups, activeUnits, node):
+    # Imported from the agent script
+    # Provide a copy of the node so they can't change it, or remove the node information entirely
+    unreliableCombatActions = customTargeting(self, player, opponent, activeGroups, activeUnits, node)
+    # Ensure that the actions are not using drones that are not within the group. i.e. they're making a striker attack enemies when the group contains no strikers, or
+    # they're allowing a single unit to attack every enemy multiple times
+
+    # for action in unreliableCombatActions:
+    #     if action[3] is not an integer:
+    #         say "stop cheating"
+    #     elif action[3] is a valid unit ID:
+    #         convert that ID into the damage that unit type deals
+    action[3] = self.unit_types[action[3].lower()].damage
+
+    combatActions = unreliableCombatActions
+
+
+    # unreliableCombatActions has the same tuple structure as combatActions, except damage is replaced by the unit type that is attacking
+    # After the custom targeting funciton finishes, we need to run through combat actions and replace the unit type that's attacking with
+    # the amount of damage it deals

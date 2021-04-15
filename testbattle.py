@@ -13,7 +13,7 @@ import numpy as np
 from everglades_server import server
 from everglades_server import generate_map
 from everglades_server import generate_3dmap
-from target_testing import targetSystemSelections
+from target_testing import *
 
 ########################################################################################################
 ## Input Variables
@@ -30,7 +30,7 @@ wind = True
 
 if mapType == '2D':
     print("Generating 2D map")
-    generate_map.exec(7)
+    generate_map.exec(3)
 elif mapType == '3D':
     print("Generating 3D map")
     generate_3dmap.exec(7, 7, 10)
@@ -57,7 +57,7 @@ gamesetup = {}
 gamesetup["__type"] = "Setup"
 gamesetup["MapFile"] = map_name
 gamesetup["MapType"] = mapType
-gamesetup["Targeting"] = ["randomlySelect", "randomlySelect"] # Valid options: randomlySelect, lowestHealth, highestHealth, mostLethal
+gamesetup["Targeting"] = targetSystems # Valid options: randomlySelect, lowestHealth, highestHealth, mostLethal
 gamesetup["Agents"] = ["random_actions.py", "random_actions.py"]
 gamesetup["UnitFile"] = "UnitDefinitions.json"
 gamesetup["UnitBudget"] = 100

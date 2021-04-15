@@ -1,10 +1,10 @@
 {
-    "__type": "static",
-    "MapFile": "reggtestmap.json",
-    "MapType": "Static",
+    "__type": "Setup",
+    "MapFile": "Map.json",
+    "MapType": "2D",
     "Targeting": [
-        "lowestHealth",
-        "lowestHealth"
+        "mostLethal",
+        "mostLethal"
     ],
     "Agents": [
         "random_actions.py",
@@ -14,7 +14,7 @@
     "UnitBudget": 100,
     "TurnLimit": 150,
     "CaptureBonus": 1000,
-    "enableWind": false,
+    "enableWind": true,
     "Stochasticity": 15054,
     "FocusTurnMin": 4,
     "FocusTurnMax": 6,
