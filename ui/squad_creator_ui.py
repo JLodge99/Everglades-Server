@@ -19,8 +19,10 @@ squadUnits = []     #The names of each type of unit in a squad
 squadNums = []      #The amount of each type of unit in a squad
 
 #The below variables are the copied squad. They are in the same format as a squad from the loadout
-tempSquadUnits = [] #The names of each type of unit in the copied squad
-tempSquadNums = []  #The amount of each type of unit in the copied squad
+copiedSquadUnits = [] #The names of each type of unit in the copied squad
+copiedSquadNums = []  #The amount of each type of unit in the copied squad
+
+printStatementsThatEthanNeedsApparently = False
 
 #Initializing the squad-describing variables
 for x in range(0, numSquads):
@@ -112,15 +114,15 @@ def copySquad():
 
     global squadUnits
     global squadNums
-    global tempSquadUnits
-    global tempSquadNums
+    global copiedSquadUnits
+    global copiedSquadNums
     
     ## Get current squad index
     squadIndex = int(selSquadDdText.get())-1
 
     ## Store current state
-    tempSquadUnits = squadUnits[squadIndex]
-    tempSquadNums = squadNums[squadIndex]
+    copiedSquadUnits = squadUnits[squadIndex]
+    copiedSquadNums = squadNums[squadIndex]
 
 def pasteSquad():
     ### PURPOSE: When a squad is pasted, this function is called
@@ -128,15 +130,15 @@ def pasteSquad():
 
     global squadUnits
     global squadNums
-    global tempSquadUnits
-    global tempSquadNums
+    global copiedSquadUnits
+    global copiedSquadNums
     
     ## Get current squad index
     squadIndex = int(selSquadDdText.get())-1
 
     ## Replace current squad with stored squad
-    squadUnits[squadIndex] = tempSquadUnits
-    squadNums[squadIndex] = tempSquadNums
+    squadUnits[squadIndex] = copiedSquadUnits
+    squadNums[squadIndex] = copiedSquadNums
 
     ## Update list of units in current squad
     updateUnitList()
@@ -276,10 +278,23 @@ def generateJSON():
                 loadout[squadNumber].append(squadUnits[squadNumber][unitInList])    # add that unit to the loadout
     
     # Grab player number from the dropdown
-    playerIdentifier = int(playerNumDdText.get()-1) # Translates DD options (1,2) to server-readable (0,1)
+    playerIdentifier = int(playerNumDdText.get())-1 # Translates DD options (1,2) to server-readable (0,1)
 
     # Call the function to write the current loadout to the appropriate JSON
     GenerateJsonFileLoadout(loadout, playerIdentifier)
+
+    if printStatementsThatEthanNeedsApparently == True:
+        print("\nThis is the squad my UI displays")
+        for squad in loadout:
+            print(squad)
+        print("Other than that it is sorted, they are identical\n")
+
+    
+        print("And for fun, the squad printed legibly (the way it is stored in the UI)")
+        for indx1, squad in enumerate(squadNums):
+            print("\nSquad "+str(indx1+1)+"\nLength: "+str(len(squadNums[indx1]))+"\n#######################")
+            for indx2, unit in enumerate(squadUnits[indx1]):
+                print(squadUnits[indx1][indx2]+": "+str(squadNums[indx1][indx2]))
 
 def generateRandom():
     ### PURPOSE: When the "generate random squad" button is pressed, this function is called
@@ -288,28 +303,23 @@ def generateRandom():
     presetNumber = preset_dd['menu'].index(presetSelDdText.get())
     loadout = GenerateRandomLoadout(presetNumber)   #Defined in CreateJsonData.py
 
-    # Sort the random squad
-    # The current (3/16/21) squad generation function creates multiple groups of count 1 of each unit type
-    # It is easiest to join these groups by sorting them first
+    print("This is the squad your function returns")
     for squad in loadout:
-        squad.sort()
+        print(squad)
 
     global squadUnits
-    tempsquadUnits = []
     global squadNums
-    tempsquadNums = []
     global numSquads
 
-    numSquads = len(loadout)
-    prevUnitName = ""       # Stores the previous name read from the random squad generation
-    counter = 0             # Counts the number of each type of unit before a new name or the end of the squad appears
+    tempsquadUnits = []
+    tempsquadNums = []
 
-    ## After sorting the random loadout, it will be in the form used by the JSON-writing function
-    ## The code snippet below translates the loadout from the format used by the JSON-writing function
+    numSquads = len(loadout)
+
+    ## The code snippet below translates the loadout from the format used by the random loadout function
     ## to the format defined at the top of this program so it is usable in the UI
     ## ex:      loadout[0]: ["Striker", "Striker", "Striker", "Tank", "Tank"]
     ## becomes: squadNums[0]: [3, 2]  &  squadUnits[0]: ["Striker", "Tank"]
-    ## The code is a bit of a mess but it works as efficiently as possible
 
     # For each squad (squad = int index of current squad)
     for squad in range(0,numSquads):    
@@ -320,27 +330,17 @@ def generateRandom():
 
         for unit in loadout[squad]:     # For each unit in the current squad
 
-            # If this is a new unit, add the count of the previous unit, add new name to the list of unit types, and begin counting from 1
-            if unit != prevUnitName:   
-                # If this is NOT the first unit, append the count of the previous unit     
-                if counter > 0:
-                    tempsquadNums[squad].append(counter)
+            # If the unit is in the squad, increment its counters
+            if unit in tempsquadUnits[squad]:
 
-                # Add this unit's name to the list
-                tempsquadUnits[squad].append(unit)
+                indexOfUnitInSquad = tempsquadUnits[squad].index(unit)  # Find its index in the squad
+                tempsquadNums[squad][indexOfUnitInSquad]+=1            # Increment its count
 
-                # Begin counting new unit's amount
-                counter = 1            
+            # If this is a new unit type, add the count of the previous unit, add new name to the list of unit types, and begin counting from 1
+            else:
 
-                # Set the previous unit name so we know what the last documented unit type is
-                prevUnitName = unit
-
-            # If this is the same unit type, increment its counters
-            if unit == prevUnitName:
-                counter+=1
-        
-        # Add the count of the last unit
-        tempsquadNums[squad].append(counter)
+                tempsquadUnits[squad].append(unit)  # Add this unit's name to the list
+                tempsquadNums[squad].append(1)      # Add this unit's count to the list
 
     squadUnits = tempsquadUnits
     squadNums = tempsquadNums
