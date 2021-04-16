@@ -12,6 +12,11 @@ import re
 from everglades_server.definitions_old import *
 #from everglades_server import wind
 
+# NOTE
+# This is the previous server.py file. THIS FILE HAS NOT BEEN MODIFIED BY THE FALL 2020 - SPRING 2021 TEAM
+# It is included for regression testing purposes to ensure that changes did not heavily modify the intended
+# output of the file.
+
 class EvergladesGame:
     """
     """

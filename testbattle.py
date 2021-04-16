@@ -6,14 +6,13 @@ import gym_everglades
 import pdb
 import sys
 import json
-import target_testing
 
 import numpy as np
 
 from everglades_server import server
 from everglades_server import generate_map
 from everglades_server import generate_3dmap
-from target_testing import *
+import testing.target_testing as targetTest
 
 ########################################################################################################
 ## Input Variables
@@ -57,7 +56,7 @@ gamesetup = {}
 gamesetup["__type"] = "Setup"
 gamesetup["MapFile"] = map_name
 gamesetup["MapType"] = mapType
-gamesetup["Targeting"] = targetSystems # Valid options: randomlySelect, lowestHealth, highestHealth, mostLethal
+gamesetup["Targeting"] = targetTest.targetSystems # Valid options: randomlySelect, lowestHealth, highestHealth, mostLethal
 gamesetup["Agents"] = ["random_actions.py", "random_actions.py"]
 gamesetup["UnitFile"] = "UnitDefinitions.json"
 gamesetup["UnitBudget"] = 100

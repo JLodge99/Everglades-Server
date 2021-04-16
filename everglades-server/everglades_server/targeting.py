@@ -226,7 +226,7 @@ def mostLethal(self, combatActions, player, opponent, activeGroups, activeUnits,
 def callCustomTargeting(self, combatActions, player, opponent, activeGroups, activeUnits, node):
     # Imported from the agent script
     # Provide a copy of the node so they can't change it, or remove the node information entirely
-    unreliableCombatActions = customTargeting(self, player, opponent, activeGroups, activeUnits, node)
+    #unreliableCombatActions = customTargeting(self, player, opponent, activeGroups, activeUnits, node)
     # Ensure that the actions are not using drones that are not within the group. i.e. they're making a striker attack enemies when the group contains no strikers, or
     # they're allowing a single unit to attack every enemy multiple times
 

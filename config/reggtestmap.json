@@ -49,7 +49,9 @@
             ],
             "ID": 2,
             "Radius": 1,
-            "Resource": [],
+            "Resource": [
+                "OBSERVE"
+            ],
             "StructureDefense": 1.5,
             "TeamStart": -1,
             "ControlPoints": 100
@@ -197,7 +199,9 @@
             ],
             "ID": 8,
             "Radius": 1,
-            "Resource": [],
+            "Resource": [
+                "OBSERVE"
+            ],
             "StructureDefense": 1.5,
             "TeamStart": -1,
             "ControlPoints": 100
