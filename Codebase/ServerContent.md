@@ -122,4 +122,21 @@ An alphabetical listing of class methods.
 ## Create JSON Methods
 An alphabetical listing of class methods.
 
+[**__getLoadoutTypeArrayViaJSON()**](./Methods/ServerMethods/CreateJSONMethods/__getLoadoutTypeArrayViaJSON().md)  
+[**__getRandomUnit()**](./Methods/ServerMethods/CreateJSONMethods/__getRandomUnit().md)  
+[**__loadJsonFileLoadout()**](./Methods/ServerMethods/CreateJSONMethods/__loadJsonFileLoadout().md)  
+[**CheckIfValidLoadout()**](./Methods/ServerMethods/CreateJSONMethods/CheckIfValidLoadout().md)  
+[**CheckIfValidSquad()**](./Methods/ServerMethods/CreateJSONMethods/CheckIfValidSquad().md)  
+[**ConvertLoadoutToObject()**](./Methods/ServerMethods/CreateJSONMethods/ConvertLoadoutToObject().md)  
+[**GenerateAttributeBasedUnit()**](./Methods/ServerMethods/CreateJSONMethods/GenerateAttributeBasedUnit().md)  
+[**GenerateAttributeBasedUnitsFile()**](./Methods/ServerMethods/CreateJSONMethods/GenerateAttributeBasedUnitsFile().md)  
 [**GenerateJsonFileLoadout()**](./Methods/ServerMethods/CreateJSONMethods/GenerateJsonFileLoadout().md)  
+[**GenerateRandomLoadout()**](./Methods/ServerMethods/CreateJSONMethods/GenerateRandomLoadout().md)  
+[**GenerateUnitAttribute()**](./Methods/ServerMethods/CreateJSONMethods/GenerateUnitAttribute().md)  
+[**GenerateUnitAttributeFile()**](./Methods/ServerMethods/CreateJSONMethods/GenerateUnitAttributeFile().md)  
+[**GenerateUnitDefinition()**](./Methods/ServerMethods/CreateJSONMethods/GenerateUnitDefinition().md)  
+[**GenerateUnitDefinitions()**](./Methods/ServerMethods/CreateJSONMethods/GenerateUnitDefinitions().md)  
+[**GetLoadout()**](./Methods/ServerMethods/CreateJSONMethods/GetLoadout().md)  
+[**GetLoadoutTypeArray()**](./Methods/ServerMethods/CreateJSONMethods/GetLoadoutTypeArray().md)  
+[**LoadAttributesBasedUnitFile()**](./Methods/ServerMethods/CreateJSONMethods/LoadAttributesBasedUnitFile().md)  
+[**LoadUnitAttributeFile()**](./Methods/ServerMethods/CreateJSONMethods/LoadUnitAttributeFile().md)  
