@@ -176,38 +176,6 @@
             "Control": 1,
             "Recon": 0,
             "Cost": 1.0
-        },
-        {
-            "Name": "Super Shooter",
-            "Health": 1,
-            "Damage": 3.0,
-            "Speed": 1,
-            "SpeedBonus_Controlled_Ally": 0,
-            "SpeedBonus_Controlled_Enemy": 0,
-            "Jamming": 0,
-            "Commander_Damage": 0,
-            "Commander_Speed": 0,
-            "Commander_Control": 0,
-            "Self_Repair": 0,
-            "Control": 1,
-            "Recon": 0,
-            "Cost": 1.0
-        },
-        {
-            "Name": "Super Speeder",
-            "Health": 1,
-            "Damage": 1,
-            "Speed": 3.0,
-            "SpeedBonus_Controlled_Ally": 0,
-            "SpeedBonus_Controlled_Enemy": 0,
-            "Jamming": 0,
-            "Commander_Damage": 0,
-            "Commander_Speed": 0,
-            "Commander_Control": 0,
-            "Self_Repair": 0,
-            "Control": 1,
-            "Recon": 0,
-            "Cost": 1.0
         }
     ]
 }
