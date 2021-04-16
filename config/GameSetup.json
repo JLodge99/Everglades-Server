@@ -12,7 +12,7 @@
     ],
     "UnitFile": "UnitDefinitions.json",
     "UnitBudget": 100,
-    "LoadoutPresetLevel": 1,
+    "LoadoutPresetLevel": 2,
     "TurnLimit": 150,
     "CaptureBonus": 1000,
     "enableWind": true,

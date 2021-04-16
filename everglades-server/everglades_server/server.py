@@ -322,7 +322,8 @@ class EvergladesGame:
                     in_type = in_type.lower()
 
                     # Input validation
-                    assert(in_type in self.unit_names), 'Group type not in unit type config file'
+                    print("Name is " + in_type)
+                    assert(in_type in self.unit_names), 'Group type not in unit type config file. NOTE: GameConfig preset may not be set correctly'
                     assert(in_count <= 100), 'Invalid group size allocation'
 
                     unit_id = self.unit_names[in_type]

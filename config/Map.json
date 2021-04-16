@@ -41,10 +41,6 @@
                 {
                     "ConnectedID": 6,
                     "Distance": 3
-                },
-                {
-                    "ConnectedID": 5,
-                    "Distance": 3
                 }
             ],
             "ID": 2,
@@ -65,11 +61,11 @@
                     "Distance": 3
                 },
                 {
-                    "ConnectedID": 6,
+                    "ConnectedID": 7,
                     "Distance": 3
                 },
                 {
-                    "ConnectedID": 5,
+                    "ConnectedID": 6,
                     "Distance": 3
                 },
                 {
@@ -91,6 +87,10 @@
                     "Distance": 3
                 },
                 {
+                    "ConnectedID": 7,
+                    "Distance": 3
+                },
+                {
                     "ConnectedID": 6,
                     "Distance": 3
                 },
@@ -101,7 +101,9 @@
             ],
             "ID": 4,
             "Radius": 1,
-            "Resource": [],
+            "Resource": [
+                "DEFENSE"
+            ],
             "StructureDefense": 1.5,
             "TeamStart": -1,
             "ControlPoints": 100
@@ -109,35 +111,9 @@
         {
             "Connections": [
                 {
-                    "ConnectedID": 6,
+                    "ConnectedID": 7,
                     "Distance": 3
                 },
-                {
-                    "ConnectedID": 9,
-                    "Distance": 3
-                },
-                {
-                    "ConnectedID": 8,
-                    "Distance": 3
-                },
-                {
-                    "ConnectedID": 2,
-                    "Distance": 3
-                },
-                {
-                    "ConnectedID": 3,
-                    "Distance": 3
-                }
-            ],
-            "ID": 5,
-            "Radius": 1,
-            "Resource": [],
-            "StructureDefense": 1.25,
-            "TeamStart": -1,
-            "ControlPoints": 100
-        },
-        {
-            "Connections": [
                 {
                     "ConnectedID": 10,
                     "Distance": 3
@@ -148,10 +124,6 @@
                 },
                 {
                     "ConnectedID": 8,
-                    "Distance": 3
-                },
-                {
-                    "ConnectedID": 5,
                     "Distance": 3
                 },
                 {
@@ -177,11 +149,37 @@
         {
             "Connections": [
                 {
+                    "ConnectedID": 10,
+                    "Distance": 3
+                },
+                {
                     "ConnectedID": 9,
                     "Distance": 3
                 },
                 {
-                    "ConnectedID": 5,
+                    "ConnectedID": 6,
+                    "Distance": 3
+                },
+                {
+                    "ConnectedID": 3,
+                    "Distance": 3
+                },
+                {
+                    "ConnectedID": 4,
+                    "Distance": 3
+                }
+            ],
+            "ID": 7,
+            "Radius": 1,
+            "Resource": [],
+            "StructureDefense": 1.25,
+            "TeamStart": -1,
+            "ControlPoints": 100
+        },
+        {
+            "Connections": [
+                {
+                    "ConnectedID": 9,
                     "Distance": 3
                 },
                 {
@@ -211,11 +209,11 @@
                     "Distance": 3
                 },
                 {
-                    "ConnectedID": 5,
+                    "ConnectedID": 6,
                     "Distance": 3
                 },
                 {
-                    "ConnectedID": 6,
+                    "ConnectedID": 7,
                     "Distance": 3
                 },
                 {
@@ -241,13 +239,19 @@
                     "Distance": 3
                 },
                 {
+                    "ConnectedID": 7,
+                    "Distance": 3
+                },
+                {
                     "ConnectedID": 11,
                     "Distance": 3
                 }
             ],
             "ID": 10,
             "Radius": 1,
-            "Resource": [],
+            "Resource": [
+                "DEFENSE"
+            ],
             "StructureDefense": 1.5,
             "TeamStart": -1,
             "ControlPoints": 100
