@@ -39,7 +39,7 @@
         },
         {
             "Name": "Militia",
-            "Effect": "Speed_Controlled_Ally",
+            "Effect": "SpeedBonus_Controlled_Ally",
             "Description": "Units movement speed between ally controlled nodes is increased.\n",
             "Modifier": 0.5,
             "isMult": 0,
@@ -48,12 +48,39 @@
         },
         {
             "Name": "Guerrilla ",
-            "Effect": "Speed_Controlled_Enemy",
+            "Effect": "SpeedBonus_Controlled_Enemy",
             "Description": "Units movement speed between enemy controlled nodes is increased.\n",
             "Modifier": 0.5,
             "isMult": 0,
             "ModifierPriority": 0,
             "Cost": 1
+        },
+        {
+            "Name": "Jammer",
+            "Effect": "Jamming",
+            "Description": "Performs electronic warfare attacks\n",
+            "Modifier": 1.0,
+            "isMult": 0,
+            "ModifierPriority": 1,
+            "Cost": 6
+        },
+        {
+            "Name": "Assault Commander",
+            "Effect": "Commander_Damage",
+            "Description": "Boosts the damage of allied units in the same squad by 50%. Only one Assault Commander can take effect at once\n",
+            "Modifier": 0.5,
+            "isMult": 0,
+            "ModifierPriority": 1,
+            "Cost": 6
+        },
+        {
+            "Name": "Speed Commander",
+            "Effect": "Commander_Speed",
+            "Description": "Boosts the speed of allied units in the same squad by 50%. Only one Speed Commander can take effect at once\n",
+            "Modifier": 0.5,
+            "isMult": 0,
+            "ModifierPriority": 1,
+            "Cost": 6
         }
     ]
 }

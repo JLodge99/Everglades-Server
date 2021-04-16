@@ -4,59 +4,31 @@
         {
             "Squad": [
                 {
-                    "Type": "striker",
-                    "Count": 8
-                }
-            ]
-        },
-        {
-            "Squad": [
-                {
-                    "Type": "striker",
-                    "Count": 8
-                }
-            ]
-        },
-        {
-            "Squad": [
-                {
-                    "Type": "striker",
-                    "Count": 4
+                    "Type": "Controller",
+                    "Count": 1
                 },
                 {
-                    "Type": "tank",
-                    "Count": 4
-                }
-            ]
-        },
-        {
-            "Squad": [
-                {
-                    "Type": "striker",
-                    "Count": 4
+                    "Type": "Jammer",
+                    "Count": 1
                 },
                 {
-                    "Type": "tank",
-                    "Count": 4
-                }
-            ]
-        },
-        {
-            "Squad": [
-                {
-                    "Type": "tank",
-                    "Count": 4
-                },
-                {
-                    "Type": "recon",
+                    "Type": "Militia",
                     "Count": 2
                 },
                 {
-                    "Type": "striker",
+                    "Type": "Mobile Heavy",
                     "Count": 1
                 },
                 {
-                    "Type": "controller",
+                    "Type": "Rapid Response",
+                    "Count": 1
+                },
+                {
+                    "Type": "Striker",
+                    "Count": 1
+                },
+                {
+                    "Type": "Tank",
                     "Count": 1
                 }
             ]
@@ -64,60 +36,296 @@
         {
             "Squad": [
                 {
-                    "Type": "tank",
-                    "Count": 8
-                }
-            ]
-        },
-        {
-            "Squad": [
-                {
-                    "Type": "tank",
-                    "Count": 8
-                }
-            ]
-        },
-        {
-            "Squad": [
-                {
-                    "Type": "tank",
-                    "Count": 8
-                }
-            ]
-        },
-        {
-            "Squad": [
-                {
-                    "Type": "tank",
-                    "Count": 8
-                }
-            ]
-        },
-        {
-            "Squad": [
-                {
-                    "Type": "tank",
-                    "Count": 8
-                }
-            ]
-        },
-        {
-            "Squad": [
-                {
-                    "Type": "tank",
-                    "Count": 8
-                }
-            ]
-        },
-        {
-            "Squad": [
-                {
-                    "Type": "recon",
-                    "Count": 4
+                    "Type": "Jammer",
+                    "Count": 1
                 },
                 {
-                    "Type": "tank",
-                    "Count": 8
+                    "Type": "Mobile Heavy",
+                    "Count": 2
+                },
+                {
+                    "Type": "Rapid Response",
+                    "Count": 1
+                },
+                {
+                    "Type": "Recon",
+                    "Count": 1
+                },
+                {
+                    "Type": "Tank",
+                    "Count": 2
+                },
+                {
+                    "Type": "Warrior",
+                    "Count": 1
+                }
+            ]
+        },
+        {
+            "Squad": [
+                {
+                    "Type": "Jammer",
+                    "Count": 1
+                },
+                {
+                    "Type": "Militia",
+                    "Count": 1
+                },
+                {
+                    "Type": "Mobile Heavy",
+                    "Count": 2
+                },
+                {
+                    "Type": "Rapid Response",
+                    "Count": 1
+                },
+                {
+                    "Type": "Recon",
+                    "Count": 1
+                },
+                {
+                    "Type": "Striker",
+                    "Count": 1
+                },
+                {
+                    "Type": "Warrior",
+                    "Count": 1
+                }
+            ]
+        },
+        {
+            "Squad": [
+                {
+                    "Type": "Controller",
+                    "Count": 1
+                },
+                {
+                    "Type": "Jammer",
+                    "Count": 2
+                },
+                {
+                    "Type": "Militia",
+                    "Count": 1
+                },
+                {
+                    "Type": "Mobile Heavy",
+                    "Count": 1
+                },
+                {
+                    "Type": "Recon",
+                    "Count": 1
+                },
+                {
+                    "Type": "Striker",
+                    "Count": 1
+                },
+                {
+                    "Type": "Tank",
+                    "Count": 1
+                }
+            ]
+        },
+        {
+            "Squad": [
+                {
+                    "Type": "Jammer",
+                    "Count": 1
+                },
+                {
+                    "Type": "Mobile Heavy",
+                    "Count": 1
+                },
+                {
+                    "Type": "Rapid Response",
+                    "Count": 1
+                },
+                {
+                    "Type": "Recon",
+                    "Count": 1
+                },
+                {
+                    "Type": "Striker",
+                    "Count": 1
+                },
+                {
+                    "Type": "Warrior",
+                    "Count": 2
+                }
+            ]
+        },
+        {
+            "Squad": [
+                {
+                    "Type": "Mobile Heavy",
+                    "Count": 2
+                },
+                {
+                    "Type": "Rapid Response",
+                    "Count": 1
+                },
+                {
+                    "Type": "Striker",
+                    "Count": 2
+                },
+                {
+                    "Type": "Tank",
+                    "Count": 2
+                },
+                {
+                    "Type": "Warrior",
+                    "Count": 1
+                }
+            ]
+        },
+        {
+            "Squad": [
+                {
+                    "Type": "Controller",
+                    "Count": 2
+                },
+                {
+                    "Type": "Mobile Heavy",
+                    "Count": 2
+                },
+                {
+                    "Type": "Striker",
+                    "Count": 3
+                },
+                {
+                    "Type": "Tank",
+                    "Count": 1
+                }
+            ]
+        },
+        {
+            "Squad": [
+                {
+                    "Type": "Militia",
+                    "Count": 2
+                },
+                {
+                    "Type": "Mobile Heavy",
+                    "Count": 1
+                },
+                {
+                    "Type": "Recon",
+                    "Count": 1
+                },
+                {
+                    "Type": "Striker",
+                    "Count": 2
+                },
+                {
+                    "Type": "Tank",
+                    "Count": 2
+                }
+            ]
+        },
+        {
+            "Squad": [
+                {
+                    "Type": "Jammer",
+                    "Count": 2
+                },
+                {
+                    "Type": "Militia",
+                    "Count": 1
+                },
+                {
+                    "Type": "Mobile Heavy",
+                    "Count": 1
+                },
+                {
+                    "Type": "Rapid Response",
+                    "Count": 2
+                },
+                {
+                    "Type": "Recon",
+                    "Count": 1
+                },
+                {
+                    "Type": "Tank",
+                    "Count": 1
+                }
+            ]
+        },
+        {
+            "Squad": [
+                {
+                    "Type": "Jammer",
+                    "Count": 2
+                },
+                {
+                    "Type": "Militia",
+                    "Count": 2
+                },
+                {
+                    "Type": "Mobile Heavy",
+                    "Count": 1
+                },
+                {
+                    "Type": "Recon",
+                    "Count": 2
+                },
+                {
+                    "Type": "Striker",
+                    "Count": 2
+                }
+            ]
+        },
+        {
+            "Squad": [
+                {
+                    "Type": "Militia",
+                    "Count": 1
+                },
+                {
+                    "Type": "Mobile Heavy",
+                    "Count": 2
+                },
+                {
+                    "Type": "Recon",
+                    "Count": 2
+                },
+                {
+                    "Type": "Striker",
+                    "Count": 1
+                },
+                {
+                    "Type": "Tank",
+                    "Count": 1
+                }
+            ]
+        },
+        {
+            "Squad": [
+                {
+                    "Type": "Controller",
+                    "Count": 2
+                },
+                {
+                    "Type": "Jammer",
+                    "Count": 1
+                },
+                {
+                    "Type": "Militia",
+                    "Count": 3
+                },
+                {
+                    "Type": "Recon",
+                    "Count": 2
+                },
+                {
+                    "Type": "Striker",
+                    "Count": 1
+                },
+                {
+                    "Type": "Tank",
+                    "Count": 1
+                },
+                {
+                    "Type": "Warrior",
+                    "Count": 2
                 }
             ]
         }

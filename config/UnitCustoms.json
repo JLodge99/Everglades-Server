@@ -1,0 +1,19 @@
+{
+    "__type": "Units_in_Attribute_Format",
+    "Units": [
+        {
+            "Name": "Super Shooter",
+            "Attributes": [
+                "Increased Damage",
+                "Increased Damage"
+            ]
+        },
+        {
+            "Name": "Super Speeder",
+            "Attributes": [
+                "Increased Speed",
+                "Increased Speed"
+            ]
+        }
+    ]
+}

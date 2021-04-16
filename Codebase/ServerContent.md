@@ -117,3 +117,9 @@ An alphabetical listing of class methods.
 [**step()**](./Methods/ServerMethods/step().md)  
 [**unitTypes_init()**](./Methods/ServerMethods/unitTypes_init().md)  
 [**write_output()**](./Methods/ServerMethods/write_output().md)  
+
+
+## Create JSON Methods
+An alphabetical listing of class methods.
+
+[**GenerateJsonFileLoadout()**](./Methods/ServerMethods/CreateJSONMethods/GenerateJsonFileLoadout().md)  
