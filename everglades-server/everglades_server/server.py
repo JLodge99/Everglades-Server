@@ -1616,6 +1616,15 @@ class EvergladesGame:
 
                         speed = 99999999
                         playerNum = player
+                        commanderSpeedBonus = 0
+
+                        # If a commander is in the squad, store the commander speed bonus
+                        for currentUnit in group.units:
+                            unitTypeID = self.unit_names[currentUnit.unitType.lower()]
+                            unitDefintion = self.unit_types[unitTypeID]
+                            if unitDefintion.commander_speed != 0:
+                                commanderSpeedBonus = unitDefintion.commander_speed
+                                break
 
                         # Find lowest speed and set speed to that
                         # Traverse the array to find the lowest speed
@@ -1632,7 +1641,13 @@ class EvergladesGame:
                             elif unitDefintion.speedbonus_controlled_enemy != 0 and self.evgMap.nodes[start_idx].controlledBy != playerNum and self.evgMap.nodes[end_idx].controlledBy != playerNum: 
                                 calculatedSpeed += unitDefintion.speedbonus_controlled_enemy
 
+                            # If the commander is in the squad, the squad gets the speed bonus for it
+                            if commanderSpeedBonus != 0:
+                                calculatedSpeed += commanderSpeedBonus
                             
+                            # Correctly set the unit's current speed
+                            self.currentSpeed = calculatedSpeed
+
                             if speed > calculatedSpeed:
                                 speed = calculatedSpeed
                         
