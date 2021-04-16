@@ -1,5 +1,6 @@
 # unitTypes_init()
-This initializes unit types to data found in the configuration file.
+This initializes unit types to data found in the configuration file. It initializes the dictionaries
+that allow for the referencing of static unit values at any time.
 
 ## Syntax
 ```python

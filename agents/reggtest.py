@@ -5,7 +5,7 @@ import json
 from gym_everglades.envs import everglades_env
 from everglades_server import CreateJsonData
 
-class random_actions:
+class reggtest:
     def __init__(self, action_space, player_num, map_name):
         self.action_space = action_space
         self.num_groups = 12
@@ -28,23 +28,7 @@ class random_actions:
         #   2 - Tank
         #   3 - Recon
         self.unit_config = CreateJsonData.ConvertLoadoutToObject(player_num)
-        print("Loaded player", player_num, "loadout")
-
-        # Default Output Format:
-        #{
-        #    0: [('controller',1), ('striker', 4), ('recon', 1)],# 6
-        #    1: [('controller',2), ('striker', 2), ('tank', 3), ('recon', 2)],# 15
-        #    2: [('tank', 5)],# 20
-        #    3: [('controller', 2), ('tank', 1), ('recon', 3)],# 26
-        #    4: [('striker', 5), ('recon', 5)],# 36
-        #    5: [('controller', 3), ('striker', 2), ('recon', 1)],# 42
-        #    6: [('striker', 3), ('recon', 1)],# 46
-        #    7: [('controller', 1), ('striker', 2), ('tank', 2), ('recon', 1)],# 52
-        #    8: [('controller', 1), ('recon', 2)],# 55
-        #    9: [('controller', 1), ('striker', 3), ('recon', 2)],# 61
-        #    10: [('striker', 9)],# 70
-        #    11: [('controller', 10), ('striker', 8), ('tank', 2), ('recon', 10)],# 100
-        #}
+        print("Successfully loaded player", player_num, "loadout")
 
         # Recon sensor settings. Format is
         # {Group #: [mode, range, wavelength], ...}
@@ -67,18 +51,13 @@ class random_actions:
 
     # end __init__
 
+    # This is what is determining the actions for the current turn
     def get_action(self, obs):
-        #print('!!!!!!! Observation !!!!!!!!')
-        #print(obs)
-        #print(obs[0])
-        #for i in range(45,101,5):
-        #    print(obs[i:i+5])
-        #print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-        action = np.zeros(self.shape)
-        action[:, 0] = np.random.choice(self.num_groups, self.num_actions, replace=False)
-        action[:, 1] = np.random.choice(self.nodes_array, self.num_actions, replace=False)
-        #print(action)
-        return action
+        action = np.zeros((1,2))
+        action[0, 0] = 0 # Group 0
+        action[0, 1] = 5 # Node ID 5
 
-    def customTargeting(self, player, opponent, activeGroups, activeUnits, node):
-        return
+        # Moves a different group
+        # action[1, 0] = 1 # Group 1
+        # action[1, 1] = 5 # Node ID 5
+        return action

@@ -1,23 +1,15 @@
 {
     "__type": "Setup",
-    "MapFile": "Map.json",
-    "MapType": "2D",
-    "Targeting": [
-        "mostLethal",
-        "mostLethal"
-    ],
+    "MapType": "3D",
     "Agents": [
         "random_actions.py",
         "random_actions.py"
     ],
-    "UnitFile": "UnitDefinitions.json",
     "UnitBudget": 100,
-    "LoadoutPresetLevel": 1,
     "TurnLimit": 150,
     "CaptureBonus": 1000,
     "enableWind": true,
-    "Stochasticity": 15054,
-    "JammerPenalty": 0.75,
+    "Stochasticity": "0",
     "FocusTurnMin": 4,
     "FocusTurnMax": 6,
     "FocusHeatMovement": 15,

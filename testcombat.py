@@ -6,37 +6,41 @@ import gym_everglades
 import pdb
 import sys
 import json
-import target_testing
 
 import numpy as np
 
 from everglades_server import server
 from everglades_server import generate_map
 from everglades_server import generate_3dmap
-from target_testing import *
+from target_testing import targetSystems
 
-########################################################################################################
 ## Input Variables
 # Agent files must include a class of the same name with a 'get_action' function
 # Do not include './' in file path
-agent0_file = 'agents/random_actions'
-agent1_file = 'agents/random_actions'
+agent0_file = 'agents/reggtest'
+    
+agent1_file = 'agents/reggtest'
 
-# Choose which map you want by setting map_name "3D" or "2D"
-mapType = "2D"
-map_name = "Map.json"
-wind = True
-########################################################################################################
+if len(sys.argv) > 3:
+    map_name = sys.argv[3] + '.json'
 
-# Recommended settings for weight
-# Bellcurve Enable:   Weightinit should be .3 - .9
-# Bellcurve Disable:  Weightinit should be .1 - .3
-if mapType == '2D':
-    print("Generating 2D map")
-    generate_map.exec(3)
-elif mapType == '3D':
-    print("Generating 3D map")
-    generate_3dmap.exec(5, 5, 10, weight=.4, bellcurve=True)
+# Choose which map you want by setting map_name.
+# To enable wind go to server.py and in the init() for EvergladesGame set self.enableWind = 1
+# ********WARNING - ENABLING BOTH 3DMAP AND WIND WILL BREAK THE SERVER.***********
+# 3dmap.json     -  3D
+# RandomMap.json -  2D
+
+mapType = "Static"
+map_name = 'reggtestmap.json'
+#map_name = 'RandomMap.json'
+wind = False
+
+# if map_name == 'RandomMap.json':
+#     print("Generating 2D map")
+#     generate_map.exec(7)
+# elif map_name == '3dmap.json':
+#     print("Generating 3D map")
+#     generate_3dmap.exec(7, 7, 10) #(X, Y, Z)
 
 config_dir = os.path.abspath('config')
 map_file = os.path.join(config_dir, map_name)
@@ -57,19 +61,17 @@ agent1_class = getattr(agent1_mod, os.path.basename(agent1_name))
 
 # Create the GameSetup.json
 gamesetup = {}
-gamesetup["__type"] = "Setup"
+gamesetup["__type"] = "static"
 gamesetup["MapFile"] = map_name
 gamesetup["MapType"] = mapType
 gamesetup["Targeting"] = targetSystems # Valid options: randomlySelect, lowestHealth, highestHealth, mostLethal
 gamesetup["Agents"] = ["random_actions.py", "random_actions.py"]
 gamesetup["UnitFile"] = "UnitDefinitions.json"
 gamesetup["UnitBudget"] = 100
-gamesetup["LoadoutPresetLevel"] = 1 #TODO: Read In
 gamesetup["TurnLimit"] = 150
 gamesetup["CaptureBonus"] = 1000
 gamesetup["enableWind"] = wind
 gamesetup["Stochasticity"] = 15054
-gamesetup["JammerPenalty"] = 0.75
 gamesetup["FocusTurnMin"] = 4
 gamesetup["FocusTurnMax"] = 6
 gamesetup["FocusHeatMovement"] = 15

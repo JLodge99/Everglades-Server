@@ -35,54 +35,35 @@ class EvgPlayer:
 class EvgGroup:
     def __init__(self, **kwargs):
         self.groupID = kwargs.get('groupID',-1)
-        self.universalIndex = kwargs.get('universalIndex', 0)
         self.mapGroupID = kwargs.get('mapGroupID',-1)
         self.location = kwargs.get('location',-1)
         self.ready = False
         self.moving = False
         self.destroyed = False
-        self.hasAttackCommander = False
-        self.hasSpeedCommander = False
         self.distance_remaining = 0
         self.mapUnitID = []
         self.travel_destination = -1
         self.units = []
         self.speed = []
-        self.counts = {}
+        self.count = 0
         self.pathIndex = 0
 
-        self.commanderDamageCount = kwargs.get('commanderDamageCount',0)
-        self.commanderDamageModifier = kwargs.get('commanderDamageModifier',0)
-
-
-# Contains dynamic values for units within a group.
-class EvgUnit:
-    def __init__(self, **kwargs):
-        self.unitType = kwargs.get('unitType', None)
-        # Unit index is the local index of the unit within its respective group list.
-        # Universal index is the unit's unique ID across all units in the game.
-        self.unitIndex = kwargs.get('unitIndex', 0)
-        self.universalIndex = kwargs.get('universalIndex', 0)
-        self.currentHealth = kwargs.get('currentHealth', 0)
-        self.currentSpeed = kwargs.get('currentSpeed', 0)
-
-# Contains static values for units of a single type.
 class EvgUnitDefinition:
     def __init__(self, **kwargs):
-        self.unitType = kwargs.get('name', None)
-        self.health = kwargs.get('health', 0)
-        self.damage = kwargs.get('damage', 0)
-        self.speed = kwargs.get('speed', 0)
-        self.control = kwargs.get('control', 0)
-        self.cost = kwargs.get('cost', 0)
-        self.jamming = kwargs.get('jamming',0)
-        self.commander_damage = kwargs.get('commander_damage',0)
-        self.commander_speed = kwargs.get('commander_speed',0)
+        self.unitType = kwargs.get('name',None)
+        self.health = kwargs.get('health',0)
+        self.damage = kwargs.get('damage',0)
+        self.speed = kwargs.get('speed',0)
+        self.control = kwargs.get('control',0)
+        self.cost = kwargs.get('cost',0)
 
-
-        self.recon = kwargs.get('recon', 0)
-        self.speedbonus_controlled_ally = kwargs.get('speedbonus_controlled_ally', 0)
-        self.speedbonus_controlled_enemy = kwargs.get('speedbonus_controlled_enemy', 0)
+class EvgUnit:
+    def __init__(self, **kwargs):
+        self.unitType = kwargs.get('unitType',-1)
+        self.count = kwargs.get('count',0)
+        self.unitHealth = np.ones(self.count) * 100.
+        # Set null values for type, health, damage, speed, control, and cost
+        self.definition = EvgUnitDefinition()
 
 class MovementTurn:
     def __init__(self, **kwargs):
