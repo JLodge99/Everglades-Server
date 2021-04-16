@@ -165,10 +165,13 @@ def ConvertLoadoutToObject(playerIdentifier):
     return unit_configs
 
 def __getRandomUnit(preset):
-    unitInfo = LoadAttributesBasedUnitFile(preset)
+    unitNames = []
+    for i in range(max(min(3,preset + 1),1)):
+        dataToConvert = LoadAttributesBasedUnitFile(i)
+        unitNames = unitNames + dataToConvert[0]
+           
 
-
-    return random.choice(unitInfo[0])
+    return random.choice(unitNames)
 
     
 # Creates a random loadout

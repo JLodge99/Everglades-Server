@@ -13,4 +13,4 @@ No value is returned. Results in creation of a new squad JSON
 |Parameter      |Description        |
 |---------------|-------------------|
 |**loadout**    |An array holding arrays, representing different squads. Each array subsequently contains strings designating the name of the unit in that squad|
-|**playerIdentifier**|The number designation of the player. 0 and 1 are used for the two players. -1 is reserved for the default loadout|
+|**playerIdentifier**|The number designation of the player. 0 and 1 are used for the two players. -1 is reserved for the default loadout. Any number less then 0 is set to -1|
