@@ -30,7 +30,7 @@ def unravelEnemies(self,oppUnits):
 
     return ret
 
-def randomlySelect(self,combatActions,player,opponent,activeGroups,activeUnits,node):
+def target_randomlySelect(self,combatActions,player,opponent,activeGroups,activeUnits,node):
 
     for groupID in activeUnits[player]:
         for attackingUnit in activeUnits[player][groupID]:
@@ -52,7 +52,7 @@ def randomlySelect(self,combatActions,player,opponent,activeGroups,activeUnits,n
             action = (opponent, oppGroupID, oppUnitID, damage)
             combatActions.append(action)
 
-def lowestHealth(self,combatActions,player,opponent,activeGroups,activeUnits,node):
+def target_lowestHealth(self,combatActions,player,opponent,activeGroups,activeUnits,node):
 
     # activeUnits[player][groupID][unitType][unitID] = unitType
     # Create a list of ALL enemy drones
@@ -78,7 +78,7 @@ def lowestHealth(self,combatActions,player,opponent,activeGroups,activeUnits,nod
             action = (opponent, targetedDrone.groupID, targetedDrone, damage)
             combatActions.append(action)
 
-def highestHealth(self,combatActions,player,opponent,activeGroups,activeUnits,node):
+def target_highestHealth(self,combatActions,player,opponent,activeGroups,activeUnits,node):
 
     # activeUnits[player][groupID][unitType][unitID] = unitType
     # Create a list of ALL enemy drones
@@ -104,7 +104,7 @@ def highestHealth(self,combatActions,player,opponent,activeGroups,activeUnits,no
             action = (opponent, targetedDrone.groupID, targetedDrone, damage)
             combatActions.append(action)
 
-def mostLethal(self,combatActions,player,opponent,activeGroups,activeUnits,node):
+def target_mostLethal(self,combatActions,player,opponent,activeGroups,activeUnits,node):
 
     # activeUnits[player][groupID][unitType][unitID] = unitType
     # Create a list of ALL enemy drones
@@ -143,7 +143,7 @@ def callCustomTargeting(self, combatActions, player, opponent, activeGroups, act
     nodecopy = node
 
     # Import the custom targeting function from random_actions.py
-    self.customTargeting = getattr(random_actions, "customTargeting")
+    self.customTargeting = getattr(random_actions, "target_customTargeting")
     unreliableCombatActions = self.customTargeting(self, playercopy, opponentcopy, activeGroupscopy, activeUnitscopy, nodecopy)
 
     # Keep a list of each attacking unit type that exists
