@@ -383,8 +383,6 @@ def GenerateUnitDefinition(name, attributeList):
     jsonData["Jamming"] = 0
     jsonData["Commander_Damage"] = 0
     jsonData["Commander_Speed"] = 0
-    jsonData["Commander_Control"] = 0
-    jsonData["Self_Repair"] = 0
     jsonData["Control"] = 1
     jsonData["Recon"] = 0
     jsonData["Cost"] = 0
@@ -435,8 +433,11 @@ def GenerateUnitDefinitions(gameType):
     unitAttributes = []
     for i in range(max(min(3,gameType + 1),1)):
         dataToConvert = LoadAttributesBasedUnitFile(i)
-        unitNames = unitNames + dataToConvert[0]
-        unitAttributes = unitAttributes + dataToConvert[1]
+        for v in dataToConvert[0]:
+            unitNames.append(v)
+        for v in dataToConvert[1]:
+            unitAttributes.append(v)
+
 
     for i in range(len(unitNames)):
         unitInformation.append(GenerateUnitDefinition(unitNames[i], unitAttributes[i]))
@@ -457,4 +458,3 @@ def GenerateUnitDefinitions(gameType):
 def TestingFunction():
     GenerateUnitDefinitions(0)
     GenerateJsonFileLoadout(GenerateRandomLoadout(0), 3)
-TestingFunction()

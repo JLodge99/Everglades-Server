@@ -102,7 +102,7 @@
             "ID": 4,
             "Radius": 1,
             "Resource": [
-                "DEFENSE"
+                "OBSERVE"
             ],
             "StructureDefense": 1.5,
             "TeamStart": -1,
@@ -250,7 +250,7 @@
             "ID": 10,
             "Radius": 1,
             "Resource": [
-                "DEFENSE"
+                "OBSERVE"
             ],
             "StructureDefense": 1.5,
             "TeamStart": -1,

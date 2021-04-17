@@ -150,7 +150,7 @@ class EvergladesGame:
         node_num = 1
 
         if self.enableWind == 1:
-            print("Wind enabled")
+            #print("Wind enabled")
             if self.map_dat["Type"] == "3D":
                 node_num = 0
                 for n in self.evgMap.nodes:
@@ -224,6 +224,7 @@ class EvergladesGame:
         self.unit_ids = {}
         self.unit_names = {}
         for in_type in self.unit_dat['units']:
+
             # Initialize new unit type
             unit_type = EvgUnitDefinition(
                 name = in_type['Name'],
@@ -235,7 +236,6 @@ class EvergladesGame:
                 jamming = in_type['Jamming'],
                 commander_damage = in_type['Commander_Damage'],
                 commander_speed = in_type['Commander_Speed'],
-                self_repair = in_type['Self_Repair'],
 
                 recon = in_type['Recon'],
 
@@ -322,7 +322,6 @@ class EvergladesGame:
                     in_type = in_type.lower()
 
                     # Input validation
-                    print("Name is " + in_type)
                     assert(in_type in self.unit_names), 'Group type not in unit type config file. NOTE: GameConfig preset may not be set correctly'
                     assert(in_count <= 100), 'Invalid group size allocation'
 
@@ -1589,11 +1588,11 @@ class EvergladesGame:
                         node.controlState = node.controlPoints * pxer
                         node.controlledBy = pid
                     if node.controlledBy != -1 and neutralize:
-                        print('!!!!!!Neutralize!!!!!!!!')
-                        print(node.controlledBy)
+                        #print('!!!!!!Neutralize!!!!!!!!')
+                        #print(node.controlledBy)
                         node.controlledBy = -1
-                        print(node.controlledBy)
-                        print()
+                        #print(node.controlledBy)
+                        #print()
 
 
     def output_init(self):
@@ -1815,7 +1814,7 @@ class EvergladesGame:
                 writer.writerow(self.output[key])
 
         copyfile(self.mappath, os.path.join(self.dat_dir, os.path.basename(self.mappath)))
-        print("Copied map json")
+        #print("Copied map json")
 
 
 # end class EvergladesGame
