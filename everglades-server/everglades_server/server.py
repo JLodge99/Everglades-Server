@@ -1022,9 +1022,9 @@ class EvergladesGame:
                     opponent = 0 if (player == 1) else 1
                     
                     if (player == 0):
-                        callback0(self,combatActions,player,opponent,activeGroups,activeUnits)
+                        callback0(self,combatActions,player,opponent,activeGroups,activeUnits,node)
                     else:
-                        callback1(self,combatActions,player,opponent,activeGroups,activeUnits)
+                        callback1(self,combatActions,player,opponent,activeGroups,activeUnits,node)
 
                 # Build damage for each action inside of combat actions.
                 # Base damage is tracked by the inflictions array.

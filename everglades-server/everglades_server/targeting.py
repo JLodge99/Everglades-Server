@@ -1,7 +1,11 @@
+import os
+import importlib
 import random
 import random as r
 import re
+
 from agents import random_actions
+#import testbattle as tb
 
 # Targeting functions take in 4 parameters:
 # - combatActions:  List of what each unit is targeting
@@ -26,7 +30,7 @@ def unravelEnemies(self,oppUnits):
 
     return ret
 
-def randomlySelect(self,combatActions,player,opponent,activeGroups,activeUnits):
+def randomlySelect(self,combatActions,player,opponent,activeGroups,activeUnits,node):
 
     for groupID in activeUnits[player]:
         for attackingUnit in activeUnits[player][groupID]:
@@ -48,7 +52,7 @@ def randomlySelect(self,combatActions,player,opponent,activeGroups,activeUnits):
             action = (opponent, oppGroupID, oppUnitID, damage)
             combatActions.append(action)
 
-def lowestHealth(self,combatActions,player,opponent,activeGroups,activeUnits):
+def lowestHealth(self,combatActions,player,opponent,activeGroups,activeUnits,node):
 
     # activeUnits[player][groupID][unitType][unitID] = unitType
     # Create a list of ALL enemy drones
@@ -74,7 +78,7 @@ def lowestHealth(self,combatActions,player,opponent,activeGroups,activeUnits):
             action = (opponent, targetedDrone.groupID, targetedDrone, damage)
             combatActions.append(action)
 
-def highestHealth(self,combatActions,player,opponent,activeGroups,activeUnits):
+def highestHealth(self,combatActions,player,opponent,activeGroups,activeUnits,node):
 
     # activeUnits[player][groupID][unitType][unitID] = unitType
     # Create a list of ALL enemy drones
@@ -100,7 +104,7 @@ def highestHealth(self,combatActions,player,opponent,activeGroups,activeUnits):
             action = (opponent, targetedDrone.groupID, targetedDrone, damage)
             combatActions.append(action)
 
-def mostLethal(self,combatActions,player,opponent,activeGroups,activeUnits):
+def mostLethal(self,combatActions,player,opponent,activeGroups,activeUnits,node):
 
     # activeUnits[player][groupID][unitType][unitID] = unitType
     # Create a list of ALL enemy drones
@@ -131,28 +135,33 @@ def mostLethal(self,combatActions,player,opponent,activeGroups,activeUnits):
 
 def callCustomTargeting(self, combatActions, player, opponent, activeGroups, activeUnits,node):
     # Imported from the agent script
-    # Provide a copy of the node so they can't change it
+    # Provide a copy of data so that ai can't change them
+    playercopy = player
+    opponentcopy = opponent
+    activeGroupscopy = activeGroups
+    activeUnitscopy = activeUnits
     nodecopy = node
-    unreliableCombatActions = customTargeting(self, player, opponent, activeGroups, activeUnits, nodecopy)
 
-    #Keep a list of each attacking unit type that exists
+    # Import the custom targeting function from random_actions.py
+    self.customTargeting = getattr(random_actions, "customTargeting")
+    unreliableCombatActions = self.customTargeting(self, playercopy, opponentcopy, activeGroupscopy, activeUnitscopy, nodecopy)
+
+    # Keep a list of each attacking unit type that exists
     attackingUnits = []
     for groupID in activeUnits[player]:
-        for attackingUnit in enumerate(activeUnits[player][groupID]):
+        for attackingUnit in activeUnits[player][groupID]:
             attackingUnits.append(attackingUnit)
 
     # Ensure that the actions are not using drones that are not within the group. i.e. they're making a striker attack enemies when the group contains no strikers
-
     for action in unreliableCombatActions:
         # Check that damage is a number and indexes a unit type so we can get its damage, if all is good then we edit the action with the calculated damage
         try:
-            1 + action[3]                                           # Check if value is an integer
-            attackingUnits.remove(action[3].lower())                # Check that attacking unit exists, prevents unit from atacking more than once
-            action[3] = self.unit_types[action[3].lower()].damage   # Change value to calculated damage
+            attackingUnits.remove(action[3])                                               # Check that attacking unit exists, prevents unit from atacking more than once
+            damage = self.unit_types[self.unit_names[action[3].unitType.lower()]].damage   # Change value to calculated damage
+            formattedAction = (action[0],action[1],action[2], damage)
+            combatActions.append(formattedAction)                                           # Add action to original list
         except:
             print("Damage is not valid")
-
-    combatActions = unreliableCombatActions
 
     # unreliableCombatActions has the same tuple structure as combatActions, except damage is replaced by the unit type that is attacking
     # After the custom targeting funciton finishes, we need to run through combat actions and replace the unit type that's attacking with
