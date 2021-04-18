@@ -14,6 +14,7 @@ from everglades_server.definitions import *
 from everglades_server import targeting
 from everglades_server import wind
 from collections import defaultdict 
+from everglades_server.CreateJsonData import *
 
 import testing.target_testing as targetTest
 
@@ -30,6 +31,7 @@ class EvergladesGame:
         self.debug = kwargs.get('debug', False)
         self.player_names = kwargs.get('pnames')
         self.output_dir = kwargs.get('output_dir')
+
 
         # Initialize game
         if os.path.exists(map_file):
@@ -228,8 +230,14 @@ class EvergladesGame:
                 health = in_type['Health'],
                 damage = in_type['Damage'],
                 speed = in_type['Speed'],
-                speedbonus_controlled_ally = in_type['Speed_Controlled_Ally'],
-                speedbonus_controlled_enemy = in_type['Speed_Controlled_Enemy'],
+                speedbonus_controlled_ally = in_type['SpeedBonus_Controlled_Ally'],
+                speedbonus_controlled_enemy = in_type['SpeedBonus_Controlled_Enemy'],
+                jamming = in_type['Jamming'],
+                commander_damage = in_type['Commander_Damage'],
+                commander_speed = in_type['Commander_Speed'],
+                commander_control = in_type['Commander_Control'],
+                self_repair = in_type['Self_Repair'],
+
                 recon = in_type['Recon'],
                 control = in_type['Control'],
                 cost = in_type['Cost']
@@ -251,6 +259,8 @@ class EvergladesGame:
     def game_init(self, player_dat):
         """
         """
+
+        GenerateUnitDefinitions(self.setup['LoadoutPresetLevel'])
 
         # Open up connections
         # Wait for two players

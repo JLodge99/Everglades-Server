@@ -81,7 +81,6 @@ def __loadJsonFileLoadout(playerIdentifier):
     fileName = outputFileLoadout + str(playerIdentifier) + outputFileLoadoutEnd
     loadoutFile = os.path.join(outputLocation, fileName)
     dFile = os.path.join(outputLocation, loadoutFile)
-
     if (playerIdentifier < 0 or not os.path.exists(os.path.abspath(loadoutFile))):
         print("Default Loadout used for agent ", playerIdentifier)
         with open(os.path.abspath(os.path.join(outputLocation, defaultLoadoutFile))) as f:
@@ -163,6 +162,43 @@ def ConvertLoadoutToObject(playerIdentifier):
         unit_configs[i] = [(x) for x in set(group_units)]  ## Returns [('drone type', count),...]
 
     return unit_configs
+
+def __getRandomUnit(preset):
+    unitInfo = LoadAttributesBasedUnitFile(preset)
+
+
+    return random.choice(unitInfo[0])
+
+    
+# Creates a random loadout
+def GenerateRandomLoadout(preset):
+
+    loadout = []
+    numSquads = 12 #TODO: Read this in from file
+    numDrones = 100 #TODO: Read this in from file
+
+    dronePerSquad = numDrones / numSquads
+    dronesOfLastSquad = (numDrones / numSquads) + (numDrones % numSquads)
+
+
+    for squadNumber in range(0,int(numSquads - 1)):
+        dronesToAdd = dronePerSquad
+        loadout.append([])
+        unitslength = dronePerSquad
+        for unitInList in range(0,int(unitslength)):
+            unit = __getRandomUnit(preset)
+            loadout[squadNumber].append(unit)
+                
+
+
+    #Handle the last squad
+    unitslength = dronesOfLastSquad
+    loadout.append([])
+    for unitInList in range(0,int(unitslength)):
+        unit = __getRandomUnit(preset)
+        loadout[numSquads-1].append(unit)
+
+    return loadout
 
 
 
@@ -280,6 +316,7 @@ def GenerateAttributeBasedUnitsFile(names, attributeSlugsList):
     jsonData["__type"] = "Units_in_Attribute_Format"
     jsonData["Units"] = unitInformation
 
+    #TODO: Ethan, come back to this
     fileName = outputFileUnitPresets
     savePath = os.path.join(outputLocation, fileName)
     FileO = open(os.path.abspath('{}'.format(savePath)), "w")
@@ -342,9 +379,13 @@ def GenerateUnitDefinition(name, attributeList):
     jsonData["Health"] = 1
     jsonData["Damage"] = 1
     jsonData["Speed"] = 1
-    jsonData["Speed_Controlled_Ally"] = 0
-    jsonData["Speed_Controlled_Enemy"] = 0
-    jsonData["Speed"] = 1
+    jsonData["SpeedBonus_Controlled_Ally"] = 0
+    jsonData["SpeedBonus_Controlled_Enemy"] = 0
+    jsonData["Jamming"] = 0
+    jsonData["Commander_Damage"] = 0
+    jsonData["Commander_Speed"] = 0
+    jsonData["Commander_Control"] = 0
+    jsonData["Self_Repair"] = 0
     jsonData["Control"] = 1
     jsonData["Recon"] = 0
     jsonData["Cost"] = 0
@@ -416,4 +457,5 @@ def GenerateUnitDefinitions(gameType):
 
 def TestingFunction():
     GenerateUnitDefinitions(0)
+    GenerateJsonFileLoadout(GenerateRandomLoadout(0), 3)
 TestingFunction()
