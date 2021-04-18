@@ -133,7 +133,7 @@ def target_mostLethal(self,combatActions,player,opponent,activeGroups,activeUnit
             action = (opponent, targetedDrone.groupID, targetedDrone, damage)
             combatActions.append(action)
 
-def callCustomTargeting(self, combatActions, player, opponent, activeGroups, activeUnits,node):
+def target_callCustomTargeting(self, combatActions, player, opponent, activeGroups, activeUnits,node):
     # Imported from the agent script
     # Provide a copy of data so that ai can't change them
     playercopy = player
@@ -143,7 +143,7 @@ def callCustomTargeting(self, combatActions, player, opponent, activeGroups, act
     nodecopy = node
 
     # Import the custom targeting function from random_actions.py
-    self.customTargeting = getattr(random_actions, "target_customTargeting")
+    self.customTargeting = getattr(random_actions, "customTargeting")
     unreliableCombatActions = self.customTargeting(self, playercopy, opponentcopy, activeGroupscopy, activeUnitscopy, nodecopy)
 
     # Keep a list of each attacking unit type that exists
