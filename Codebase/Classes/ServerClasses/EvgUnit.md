@@ -2,9 +2,10 @@
 **The class of the Everglades drone unit.**
 
 ## Variables
-|Variable       |Type               |Description                                                                |
-|---------------|-------------------|---------------------------------------------------------------------------|
-|**unitType**   |*string*           |The type of the unit for the group.                                        |
-|**count**      |*int*              |The amount of this type of unit for the group.                             |
-|**unitHealth** |*ndarray\<int>*    |An array of health values for each unit. Its length is the value of count. |
-|**definition** |*EvgUnitDefinition*|It contains the definition of the unit type.                               |
+|Variable            |Type               |Description                                                                |
+|--------------------|-------------------|---------------------------------------------------------------------------|
+|**unitType**        |*string*           |The type of the unit for the group.                                        |
+|**unitIndex**       |*int*              |The index where this unit is located in the EvgGroup unit array.           |
+|**universalIndex**  |*int*              |The index of this unit across all units in the game.                       |
+|**currentHealth**   |*float*            |The current health value of the unit.                                      |
+|**currentSpeed**    |*int*              |The current speed value of the unit.                                       |

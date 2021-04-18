@@ -1,5 +1,5 @@
 # EvgUnitDefinition
-**The class of the Everglades drone unit definition.**
+**The class of the Everglades drone unit definition. It contains all static drone values.**
 
 ## Variables
 |Variable       |Type       |Definition                                                             |

@@ -79,3 +79,6 @@ class random_actions:
         action[:, 1] = np.random.choice(self.nodes_array, self.num_actions, replace=False)
         #print(action)
         return action
+
+    def customTargeting(self, player, opponent, activeGroups, activeUnits, node):
+        return

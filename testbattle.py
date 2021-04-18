@@ -12,6 +12,7 @@ import numpy as np
 from everglades_server import server
 from everglades_server import generate_map
 from everglades_server import generate_3dmap
+import testing.target_testing as targetTest
 
 ########################################################################################################
 ## Input Variables
@@ -21,7 +22,7 @@ agent0_file = 'agents/random_actions'
 agent1_file = 'agents/random_actions'
 
 # Choose which map you want by setting map_name "3D" or "2D"
-mapType = "3D"
+mapType = "2D"
 map_name = "Map.json"
 wind = True
 ########################################################################################################
@@ -31,7 +32,7 @@ wind = True
 # Bellcurve Disable:  Weightinit should be .1 - .3
 if mapType == '2D':
     print("Generating 2D map")
-    generate_map.exec(7)
+    generate_map.exec(3)
 elif mapType == '3D':
     print("Generating 3D map")
     generate_3dmap.exec(5, 5, 10, weight=.4, bellcurve=True)
@@ -58,6 +59,7 @@ gamesetup = {}
 gamesetup["__type"] = "Setup"
 gamesetup["MapFile"] = map_name
 gamesetup["MapType"] = mapType
+gamesetup["Targeting"] = targetTest.targetSystems # Valid options: randomlySelect, lowestHealth, highestHealth, mostLethal
 gamesetup["Agents"] = ["random_actions.py", "random_actions.py"]
 gamesetup["UnitFile"] = "UnitDefinitions.json"
 gamesetup["UnitBudget"] = 100

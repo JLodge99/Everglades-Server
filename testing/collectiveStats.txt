@@ -1,0 +1,340 @@
+randomlySelect vs randomlySelect
+Player 0:
+Damage Mean: 81.97928699239102
+Damage Mode: 26.666666666666668
+Damage Median: 65.0
+Damage Min: 2.2222222222222223
+Damage Max: 870.0
+Units Killed Mean: 0.6836954822573081
+Units Killed Mode: 0
+Units Killed Median: 0.0
+Units Killed Min: 0
+Units Killed Max: 9
+Groups Killed Mean: 0.14971080193840863
+Groups Killed Mode: 0
+Groups Killed Median: 0.0
+Groups Killed Min: 0
+Groups Killed Max: 8
+Player 1:
+Damage Mean: 81.45937105104224
+Damage Mode: 26.666666666666664
+Damage Median: 53.33333333333334
+Damage Min: 2.2222222222222223
+Damage Max: 840.0
+Units Killed Mean: 0.7067219008910427
+Units Killed Mode: 0
+Units Killed Median: 0.0
+Units Killed Min: 0
+Units Killed Max: 13
+Groups Killed Mean: 0.1953415663592309
+Groups Killed Mode: 0
+Groups Killed Median: 0.0
+Groups Killed Min: 0
+Groups Killed Max: 11
+
+lowestHealth vs randomlySelect
+Player 0:
+Damage Mean: 94.59077731849699
+Damage Mode: 26.666666666666668
+Damage Median: 77.5
+Damage Min: 2.2222222222222223
+Damage Max: 860.0
+Units Killed Mean: 1.0675230192110947
+Units Killed Mode: 1
+Units Killed Median: 1.0
+Units Killed Min: 0
+Units Killed Max: 8
+Groups Killed Mean: 0.23852828615816
+Groups Killed Mode: 0
+Groups Killed Median: 0.0
+Groups Killed Min: 0
+Groups Killed Max: 5
+Player 1:
+Damage Mean: 67.4800985655438
+Damage Mode: 20.0
+Damage Median: 46.66666666666666
+Damage Min: 2.2222222222222223
+Damage Max: 810.0
+Units Killed Mean: 0.442234094956614
+Units Killed Mode: 0
+Units Killed Median: 0.0
+Units Killed Min: 0
+Units Killed Max: 11
+Groups Killed Mean: 0.08357015649274374
+Groups Killed Mode: 0
+Groups Killed Median: 0.0
+Groups Killed Min: 0
+Groups Killed Max: 11
+
+highestHealth vs randomlySelect
+Player 0:
+Damage Mean: 61.28038908988427
+Damage Mode: 26.666666666666668
+Damage Median: 46.66666666666666
+Damage Min: 2.2222222222222223
+Damage Max: 740.0
+Units Killed Mean: 0.24235687321884186
+Units Killed Mode: 0
+Units Killed Median: 0.0
+Units Killed Min: 0
+Units Killed Max: 8
+Groups Killed Mean: 0.015502603661538921
+Groups Killed Mode: 0
+Groups Killed Median: 0.0
+Groups Killed Min: 0
+Groups Killed Max: 2
+Player 1:
+Damage Mean: 98.5251900365245
+Damage Mode: 26.666666666666664
+Damage Median: 73.33333333333333
+Damage Min: 2.2222222222222223
+Damage Max: 970.0
+Units Killed Mean: 1.001999373330747
+Units Killed Mode: 0
+Units Killed Median: 0.0
+Units Killed Min: 0
+Units Killed Max: 14
+Groups Killed Mean: 0.35059160561615016
+Groups Killed Mode: 0
+Groups Killed Median: 0.0
+Groups Killed Min: 0
+Groups Killed Max: 14
+
+mostLethal vs randomlySelect
+Player 0:
+Damage Mean: 66.17960558215913
+Damage Mode: 26.666666666666668
+Damage Median: 46.66666666666666
+Damage Min: 2.2222222222222223
+Damage Max: 720.0
+Units Killed Mean: 0.2848781123712684
+Units Killed Mode: 0
+Units Killed Median: 0.0
+Units Killed Min: 0
+Units Killed Max: 8
+Groups Killed Mean: 0.031182375179246512
+Groups Killed Mode: 0
+Groups Killed Median: 0.0
+Groups Killed Min: 0
+Groups Killed Max: 2
+Player 1:
+Damage Mean: 81.42482477255649
+Damage Mode: 26.666666666666664
+Damage Median: 60.0
+Damage Min: 2.2222222222222223
+Damage Max: 890.0
+Units Killed Mean: 0.8457828184069873
+Units Killed Mode: 0
+Units Killed Median: 0.0
+Units Killed Min: 0
+Units Killed Max: 14
+Groups Killed Mean: 0.27504888541259287
+Groups Killed Mode: 0
+Groups Killed Median: 0.0
+Groups Killed Min: 0
+Groups Killed Max: 12
+
+lowestHealth vs lowestHealth
+Player 0:
+Damage Mean: 72.26383013215113
+Damage Mode: 26.666666666666668
+Damage Median: 55.0
+Damage Min: 2.2222222222222223
+Damage Max: 790.0
+Units Killed Mean: 0.8628206428064483
+Units Killed Mode: 0
+Units Killed Median: 1.0
+Units Killed Min: 0
+Units Killed Max: 6
+Groups Killed Mean: 0.17469329818513638
+Groups Killed Mode: 0
+Groups Killed Median: 0.0
+Groups Killed Min: 0
+Groups Killed Max: 5
+Player 1:
+Damage Mean: 69.3415033031708
+Damage Mode: 26.666666666666668
+Damage Median: 43.333333333333336
+Damage Min: 2.2222222222222223
+Damage Max: 783.3333333333333
+Units Killed Mean: 0.7005812971036534
+Units Killed Mode: 0
+Units Killed Median: 0.0
+Units Killed Min: 0
+Units Killed Max: 6
+Groups Killed Mean: 0.09277096218189192
+Groups Killed Mode: 0
+Groups Killed Median: 0.0
+Groups Killed Min: 0
+Groups Killed Max: 4
+
+highestHealth vs lowestHealth
+Player 0:
+Damage Mean: 55.24513795012077
+Damage Mode: 26.666666666666668
+Damage Median: 40.0
+Damage Min: 2.2222222222222223
+Damage Max: 570.0
+Units Killed Mean: 0.13186156329076093
+Units Killed Mode: 0
+Units Killed Median: 0.0
+Units Killed Min: 0
+Units Killed Max: 10
+Groups Killed Mean: 0.005359740182111618
+Groups Killed Mode: 0
+Groups Killed Median: 0.0
+Groups Killed Min: 0
+Groups Killed Max: 2
+Player 1:
+Damage Mean: 117.91534214130328
+Damage Mode: 26.666666666666668
+Damage Median: 83.33333333333334
+Damage Min: 2.2222222222222223
+Damage Max: 870.0
+Units Killed Mean: 1.1267608440096435
+Units Killed Mode: 0
+Units Killed Median: 1.0
+Units Killed Min: 0
+Units Killed Max: 8
+Groups Killed Mean: 0.2501743409910538
+Groups Killed Mode: 0
+Groups Killed Median: 0.0
+Groups Killed Min: 0
+Groups Killed Max: 6
+
+mostLethal vs lowestHealth
+Player 0:
+Damage Mean: 64.22051767640413
+Damage Mode: 20.0
+Damage Median: 43.333333333333336
+Damage Min: 2.2222222222222223
+Damage Max: 610.0
+Units Killed Mean: 0.24939100779510023
+Units Killed Mode: 0
+Units Killed Median: 0.0
+Units Killed Min: 0
+Units Killed Max: 6
+Groups Killed Mean: 0.026030066815144765
+Groups Killed Mode: 0
+Groups Killed Median: 0.0
+Groups Killed Min: 0
+Groups Killed Max: 1
+Player 1:
+Damage Mean: 98.72471168570291
+Damage Mode: 26.666666666666668
+Damage Median: 73.33333333333333
+Damage Min: 2.2222222222222223
+Damage Max: 840.0
+Units Killed Mean: 0.9601197104677061
+Units Killed Mode: 0
+Units Killed Median: 1.0
+Units Killed Min: 0
+Units Killed Max: 7
+Groups Killed Mean: 0.1945295100222717
+Groups Killed Mode: 0
+Groups Killed Median: 0.0
+Groups Killed Min: 0
+Groups Killed Max: 4
+
+mostLethal vs highestHealth
+Player 0:
+Damage Mean: 60.60195601898192
+Damage Mode: 26.666666666666668
+Damage Median: 42.22222222222222
+Damage Min: 2.2222222222222223
+Damage Max: 700.0
+Units Killed Mean: 0.38505104433461995
+Units Killed Mode: 0
+Units Killed Median: 0.0
+Units Killed Min: 0
+Units Killed Max: 7
+Groups Killed Mean: 0.05400238086649111
+Groups Killed Mode: 0
+Groups Killed Median: 0.0
+Groups Killed Min: 0
+Groups Killed Max: 4
+Player 1:
+Damage Mean: 58.477856717799575
+Damage Mode: 26.666666666666668
+Damage Median: 40.0
+Damage Min: 2.2222222222222223
+Damage Max: 789.9999999999999
+Units Killed Mean: 0.3888117311785289
+Units Killed Mode: 0
+Units Killed Median: 0.0
+Units Killed Min: 0
+Units Killed Max: 12
+Groups Killed Mean: 0.04232350925291296
+Groups Killed Mode: 0
+Groups Killed Median: 0.0
+Groups Killed Min: 0
+Groups Killed Max: 2
+
+highestHealth vs highestHealth
+Player 0:
+Damage Mean: 58.57237505125169
+Damage Mode: 26.666666666666668
+Damage Median: 44.85294117647058
+Damage Min: 2.2222222222222223
+Damage Max: 533.3333333333334
+Units Killed Mean: 0.4008207934336525
+Units Killed Mode: 0
+Units Killed Median: 0.0
+Units Killed Min: 0
+Units Killed Max: 5
+Groups Killed Mean: 0.043091655266757865
+Groups Killed Mode: 0
+Groups Killed Median: 0.0
+Groups Killed Min: 0
+Groups Killed Max: 1
+Player 1:
+Damage Mean: 66.15155207265128
+Damage Mode: 40.0
+Damage Median: 40.0
+Damage Min: 2.2222222222222223
+Damage Max: 650.0
+Units Killed Mean: 0.41450068399452805
+Units Killed Mode: 0
+Units Killed Median: 0.0
+Units Killed Min: 0
+Units Killed Max: 5
+Groups Killed Mean: 0.04445964432284542
+Groups Killed Mode: 0
+Groups Killed Median: 0.0
+Groups Killed Min: 0
+Groups Killed Max: 1
+
+mostLethal vs mostLethal
+Player 0:
+Damage Mean: 51.43774825742771
+Damage Mode: 26.666666666666668
+Damage Median: 35.55555555555556
+Damage Min: 2.2222222222222223
+Damage Max: 640.0
+Units Killed Mean: 0.3160760503312552
+Units Killed Mode: 0
+Units Killed Median: 0.0
+Units Killed Min: 0
+Units Killed Max: 7
+Groups Killed Mean: 0.04084938062604789
+Groups Killed Mode: 0
+Groups Killed Median: 0.0
+Groups Killed Min: 0
+Groups Killed Max: 2
+Player 1:
+Damage Mean: 64.11297586378711
+Damage Mode: 26.666666666666668
+Damage Median: 36.66666666666667
+Damage Min: 2.2222222222222223
+Damage Max: 770.0
+Units Killed Mean: 0.39237868897823647
+Units Killed Mode: 0
+Units Killed Median: 0.0
+Units Killed Min: 0
+Units Killed Max: 8
+Groups Killed Mean: 0.05549948724626829
+Groups Killed Mode: 0
+Groups Killed Median: 0.0
+Groups Killed Min: 0
+Groups Killed Max: 2
+
