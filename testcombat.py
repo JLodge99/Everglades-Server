@@ -14,6 +14,8 @@ from everglades_server import generate_map
 from everglades_server import generate_3dmap
 import testing.target_testing as targetTest
 
+# This file always ensures that combat will occur at the middle=most node.
+
 ## Input Variables
 # Agent files must include a class of the same name with a 'get_action' function
 # Do not include './' in file path

@@ -211,6 +211,7 @@ class EvergladesGame:
         # Load in unit types json configuration file
         with open(unit_file) as fid:
             self.unit_dat = json.load(fid)
+            print(self.unit_dat)
 
         # Initialize unit types
         self.unit_types = []
@@ -1124,7 +1125,7 @@ class EvergladesGame:
                             appliedDamage = targetHealth - trueDamage
 
                             if runTargetingStatistics == True:
-                                amageDealtToPlayer[opponent] = damageDealtToPlayer[opponent] + trueDamage
+                                damageDealtToPlayer[opponent] = damageDealtToPlayer[opponent] + trueDamage
 
                             # Prevent negative numbers from appearing just for the sake of making sense.
                             # A drone with -2% of it existing makes no logical sense.
