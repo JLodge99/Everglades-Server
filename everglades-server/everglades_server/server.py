@@ -8,11 +8,13 @@ import numpy as np
 import random
 import random as r
 import re
+from shutil import copyfile
 
 from everglades_server.definitions import *
 from everglades_server import targeting
 from everglades_server import wind
 from collections import defaultdict 
+from everglades_server.CreateJsonData import *
 
 import testing.target_testing as targetTest
 
@@ -30,10 +32,13 @@ class EvergladesGame:
         self.player_names = kwargs.get('pnames')
         self.output_dir = kwargs.get('output_dir')
 
+
         # Initialize game
         if os.path.exists(map_file):
             self.board_init(map_file)
+            self.mappath = map_file
         elif os.path.exists(os.path.join(config_path, map_file)):
+            self.mappath = map_file
             self.board_init(map_file)
         else:
             # Exit with error
@@ -225,8 +230,14 @@ class EvergladesGame:
                 health = in_type['Health'],
                 damage = in_type['Damage'],
                 speed = in_type['Speed'],
-                speedbonus_controlled_ally = in_type['Speed_Controlled_Ally'],
-                speedbonus_controlled_enemy = in_type['Speed_Controlled_Enemy'],
+                speedbonus_controlled_ally = in_type['SpeedBonus_Controlled_Ally'],
+                speedbonus_controlled_enemy = in_type['SpeedBonus_Controlled_Enemy'],
+                jamming = in_type['Jamming'],
+                commander_damage = in_type['Commander_Damage'],
+                commander_speed = in_type['Commander_Speed'],
+                commander_control = in_type['Commander_Control'],
+                self_repair = in_type['Self_Repair'],
+
                 recon = in_type['Recon'],
                 control = in_type['Control'],
                 cost = in_type['Cost']
@@ -248,6 +259,8 @@ class EvergladesGame:
     def game_init(self, player_dat):
         """
         """
+
+        GenerateUnitDefinitions(self.setup['LoadoutPresetLevel'])
 
         # Open up connections
         # Wait for two players
@@ -388,10 +401,11 @@ class EvergladesGame:
 
                         newGroup.units.append(newUnit)
 
-                        in_type = in_type.capitalize()
-                        out_type.append(in_type)
-                        out_count.append(in_count)
                     # End Unit loop
+
+                    in_type = in_type.capitalize()
+                    out_type.append(in_type)
+                    out_count.append(in_count)
 
                     newGroup.speed.append(self.unit_types[unit_id].speed)
                     newGroup.mapUnitID.append(map_units)
@@ -1584,16 +1598,19 @@ class EvergladesGame:
     def write_output(self):
         for key in self.output.keys():
             #pdb.set_trace()
-            key_dir = self.dat_dir + '/' + str(key)
+            key_dir = self.dat_dir + '\\' + str(key)
             oldmask = os.umask(000)
             os.mkdir(key_dir,mode=0o777)
             os.umask(oldmask)
             assert( os.path.isdir(key_dir) ), 'Could not create telemetry {} output directory'.format(key)
 
-            key_file = key_dir + '/' + 'Telem_' + key
+            key_file = key_dir + '\\' + 'Telem_' + key
             with open(key_file, 'w') as fid:
                 writer = csv.writer(fid, delimiter='\n')
                 writer.writerow(self.output[key])
+
+        copyfile(self.mappath, os.path.join(self.dat_dir, os.path.basename(self.mappath)))
+        print("Copied map json")
 
 
 

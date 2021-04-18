@@ -67,10 +67,19 @@ class EvgUnitDefinition:
     def __init__(self, **kwargs):
         self.unitType = kwargs.get('name', None)
         self.health = kwargs.get('health', 0)
-        self.damage = kwargs.get('damage',0)
-        self.speed = kwargs.get('speed',0)
-        self.control = kwargs.get('control',0)
-        self.cost = kwargs.get('cost',0) 
+        self.damage = kwargs.get('damage', 0)
+        self.speed = kwargs.get('speed', 0)
+        self.control = kwargs.get('control', 0)
+        self.cost = kwargs.get('cost', 0)
+        self.jamming = kwargs.get('jamming',0)
+        self.commander_damage = kwargs.get('commander_damage',0)
+        self.commander_speed = kwargs.get('commander_speed',0)
+        self.commander_control = kwargs.get('commander_control',0)
+        self.self_repair = kwargs.get('self_repair',0)
+
+        self.recon = kwargs.get('recon', 0)
+        self.speedbonus_controlled_ally = kwargs.get('speedbonus_controlled_ally', 0)
+        self.speedbonus_controlled_enemy = kwargs.get('speedbonus_controlled_enemy', 0)
 
 class MovementTurn:
     def __init__(self, **kwargs):
