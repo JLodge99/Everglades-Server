@@ -28,7 +28,7 @@ class random_actions:
         #   2 - Tank
         #   3 - Recon
         self.unit_config = CreateJsonData.ConvertLoadoutToObject(player_num)
-        print("Successfully loaded player", player_num, "loadout")
+        print("Loaded player", player_num, "loadout")
 
         # Default Output Format:
         #{
@@ -79,3 +79,6 @@ class random_actions:
         action[:, 1] = np.random.choice(self.nodes_array, self.num_actions, replace=False)
         #print(action)
         return action
+
+    def customTargeting(self, player, opponent, activeGroups, activeUnits, node):
+        return
