@@ -1,9 +1,9 @@
 {
     "__type": "Setup",
     "MapFile": "Map.json",
-    "MapType": "2D",
+    "MapType": "3D",
     "Targeting": [
-        "target_callCustomTargeting",
+        "target_randomlySelect",
         "target_callCustomTargeting"
     ],
     "Agents": [
@@ -12,11 +12,11 @@
     ],
     "UnitFile": "UnitDefinitions.json",
     "UnitBudget": 100,
-    "LoadoutPresetLevel": 1,
-    "TurnLimit": 150,
+    "LoadoutPresetLevel": 0,
+    "TurnLimit": 100,
     "CaptureBonus": 1000,
-    "enableWind": true,
-    "Stochasticity": 15054,
+    "enableWind": false,
+    "Stochasticity": "",
     "JammerPenalty": 0.75,
     "FocusTurnMin": 4,
     "FocusTurnMax": 6,
