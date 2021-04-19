@@ -13,7 +13,7 @@ from shutil import copyfile
 from everglades_server.definitions import *
 from everglades_server import targeting
 from everglades_server import wind
-from collections import defaultdict 
+from collections import defaultdict, deque
 from everglades_server.CreateJsonData import *
 
 import testing.target_testing as targetTest
@@ -88,6 +88,9 @@ class EvergladesGame:
         # 1 = Enable
         self.enableWind = self.setup["enableWind"]
 
+        # Read percentage change in group speed due to each jammer
+        self.jammerPenalty = self.setup["JammerPenalty"]
+
         # Positions of every node in board
         nodePos = {}
 
@@ -149,7 +152,7 @@ class EvergladesGame:
         node_num = 1
 
         if self.enableWind == 1:
-            print("Wind enabled")
+            #print("Wind enabled")
             if self.map_dat["Type"] == "3D":
                 node_num = 0
                 for n in self.evgMap.nodes:
@@ -223,6 +226,7 @@ class EvergladesGame:
         self.unit_ids = {}
         self.unit_names = {}
         for in_type in self.unit_dat['units']:
+
             # Initialize new unit type
             unit_type = EvgUnitDefinition(
                 name = in_type['Name'],
@@ -234,9 +238,6 @@ class EvergladesGame:
                 jamming = in_type['Jamming'],
                 commander_damage = in_type['Commander_Damage'],
                 commander_speed = in_type['Commander_Speed'],
-                commander_control = in_type['Commander_Control'],
-                self_repair = in_type['Self_Repair'],
-
                 recon = in_type['Recon'],
                 control = in_type['Control'],
                 cost = in_type['Cost']
@@ -258,8 +259,7 @@ class EvergladesGame:
     def game_init(self, player_dat):
         """
         """
-
-        #GenerateUnitDefinitions(self.setup['LoadoutPresetLevel'])
+        GenerateUnitDefinitions(self.setup['LoadoutPresetLevel'])
 
         # Open up connections
         # Wait for two players
@@ -282,7 +282,7 @@ class EvergladesGame:
         # Two lists for displaying unit types and counts for a group for output purposes
         out_count = []
         out_type = []
-    
+        
         self.targeting0 = getattr(targeting, self.setup["Targeting"][0])
         self.targeting1 = getattr(targeting, self.setup["Targeting"][1])
 
@@ -332,7 +332,7 @@ class EvergladesGame:
                     in_type = in_type.lower()
 
                     # Input validation
-                    assert(in_type in self.unit_names), 'Group type not in unit type config file'
+                    assert(in_type in self.unit_names), 'Group type not in unit type config file. NOTE: GameConfig preset may not be set correctly'
                     assert(in_count <= 100), 'Invalid group size allocation'
 
                     # Pass in the base string of the unit type and get back the integer ID
@@ -359,8 +359,6 @@ class EvergladesGame:
                                 currentHealth = 100.,
                                 currentSpeed = self.unit_types[unit_id].speed
                         )
-                        universalUnitIndex = universalUnitIndex + 1
-
                         universalUnitIndex = universalUnitIndex + 1
 
                         # If unit type is Recon, we need to change the speed value to decrease
@@ -1215,7 +1213,45 @@ class EvergladesGame:
                         targetTest.outputFile.write(str(damageDealtToPlayer[opponent]) + ",")
                         targetTest.outputFile.write(str(killedUnits[opponent]) + ",")
                         targetTest.outputFile.write(str(groupsDestroyed[opponent]) + "\n")
-        
+
+    # Radius = 1 Only destination node
+    # Radius = 2 One nodes out
+    # Radius = 3 Two nodes out
+    # etc..
+    def isEnemyJammerInRange(self, player, destinationNodeID, radius = 3):
+        queue = deque()
+        nodesInRange = []
+
+        found = False
+        count = 0
+        queue.append(self.getNode(destinationNodeID))
+
+        # Get surrouding nodes based on the range and append into nodesInRange
+        for i in range(radius):
+            for queueIndex in range(len(queue)):
+                currentNode = queue.popleft()
+                if(nodesInRange.count(currentNode.ID) < 1):
+                    nodesInRange.append(currentNode.ID)
+                for connectionNodes in currentNode.connection_idxs:
+                    queue.append(self.getNode(connectionNodes))
+
+        # Get enemy player
+        enemyplayer = self.players[0 if player == 1 else 1]
+
+        # Iterate through enemies groups checking if there is a jammer in range
+        for group in enemyplayer.groups:
+            if nodesInRange.count(group.location) > 0:
+                for unit in group.units:
+                    if(unit.unitType == "jammer"):
+                        found = True
+                        count += 1
+
+        return (found, count)
+
+    # Get node from ID
+    def getNode(self, nodeID):
+        return self.evgMap.nodes[np.where(self.map_key1 == nodeID)[0][0]]
+
     def movement(self):
         ## Apply group movements
         for player in self.team_starts:
@@ -1232,30 +1268,51 @@ class EvergladesGame:
                         
 
                         # Determine the speed of the squad
-                        # OLD: Gave the speed of the first unit in the squad, effectively random
-                        speed = group.speed[0]
-                        #print("New:", group.speed[0])
-                        # NEW: Speed of squadron is speed of slowest unit
-                        # Commenting out so Zack can bugtest
-                        """{
+                        # Default value: maximum
                         speed = 99999999
-                        for x in group.speed:
-                        {
-                            if (speed > x):
-                                speed = x
-                        }
-                        """
-                        
                         playerNum = player
-                        """
-                        if self.evgMap.nodes[start_idx].controlledBy == playerNum and self.evgMap.nodes[end_idx].controlledBy == playerNum: 
-                            speed += group.units[0].definitions.speedbonus_controlled_ally
+                        commanderSpeedBonus = 0
 
-                        # If the player is not moving between enemy territory
-                        elif self.evgMap.nodes[start_idx].controlledBy != playerNum and self.evgMap.nodes[end_idx].controlledBy != playerNum: 
-                            speed += group.units[0].definition.speedbonus_controlled_enemy
-                        """
+                        # If a commander is in the squad, store the commander speed bonus
+                        for currentUnit in group.units:
+                            unitTypeID = self.unit_names[currentUnit.unitType.lower()]
+                            unitDefintion = self.unit_types[unitTypeID]
+                            if unitDefintion.commander_speed != 0:
+                                commanderSpeedBonus = unitDefintion.commander_speed
+                                break
+
+                        # Find lowest speed and set speed to that
+                        # Traverse the array to find the lowest speed
+                        for x in group.units:
+                            unitTypeID = self.unit_names[x.unitType.lower()]
+                            unitDefintion = self.unit_types[unitTypeID]
+                            calculatedSpeed = unitDefintion.speed
+
+                            # If the player is moving between ally territory
+                            if unitDefintion.speedbonus_controlled_ally != 0 and self.evgMap.nodes[start_idx].controlledBy == playerNum and self.evgMap.nodes[end_idx].controlledBy == playerNum: 
+                                calculatedSpeed += unitDefintion.speedbonus_controlled_ally
+
+                            # If the player is not moving between enemy territory
+                            elif unitDefintion.speedbonus_controlled_enemy != 0 and self.evgMap.nodes[start_idx].controlledBy != playerNum and self.evgMap.nodes[end_idx].controlledBy != playerNum: 
+                                calculatedSpeed += unitDefintion.speedbonus_controlled_enemy
+
+                            # If the commander is in the squad, the squad gets the speed bonus for it
+                            if commanderSpeedBonus != 0:
+                                calculatedSpeed += commanderSpeedBonus
+                            
+                            # Correctly set the unit's current speed
+                            self.currentSpeed = calculatedSpeed
+
+                            if speed > calculatedSpeed:
+                                speed = calculatedSpeed
                         
+
+                        # Reduce speed of squad if jammers are in range
+                        # Currently: reduces speed of squad by 25% for each jammer in range
+                        info = self.isEnemyJammerInRange(player, group.travel_destination) # player = player number, travel_destination = ID of destination node
+                        if info[0] == True:                         # if there is a jammer in range
+                            reduction = self.jammerPenalty                        # reduction = speed change in squad for each jammer present
+                            speed *= pow(reduction, info[1])        # speed change calculation
 
                         # Perform wind calculations if enabled
                         if self.enableWind == 1:
@@ -1390,8 +1447,7 @@ class EvergladesGame:
         # Output telemetry files
         date = datetime.datetime.today()
         date_frmt = date.strftime('%Y.%m.%d-%H.%M.%S')
-        #self.dat_dir = self.output_dir + '/' + self.evgMap.name + '_' + date_frmt
-        self.dat_dir = self.output_dir + '/' + date_frmt
+        self.dat_dir = self.output_dir + '/' + self.evgMap.name + '_' + date_frmt
 
         oldmask = os.umask(000)
         os.mkdir(self.dat_dir,mode=0o777)
@@ -1593,8 +1649,8 @@ class EvergladesGame:
 
         # end player loop
 
-
     def write_output(self):
+        # Example use case: self.isEnemyJammerInRange(0, 13)
         for key in self.output.keys():
             #pdb.set_trace()
             key_dir = self.dat_dir + '\\' + str(key)
@@ -1609,7 +1665,7 @@ class EvergladesGame:
                 writer.writerow(self.output[key])
 
         copyfile(self.mappath, os.path.join(self.dat_dir, os.path.basename(self.mappath)))
-        print("Copied map json")
+        #print("Copied map json")
 
 
 # end class EvergladesGame
