@@ -4,112 +4,12 @@
         {
             "Squad": [
                 {
-                    "Type": "Controller",
-                    "Count": 2
-                },
-                {
-                    "Type": "Striker",
-                    "Count": 3
-                },
-                {
-                    "Type": "Recon",
-                    "Count": 2
-                },
-                {
-                    "Type": "Tank",
-                    "Count": 1
-                }
-            ]
-        },
-        {
-            "Squad": [
-                {
-                    "Type": "Controller",
-                    "Count": 3
-                },
-                {
-                    "Type": "Striker",
-                    "Count": 2
-                },
-                {
-                    "Type": "Tank",
-                    "Count": 2
-                },
-                {
-                    "Type": "Recon",
-                    "Count": 1
-                }
-            ]
-        },
-        {
-            "Squad": [
-                {
-                    "Type": "Recon",
-                    "Count": 3
-                },
-                {
-                    "Type": "Controller",
-                    "Count": 2
-                },
-                {
-                    "Type": "Striker",
-                    "Count": 3
-                }
-            ]
-        },
-        {
-            "Squad": [
-                {
-                    "Type": "Recon",
-                    "Count": 3
-                },
-                {
                     "Type": "Tank",
                     "Count": 2
                 },
                 {
                     "Type": "Controller",
-                    "Count": 2
-                },
-                {
-                    "Type": "Striker",
-                    "Count": 1
-                }
-            ]
-        },
-        {
-            "Squad": [
-                {
-                    "Type": "Striker",
-                    "Count": 3
-                },
-                {
-                    "Type": "Recon",
-                    "Count": 3
-                },
-                {
-                    "Type": "Tank",
-                    "Count": 1
-                },
-                {
-                    "Type": "Controller",
-                    "Count": 1
-                }
-            ]
-        },
-        {
-            "Squad": [
-                {
-                    "Type": "Tank",
-                    "Count": 3
-                },
-                {
-                    "Type": "Controller",
-                    "Count": 2
-                },
-                {
-                    "Type": "Striker",
-                    "Count": 2
+                    "Count": 5
                 },
                 {
                     "Type": "Recon",
@@ -121,18 +21,18 @@
             "Squad": [
                 {
                     "Type": "Tank",
-                    "Count": 1
+                    "Count": 2
                 },
                 {
-                    "Type": "Striker",
-                    "Count": 3
+                    "Type": "Controller",
+                    "Count": 2
                 },
                 {
                     "Type": "Recon",
                     "Count": 2
                 },
                 {
-                    "Type": "Controller",
+                    "Type": "Striker",
                     "Count": 2
                 }
             ]
@@ -140,12 +40,84 @@
         {
             "Squad": [
                 {
+                    "Type": "Striker",
+                    "Count": 4
+                },
+                {
+                    "Type": "Recon",
+                    "Count": 1
+                },
+                {
                     "Type": "Controller",
                     "Count": 1
                 },
                 {
-                    "Type": "Recon",
+                    "Type": "Tank",
                     "Count": 2
+                }
+            ]
+        },
+        {
+            "Squad": [
+                {
+                    "Type": "Striker",
+                    "Count": 2
+                },
+                {
+                    "Type": "Recon",
+                    "Count": 3
+                },
+                {
+                    "Type": "Tank",
+                    "Count": 2
+                },
+                {
+                    "Type": "Controller",
+                    "Count": 1
+                }
+            ]
+        },
+        {
+            "Squad": [
+                {
+                    "Type": "Controller",
+                    "Count": 2
+                },
+                {
+                    "Type": "Striker",
+                    "Count": 3
+                },
+                {
+                    "Type": "Recon",
+                    "Count": 3
+                }
+            ]
+        },
+        {
+            "Squad": [
+                {
+                    "Type": "Tank",
+                    "Count": 2
+                },
+                {
+                    "Type": "Recon",
+                    "Count": 4
+                },
+                {
+                    "Type": "Controller",
+                    "Count": 1
+                },
+                {
+                    "Type": "Striker",
+                    "Count": 1
+                }
+            ]
+        },
+        {
+            "Squad": [
+                {
+                    "Type": "Controller",
+                    "Count": 3
                 },
                 {
                     "Type": "Tank",
@@ -160,80 +132,96 @@
         {
             "Squad": [
                 {
-                    "Type": "Recon",
-                    "Count": 3
-                },
-                {
-                    "Type": "Controller",
-                    "Count": 1
-                },
-                {
-                    "Type": "Tank",
-                    "Count": 3
-                },
-                {
-                    "Type": "Striker",
-                    "Count": 1
-                }
-            ]
-        },
-        {
-            "Squad": [
-                {
-                    "Type": "Recon",
-                    "Count": 3
-                },
-                {
-                    "Type": "Controller",
-                    "Count": 1
-                },
-                {
-                    "Type": "Striker",
-                    "Count": 3
-                },
-                {
-                    "Type": "Tank",
-                    "Count": 1
-                }
-            ]
-        },
-        {
-            "Squad": [
-                {
-                    "Type": "Striker",
-                    "Count": 2
-                },
-                {
-                    "Type": "Recon",
-                    "Count": 2
-                },
-                {
-                    "Type": "Tank",
-                    "Count": 2
-                },
-                {
-                    "Type": "Controller",
-                    "Count": 2
-                }
-            ]
-        },
-        {
-            "Squad": [
-                {
                     "Type": "Striker",
                     "Count": 4
                 },
                 {
-                    "Type": "Recon",
+                    "Type": "Tank",
                     "Count": 2
                 },
+                {
+                    "Type": "Recon",
+                    "Count": 1
+                },
+                {
+                    "Type": "Controller",
+                    "Count": 1
+                }
+            ]
+        },
+        {
+            "Squad": [
+                {
+                    "Type": "Controller",
+                    "Count": 4
+                },
+                {
+                    "Type": "Striker",
+                    "Count": 2
+                },
+                {
+                    "Type": "Recon",
+                    "Count": 1
+                },
+                {
+                    "Type": "Tank",
+                    "Count": 1
+                }
+            ]
+        },
+        {
+            "Squad": [
                 {
                     "Type": "Controller",
                     "Count": 2
                 },
                 {
                     "Type": "Tank",
-                    "Count": 4
+                    "Count": 3
+                },
+                {
+                    "Type": "Recon",
+                    "Count": 3
+                }
+            ]
+        },
+        {
+            "Squad": [
+                {
+                    "Type": "Controller",
+                    "Count": 2
+                },
+                {
+                    "Type": "Striker",
+                    "Count": 2
+                },
+                {
+                    "Type": "Tank",
+                    "Count": 2
+                },
+                {
+                    "Type": "Recon",
+                    "Count": 2
+                }
+            ]
+        },
+        {
+            "Squad": [
+                {
+                    "Type": "Recon",
+                    "Count": 3
+                },
+                {
+                    "Type": "Striker",
+                    "Count": 5
+                },
+                {
+                    "Type": "Controller",
+                    "Count": 3
+                },
+                {
+                    "Type": "Tank",
+                    "Count": 1
                 }
             ]
         }

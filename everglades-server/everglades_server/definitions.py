@@ -51,10 +51,6 @@ class EvgGroup:
         self.counts = {}
         self.pathIndex = 0
 
-        self.commanderDamageCount = kwargs.get('commanderDamageCount',0)
-        self.commanderDamageModifier = kwargs.get('commanderDamageModifier',0)
-
-
 # Contains dynamic values for units within a group.
 class EvgUnit:
     def __init__(self, **kwargs):
@@ -78,6 +74,9 @@ class EvgUnitDefinition:
         self.jamming = kwargs.get('jamming',0)
         self.commander_damage = kwargs.get('commander_damage',0)
         self.commander_speed = kwargs.get('commander_speed',0)
+        self.commander_control = kwargs.get('commander_control',0)
+        self.self_repair = kwargs.get('self_repair',0)
+
         self.recon = kwargs.get('recon', 0)
         self.speedbonus_controlled_ally = kwargs.get('speedbonus_controlled_ally', 0)
         self.speedbonus_controlled_enemy = kwargs.get('speedbonus_controlled_enemy', 0)

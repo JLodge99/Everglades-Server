@@ -7,7 +7,6 @@
 import sys
 import tkinter as tk
 from everglades_server.CreateJsonData import *
-from everglades_server.ui_dependencies import *
 
 thismodule = sys.modules[__name__]
 
@@ -19,10 +18,8 @@ squadUnits = []     #The names of each type of unit in a squad
 squadNums = []      #The amount of each type of unit in a squad
 
 #The below variables are the copied squad. They are in the same format as a squad from the loadout
-copiedSquadUnits = [] #The names of each type of unit in the copied squad
-copiedSquadNums = []  #The amount of each type of unit in the copied squad
-
-printStatementsThatEthanNeedsApparently = False
+tempSquadUnits = [] #The names of each type of unit in the copied squad
+tempSquadNums = []  #The amount of each type of unit in the copied squad
 
 #Initializing the squad-describing variables
 for x in range(0, numSquads):
@@ -42,7 +39,8 @@ def refreshDropDown():
         sel_squad_dd['menu'].add_command(label=str(x), command=tk._setit(selSquadDdText, str(x)))
 
     ## Remove unit selection
-    unselectUnit()
+    global selectIndex
+    selectIndex = -1
 
 def updateUnitList():
     ### PURPOSE: When the names or amounts of units in the selected squad changes, this function is called
@@ -114,15 +112,15 @@ def copySquad():
 
     global squadUnits
     global squadNums
-    global copiedSquadUnits
-    global copiedSquadNums
+    global tempSquadUnits
+    global tempSquadNums
     
     ## Get current squad index
     squadIndex = int(selSquadDdText.get())-1
 
     ## Store current state
-    copiedSquadUnits = squadUnits[squadIndex]
-    copiedSquadNums = squadNums[squadIndex]
+    tempSquadUnits = squadUnits[squadIndex]
+    tempSquadNums = squadNums[squadIndex]
 
 def pasteSquad():
     ### PURPOSE: When a squad is pasted, this function is called
@@ -130,21 +128,22 @@ def pasteSquad():
 
     global squadUnits
     global squadNums
-    global copiedSquadUnits
-    global copiedSquadNums
+    global tempSquadUnits
+    global tempSquadNums
     
     ## Get current squad index
     squadIndex = int(selSquadDdText.get())-1
 
     ## Replace current squad with stored squad
-    squadUnits[squadIndex] = copiedSquadUnits
-    squadNums[squadIndex] = copiedSquadNums
+    squadUnits[squadIndex] = tempSquadUnits
+    squadNums[squadIndex] = tempSquadNums
 
     ## Update list of units in current squad
     updateUnitList()
     
     ## Remove unit selection
-    unselectUnit()
+    global selectIndex
+    selectIndex = -1
 
 def deleteUnit():
     ### PURPOSE: When a unit is deleted, this function is called
@@ -166,7 +165,7 @@ def deleteUnit():
     updateUnitList()
 
     ## Remove unit selection
-    unselectUnit()
+    selectIndex = -1
 
 def addUnit():
     ### PURPOSE: When a unit is added, this function is called
@@ -178,20 +177,16 @@ def addUnit():
     # Get index of squad to add to
     squadIndex = int(selSquadDdText.get())-1
 
-    if rbChoice.get() == 1:
-        # Add 1 of unit
-        squadUnits[squadIndex].append(unitNameDDtext.get())
-        squadNums[squadIndex].append(1)
-    else:
-        # Add 1 of unit
-        squadUnits[squadIndex].append(nameVar.get())
-        squadNums[squadIndex].append(1)
+    # Add 1 of unit
+    squadUnits[squadIndex].append(nameVar.get())
+    squadNums[squadIndex].append(1)
 
     # Update ListBox
     updateUnitList()
 
     ## Remove unit selection
-    unselectUnit()
+    global selectIndex
+    selectIndex = -1
 
 def updateSelNum(*args):
     ### PURPOSE: When an item in the listbox is selected, this function is called
@@ -199,12 +194,9 @@ def updateSelNum(*args):
 
     global selectIndex
     if curr_squad.curselection() != ():
-        squadIndex = int(selSquadDdText.get())-1            # Current squad number
-        selectIndex = curr_squad.curselection()[0]          # Index of selection in squad
-        numVar.set(squadNums[squadIndex][selectIndex])      # Update amount entry
-        sel_unit.set(squadUnits[squadIndex][selectIndex])   # Update unit name in UI
-        ent_unitnum.config(state="normal")                  # Make amount entry editable
-        btn_remove.config(state="normal")                   # Make remove unit button active
+        squadIndex = int(selSquadDdText.get())-1
+        selectIndex = curr_squad.curselection()[0]
+        numVar.set(squadNums[squadIndex][selectIndex])
     else:
         if selectIndex < 0:
             numVar.set("")
@@ -224,39 +216,9 @@ def updateNum():
     ### to update the unit listbox to the correct number
 
     global selectIndex
-
-    if selectIndex < 0:
-        return
-    
     squadIndex = int(selSquadDdText.get())-1
     squadNums[squadIndex][selectIndex] = numVar.get()
     updateUnitList()
-
-def enableButtons():
-    global checkExperimental
-    global btn_add
-    global btn_delete
-    ## If the box is checked
-    if checkExperimental.get() == 1:
-        # Warning message
-        window.bell()
-        popup = tk.Toplevel()
-
-        label = tk.Label(popup,
-        text="WARNING:\nChanging the number of squads is not currently supported by the server as of April 5th, 2021.\nGenerate a JSON at your own risk."
-        )
-        label.pack(fill='x', padx=50, pady=5)
-
-        button_close = tk.Button(popup, text="Close", command=popup.destroy)
-        button_close.pack(pady=(0,5))
-        ## Enable Buttons
-        btn_add["state"] = "normal"
-        btn_delete["state"] = "normal"
-    ## If the box is not checked
-    elif checkExperimental.get() == 0:
-        ## Disable buttons
-        btn_add.config(state="disabled")
-        btn_delete.config(state="disabled")
 
 def generateJSON():
     ### PURPOSE: When the "generate JSON" button is pressed, this function is called
@@ -280,48 +242,40 @@ def generateJSON():
                 loadout[squadNumber].append(squadUnits[squadNumber][unitInList])    # add that unit to the loadout
     
     # Grab player number from the dropdown
-    playerIdentifier = int(playerNumDdText.get())-1 # Translates DD options (1,2) to server-readable (0,1)
+    playerIdentifier = int(playnumselSquadDdText.get())
 
     # Call the function to write the current loadout to the appropriate JSON
     GenerateJsonFileLoadout(loadout, playerIdentifier)
-
-    if printStatementsThatEthanNeedsApparently == True:
-        print("\nThis is the squad my UI displays")
-        for squad in loadout:
-            print(squad)
-        print("Other than that it is sorted, they are identical\n")
-
-    
-        print("And for fun, the squad printed legibly (the way it is stored in the UI)")
-        for indx1, squad in enumerate(squadNums):
-            print("\nSquad "+str(indx1+1)+"\nLength: "+str(len(squadNums[indx1]))+"\n#######################")
-            for indx2, unit in enumerate(squadUnits[indx1]):
-                print(squadUnits[indx1][indx2]+": "+str(squadNums[indx1][indx2]))
 
 def generateRandom():
     ### PURPOSE: When the "generate random squad" button is pressed, this function is called
     ### to call the random squad function (automatically writes to json) and load loadout into UI
 
-    presetNumber = preset_dd['menu'].index(presetSelDdText.get())
+    presetNumber = int(presetselSquadDdText.get())
     loadout = GenerateRandomLoadout(presetNumber)   #Defined in CreateJsonData.py
 
-    print("This is the squad your function returns")
+    # Sort the random squad
+    # The current (3/16/21) squad generation function creates multiple groups of count 1 of each unit type
+    # It is easiest to join these groups by sorting them first
     for squad in loadout:
-        print(squad)
+        squad.sort()
 
     global squadUnits
+    tempsquadUnits = []
     global squadNums
+    tempsquadNums = []
     global numSquads
 
-    tempsquadUnits = []
-    tempsquadNums = []
-
     numSquads = len(loadout)
+    prevUnitName = ""       # Stores the previous name read from the random squad generation
+    counter = 0             # Counts the number of each type of unit before a new name or the end of the squad appears
 
-    ## The code snippet below translates the loadout from the format used by the random loadout function
+    ## After sorting the random loadout, it will be in the form used by the JSON-writing function
+    ## The code snippet below translates the loadout from the format used by the JSON-writing function
     ## to the format defined at the top of this program so it is usable in the UI
     ## ex:      loadout[0]: ["Striker", "Striker", "Striker", "Tank", "Tank"]
     ## becomes: squadNums[0]: [3, 2]  &  squadUnits[0]: ["Striker", "Tank"]
+    ## The code is a bit of a mess but it works as efficiently as possible
 
     # For each squad (squad = int index of current squad)
     for squad in range(0,numSquads):    
@@ -332,17 +286,27 @@ def generateRandom():
 
         for unit in loadout[squad]:     # For each unit in the current squad
 
-            # If the unit is in the squad, increment its counters
-            if unit in tempsquadUnits[squad]:
+            # If this is a new unit, add the count of the previous unit, add new name to the list of unit types, and begin counting from 1
+            if unit != prevUnitName:   
+                # If this is NOT the first unit, append the count of the previous unit     
+                if counter > 0:
+                    tempsquadNums[squad].append(counter)
 
-                indexOfUnitInSquad = tempsquadUnits[squad].index(unit)  # Find its index in the squad
-                tempsquadNums[squad][indexOfUnitInSquad]+=1            # Increment its count
+                # Add this unit's name to the list
+                tempsquadUnits[squad].append(unit)
 
-            # If this is a new unit type, add the count of the previous unit, add new name to the list of unit types, and begin counting from 1
-            else:
+                # Begin counting new unit's amount
+                counter = 1            
 
-                tempsquadUnits[squad].append(unit)  # Add this unit's name to the list
-                tempsquadNums[squad].append(1)      # Add this unit's count to the list
+                # Set the previous unit name so we know what the last documented unit type is
+                prevUnitName = unit
+
+            # If this is the same unit type, increment its counters
+            if unit == prevUnitName:
+                counter+=1
+        
+        # Add the count of the last unit
+        tempsquadNums[squad].append(counter)
 
     squadUnits = tempsquadUnits
     squadNums = tempsquadNums
@@ -351,44 +315,10 @@ def generateRandom():
     updateUnitList()
     refreshDropDown()
 
-def unselectUnit():
-    global selectIndex
-
-    selectIndex = -1
-    numVar.set("")
-    sel_unit.set("[none]")
-    ent_unitnum.config(state="disabled")
-    btn_remove.config(state="disabled")
-
-def selectAddMethod():
-    if rbChoice.get() == 1:
-        ent_unitname.grid_remove()
-        unitNameDD.grid(row=3, column=0)
-    elif rbChoice.get() == 2:
-        unitNameDD.grid_remove()
-        ent_unitname.grid(row=3, column=0)
-
-def updateAddUnitList():
-    presetNumber = preset_dd['menu'].index(presetSelDdText.get())
-    unitNames = LoadAttributesBasedUnitFile(presetNumber)[0]
-    numNames = len(unitNames)
-    ## Remove current dropdown options
-    unitNameDD['menu'].delete(0, 'end')
-
-    ## Add new options
-
-    for x in range (0, numNames):
-        unitNameDD['menu'].add_command(label=str(unitNames[x]), command=tk._setit(unitNameDDtext, str(unitNames[x])))
-
-    unitNameDDtext.set(unitNames[0])
-    ## Remove unit selection
-    unselectUnit()
-
 ## Set-up the window and frames
 window = tk.Tk()
 window.title("EVERGLADES Squad Creator UI")
-window.resizable(width=False, height=False)
-section_bg = "#D8D8D8"
+window.resizable(width=True, height=True)
 
 ## Left-most column
 left_frame = tk.Frame(master=window)
@@ -396,7 +326,7 @@ left_frame.grid(row=0, column=0, padx=10, pady=10)
 
 # Create dropdown menu
 sel_squad_frame = tk.Frame(master=left_frame)
-sel_squad_frame.grid(row=0, column=0, sticky = "w")
+sel_squad_frame.grid(row=0, column=0)
 
 selSquadDdText = tk.StringVar()
 selSquadDdText.set("1")
@@ -407,101 +337,52 @@ selSquadDdText.trace("w", dd_callback)
 
 sel_squad_lbl = tk.Label(master=sel_squad_frame, text="Select Squad: ")
 sel_squad_lbl.grid(row=0, column=0, sticky="w")
-sel_squad_ttp = CreateToolTip(sel_squad_frame, \
-   'Select which squad to view and edit')
 sel_squad_dd = tk.OptionMenu(sel_squad_frame, selSquadDdText, "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12")
-sel_squad_dd.config(width=2)
-sel_squad_dd.grid(row=0, column=1, sticky="e",pady=(0,3))
-
-curr_squad = tk.Listbox(master=left_frame)
-curr_squad.config(width=25)
-curr_squad.grid(row=1, column=0, sticky="ew")
-curr_squad.bind('<<ListboxSelect>>', updateSelNum)
-
-## Copy-Paste Frame
-copy_paste_frame = tk.Frame(master=left_frame)
-copy_paste_frame.grid(row=2, column=0, pady = (5,0))
-
-# Copy Squad Button
-btn_copy = tk.Button(
-    master=copy_paste_frame,
-    text="Copy Squad",
-    command = copySquad
-)
-btn_copy_ttp = CreateToolTip(btn_copy, \
-   'Stores the current squad to the program.\n\n'
-   'Pasting a squad will overwrite the currently viewed squad with the stored squad.\n\n'
-   'If a squad is already copied, it is overwritten by the current squad.')
-btn_copy.grid(row=0, column=0, padx= (0,5))
-
-# Paste Squad Button
-btn_paste = tk.Button(
-    master=copy_paste_frame,
-    text="Paste Squad",
-    command = pasteSquad
-)
-btn_paste_ttp = CreateToolTip(btn_paste, \
-   'Overwrite the currently viewed squad with the stored squad.\n\n'
-   'If nothing has been copied, the pasted squad will be empty.')
-btn_paste.grid(row=0, column=1, padx= (5,0))
-
-
-# Check Squad Number Change
-checkExperimental = tk.IntVar()
-change_num_cb = tk.Checkbutton(
-    master = left_frame,
-    text='Unimplemented Functions',
-    variable=checkExperimental,
-    onvalue=1, offvalue=0,
-    command=enableButtons
-)
-change_num_cb.grid(row=3, column=0, pady=(20,0))
-
-exper_frame = tk.Frame(master=left_frame, bg = section_bg, bd=2, relief = "ridge", padx=25, pady=3)
-exper_frame.grid(row=4, column=0, sticky="ew")
+sel_squad_dd.grid(row=0, column=1, sticky="e")
 
 # Add Squad Button
 btn_add = tk.Button(
-    master=exper_frame,
+    master=left_frame,
     text="Add Empty Squad",
-    state = "disabled",
     command = addSquad
 )
-btn_add_ttp = CreateToolTip(btn_add, \
-   'Appends an empty squad to the list of squads and jumps to it')
-btn_add.grid(row=0, column=0, pady = 5)
-
+btn_add.grid(row=1, column=0, pady = 10)
 
 # Delete Squad Button
 btn_delete = tk.Button(
-    master=exper_frame,
+    master=left_frame,
     text="Delete Current Squad",
-    state = "disabled",
     command = deleteSquad
 )
-btn_delete_ttp = CreateToolTip(btn_delete, \
-   'Deletes the currently viewed squad and jumps to the one before it numerically')
-btn_delete.grid(row=1, column=0, pady = 5)
+btn_delete.grid(row=2, column=0, pady = 10)
+
+# Copy Squad Button
+btn_copy = tk.Button(
+    master=left_frame,
+    text="Copy Current Squad",
+    command = copySquad
+)
+btn_copy.grid(row=3, column=0, pady = 10)
+
+# Paste Squad Button
+btn_paste = tk.Button(
+    master=left_frame,
+    text="Paste Copied Squad",
+    command = pasteSquad
+)
+btn_paste.grid(row=4, column=0, pady = 10)
 
 
 ## Middle column
 mid_frame = tk.Frame(master=window)
-mid_frame.grid(row=0, column=1, padx=10, pady=10, sticky='n')
+mid_frame.grid(row=0, column=1, padx=10, pady=10)
 
-## Frame and widgets for random squad generation
-gametype_frame = tk.Frame(master=mid_frame)
-gametype_frame.grid(row=0, column=0)
+curr_lbl = tk.Label(master=mid_frame, text="Units in Selected Squad: ")
+curr_lbl.grid(row=0, column=0, sticky="w")
 
-presetnum_lbl = tk.Label(master=gametype_frame, text="Game Type: ")
-presetnum_lbl.grid(row=0, column=0, sticky="w")
-
-presetSelDdText = tk.StringVar()
-presetSelDdText.set("Default Units")
-def preset_callback(*args):
-    updateAddUnitList()
-presetSelDdText.trace("w", preset_callback)
-preset_dd = tk.OptionMenu(gametype_frame, presetSelDdText, "Default Units", "Preset Units", "Custom Units")
-preset_dd.grid(row=0, column=1, sticky="e")
+curr_squad = tk.Listbox(master=mid_frame)
+curr_squad.grid(row=1, column=0, sticky="w")
+curr_squad.bind('<<ListboxSelect>>', updateSelNum)
 
 # Delete Squad Button
 btn_delete = tk.Button(
@@ -511,129 +392,59 @@ btn_delete = tk.Button(
 )
 btn_delete.grid(row=2, column=0, pady = 10, sticky="w")
 
-## Selected unit area title
-sel_unit_title_frame = tk.Frame(master=mid_frame)
-sel_unit_title_frame.grid(row=1, column=0, sticky="w")
 
-unit_sect_lbl = tk.Label(master=sel_unit_title_frame, text="Unit: ")
-unit_sect_lbl.grid(row=0, column=0)
+## Right column
+right_frame = tk.Frame(master=window)
+right_frame.grid(row=0, column=2, padx=10, pady=10)
 
-sel_unit = tk.StringVar()
-sel_unit.set("[none]")
-sel_unit_lbl = tk.Label(master=sel_unit_title_frame, textvariable=sel_unit)
-sel_unit_lbl.grid(row=0, column=1, sticky="w")
+topright_frame = tk.Frame(master=right_frame)
+topright_frame.grid(row=0, column=0)
 
-### Selected unit area details
-sel_unit_frame = tk.Frame(master=mid_frame, bg = section_bg, bd=2, relief = "ridge", padx=30, pady=3)
-sel_unit_frame.grid(row=2, column=0)
-
-## Number of
-selectedNumber_frame = tk.Frame(master=sel_unit_frame, bg = section_bg)
-selectedNumber_frame.grid(row=0, column=0, sticky="w")
-
-num_unit_lbl = tk.Label(master=selectedNumber_frame, text="Amount: ", bg = section_bg)
+num_unit_lbl = tk.Label(master=topright_frame, text="Number of Selected Unit: ")
 num_unit_lbl.grid(row=0, column=0, sticky="w")
 
 numVar = tk.StringVar()
 def num_callback(*args):
     updateNum()
 numVar.trace("w", num_callback)
-vcmd = (selectedNumber_frame.register(checkNumInput), '%S')
+vcmd = (topright_frame.register(checkNumInput), '%S')
 
-ent_unitnum = tk.Entry(master=selectedNumber_frame, width=5, textvariable = numVar, validate='key', vcmd=vcmd, state="disabled")
+ent_unitnum = tk.Entry(master=topright_frame, width=5, textvariable = numVar, validate='key', vcmd=vcmd)
 ent_unitnum.grid(row=0, column=1, sticky="e")
 
-# Remove Unit Button
-btn_remove = tk.Button(
-    master=sel_unit_frame,
-    text="Remove Selected Unit",
-    command = deleteUnit,
-    state="disabled"
-)
-btn_remove_ttp = CreateToolTip(btn_remove, \
-   'If a unit is selected,\n'
-   'this button removes the selected unit from the squad.')
-btn_remove.grid(row=1, column=0, pady = 10, sticky="w")
-
-
-
-## Add unit area title
-add_unit_lbl = tk.Label(master=mid_frame, text="Add a Unit to the Current Squad")
-add_unit_lbl.grid(row=3, column=0, sticky="w", pady=(20,0))
-
-### Add unit area details
-add_unit_frame = tk.Frame(master=mid_frame, bg = section_bg, bd=2, relief = "ridge", padx=25, pady=3)
-add_unit_frame.grid(row=4, column=0)
-
-## Custom or existing radio buttons
-rbChoice = tk.IntVar()
-existingName = tk.Radiobutton(master= add_unit_frame, text="Existing Name", variable=rbChoice, value=1, bg = section_bg, command=selectAddMethod)
-existingName.grid(row=0, column=0)
-
-customName = tk.Radiobutton(master = add_unit_frame, text="Custom Name", variable=rbChoice, value=2, bg = section_bg, command=selectAddMethod)
-customName.grid(row=1, column=0)
-rbChoice.set(1)
-
-unitNameDDtext = tk.StringVar()
-unitNameDDtext.set("")
-unitNameDD = tk.OptionMenu(add_unit_frame, unitNameDDtext, " ")
-unitNameDD.config(width=20)
-unitNameDD.grid(row=3, column=0)
-
-## Custom name unit
 nameVar = tk.StringVar()
-ent_unitname = tk.Entry(master=add_unit_frame, width=25, textvariable = nameVar)
+unitname_lbl = tk.Label(master=right_frame, text="Add Unit with Name: ")
+unitname_lbl.grid(row=2, column=0, pady=(15,0))
+ent_unitname = tk.Entry(master=right_frame, width=25, textvariable = nameVar)
+ent_unitname.grid(row=3, column=0)
 
     
 
 btn_new = tk.Button(
-    master=add_unit_frame,
+    master=right_frame,
     text="Add Unit to Squad",
     command = addUnit
 )
-btn_new_ttp = CreateToolTip(btn_new, \
-   "Adds a new unit to the squad.\n\n"
-   "The unit's name is the text in the adjacent entry form.\n\n"
-   "The unit's amount defaults to 1.")
 btn_new.grid(row=4, column=0, pady=10)
-
-## Right column
-right_frame = tk.Frame(master=window)
-right_frame.grid(row=0, column=2, padx=10, pady=10, sticky="n")
-
 
 ## Frame and widgets for JSON generation
 json_frame = tk.Frame(master=right_frame)
-json_frame.grid(row=0, column=0)
+json_frame.grid(row=5, column=0, pady=(15,0))
 
 playnum_lbl = tk.Label(master=json_frame, text="Player Number: ")
 playnum_lbl.grid(row=0, column=0, sticky="w")
 
-playerNumDdText = tk.StringVar()
-playerNumDdText.set("1")
-playnum_dd = tk.OptionMenu(json_frame, playerNumDdText, "1", "2")
-playnum_dd.grid(row=0, column=1, sticky="w")
+playnumselSquadDdText = tk.StringVar()
+playnumselSquadDdText.set("0")
+playnum_dd = tk.OptionMenu(json_frame, playnumselSquadDdText, "0", "1")
+playnum_dd.grid(row=0, column=1, sticky="e")
 
 btn_gen = tk.Button(
-    master=right_frame,
+    master=json_frame,
     text="Generate JSON",
     command = generateJSON
 )
-btn_gen_ttp = CreateToolTip(btn_gen, \
-   'Exports the squad defined in this UI to the server\'s files')
-btn_gen.grid(row=1, column=0, pady=20)
-
-btn_gen_random = tk.Button(
-    master=right_frame,
-    text="Create Random Squad",
-    command = generateRandom
-)
-btn_random_ttp = CreateToolTip(btn_gen_random, \
-   "Generates a random loadout of units in 12 squads.\n\n"
-   "The units are pulled from the pool of units defined by the preset number.\n\n"
-   "To learn more about the preset number, mouse over the text \"Preset Number:\"")
-btn_gen_random.grid(row=2, column=0, pady=5)
-
+btn_gen.grid(row=0, column=2, sticky="e")
 
 ## Frame and widgets for random squad generation
 random_squad_frame = tk.Frame(master=right_frame)
@@ -655,5 +466,4 @@ btn_gen_random = tk.Button(
 btn_gen_random.grid(row=0, column=2, sticky="e")
 
 # Run the application
-updateAddUnitList()
 window.mainloop()

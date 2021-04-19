@@ -304,9 +304,9 @@ def exec(size):
     GenerateBaseMap(size, map)
     GenerateJsonFile(size, map)
     
-    #print('--------------------Random Map---------------------')
+    print('--------------------Random Map---------------------')
         
-    #for x in map:
-    #    print(*x, sep="\t")
+    for x in map:
+        print(*x, sep="\t")
     
-    #print('---------------------------------------------------')
+    print('---------------------------------------------------')
