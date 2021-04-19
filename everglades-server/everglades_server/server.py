@@ -216,7 +216,6 @@ class EvergladesGame:
         # Load in unit types json configuration file
         with open(unit_file) as fid:
             self.unit_dat = json.load(fid)
-            print(self.unit_dat)
 
         # Initialize unit types
         self.unit_types = []
@@ -260,7 +259,7 @@ class EvergladesGame:
         """
         """
 
-        GenerateUnitDefinitions(self.setup['LoadoutPresetLevel'])
+        #GenerateUnitDefinitions(self.setup['LoadoutPresetLevel'])
 
         # Open up connections
         # Wait for two players
@@ -308,8 +307,7 @@ class EvergladesGame:
                         groupID = gid,
                         universalIndex = universalGroupIndex,
                         location = start_node_idx,
-                        mapGroupID = map_gid,
-                        universalIndex = universalGroupIndex,
+                        mapGroupID = map_gid
                 )
                 universalGroupIndex = universalGroupIndex + 1
 
@@ -359,8 +357,7 @@ class EvergladesGame:
                                 unitType = in_type,
                                 universalIndex = universalUnitIndex,
                                 currentHealth = 100.,
-                                currentSpeed = self.unit_types[unit_id].speed,
-                                universalIndex = universalUnitIndex,
+                                currentSpeed = self.unit_types[unit_id].speed
                         )
                         universalUnitIndex = universalUnitIndex + 1
 

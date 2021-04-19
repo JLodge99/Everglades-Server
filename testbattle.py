@@ -59,11 +59,12 @@ gamesetup = {}
 gamesetup["__type"] = "Setup"
 gamesetup["MapFile"] = map_name
 gamesetup["MapType"] = mapType
-gamesetup["Targeting"] = targetTest.targetSystems # Valid options: randomlySelect, lowestHealth, highestHealth, mostLethal
+# Valid options: target_randomlySelect, target_lowestHealth, target_highestHealth, target_mostLethal, target_callCustomTargeting
+gamesetup["Targeting"] = ["target_callCustomTargeting", "target_callCustomTargeting"] #targetTest.targetSystems 
 gamesetup["Agents"] = ["random_actions.py", "random_actions.py"]
 gamesetup["UnitFile"] = "UnitDefinitions.json"
 gamesetup["UnitBudget"] = 100
-gamesetup["LoadoutPresetLevel"] = 1 #TODO: Read In
+#gamesetup["LoadoutPresetLevel"] = 1 #TODO: Read In
 gamesetup["TurnLimit"] = 150
 gamesetup["CaptureBonus"] = 1000
 gamesetup["enableWind"] = wind

@@ -222,6 +222,11 @@ def target_mostLethal(self, combatActions, player, opponent, activeGroups, activ
             action = (opponent, targetedDrone.groupID, targetedDrone, damage)
             combatActions.append(action)
 
+            # Prevent a possible overflow. If all drones have been targeted and possibly killed,
+            # then there is no reason to continue targeting.
+            if index >= len(enemyDrones):
+                return
+
 def target_callCustomTargeting(self, combatActions, player, opponent, activeGroups, activeUnits,node):
     # Imported from the agent script
     # Provide a copy of data so that ai can't change them
