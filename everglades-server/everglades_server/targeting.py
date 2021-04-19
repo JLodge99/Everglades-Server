@@ -5,7 +5,6 @@ import random as r
 import re
 import numpy as np
 
-from agents import random_actions
 #import testbattle as tb
 
 # Targeting functions take in 4 parameters:
@@ -228,6 +227,8 @@ def target_mostLethal(self, combatActions, player, opponent, activeGroups, activ
                 return
 
 def target_callCustomTargeting(self, combatActions, player, opponent, activeGroups, activeUnits,node):
+    from agents import random_actions
+
     # Imported from the agent script
     # Provide a copy of data so that ai can't change them
     playercopy = player
