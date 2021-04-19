@@ -91,11 +91,12 @@ def __loadJsonFileLoadout(playerIdentifier):
             data = json.load(f)
 
         
-    f.close() #TODO check this line didnt break anything
+    f.close()
     
     return data
 
 
+#TODO: Update to encompass a defined squad ruleset
 def CheckIfValidSquad(squad):
 
     return True
@@ -164,10 +165,13 @@ def ConvertLoadoutToObject(playerIdentifier):
     return unit_configs
 
 def __getRandomUnit(preset):
-    unitInfo = LoadAttributesBasedUnitFile(preset)
+    unitNames = []
+    for i in range(max(min(3,preset + 1),1)):
+        dataToConvert = LoadAttributesBasedUnitFile(i)
+        unitNames = unitNames + dataToConvert[0]
+           
 
-
-    return random.choice(unitInfo[0])
+    return random.choice(unitNames)
 
     
 # Creates a random loadout
@@ -363,11 +367,6 @@ def LoadAttributesBasedUnitFile(preset):
 #   Unit Conversion
 # -------------------------------------
 
-def sortAttributeListbyPriority(attributeList):
-
-    #TODO: Sort list. Sort by adjusted priority, lowest to highest integer value
-    # Adjusted Priority Equation: Origional Priority * 2, if isMult then -1 from result
-    return attributeList
 
 def GenerateUnitDefinition(name, attributeList):
     jsonData = {}
@@ -384,8 +383,6 @@ def GenerateUnitDefinition(name, attributeList):
     jsonData["Jamming"] = 0
     jsonData["Commander_Damage"] = 0
     jsonData["Commander_Speed"] = 0
-    jsonData["Commander_Control"] = 0
-    jsonData["Self_Repair"] = 0
     jsonData["Control"] = 1
     jsonData["Recon"] = 0
     jsonData["Cost"] = 0
@@ -394,7 +391,7 @@ def GenerateUnitDefinition(name, attributeList):
 
 
 
-    sortedAttributeList = sortAttributeListbyPriority(attributeList)
+    sortedAttributeList = attributeList
     attributeFile = LoadUnitAttributeFile()
     
     costOfUnit = 0
@@ -436,8 +433,11 @@ def GenerateUnitDefinitions(gameType):
     unitAttributes = []
     for i in range(max(min(3,gameType + 1),1)):
         dataToConvert = LoadAttributesBasedUnitFile(i)
-        unitNames = unitNames + dataToConvert[0]
-        unitAttributes = unitAttributes + dataToConvert[1]
+        for v in dataToConvert[0]:
+            unitNames.append(v)
+        for v in dataToConvert[1]:
+            unitAttributes.append(v)
+
 
     for i in range(len(unitNames)):
         unitInformation.append(GenerateUnitDefinition(unitNames[i], unitAttributes[i]))
@@ -458,4 +458,3 @@ def GenerateUnitDefinitions(gameType):
 def TestingFunction():
     GenerateUnitDefinitions(0)
     GenerateJsonFileLoadout(GenerateRandomLoadout(0), 3)
-TestingFunction()

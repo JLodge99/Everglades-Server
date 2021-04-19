@@ -41,6 +41,18 @@
                 "Jammer",
                 "Increased Health"
             ]
+        },
+        {
+            "Name": "Assault Commander",
+            "Attributes": [
+                "Assault Commander"
+            ]
+        },
+        {
+            "Name": "Speed Commander",
+            "Attributes": [
+                "Speed Commander"
+            ]
         }
     ]
 }

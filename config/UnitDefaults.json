@@ -5,7 +5,8 @@
             "Name": "Tank",
             "Attributes": [
                 "Increased Health",
-                "Increased Health"            ]
+                "Increased Health"            
+            ]
         },
         {
             "Name": "Striker",
@@ -28,5 +29,6 @@
                 "Recon Ability"
             ]
         }
+        
     ]
 }
