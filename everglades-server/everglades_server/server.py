@@ -308,8 +308,10 @@ class EvergladesGame:
                         groupID = gid,
                         universalIndex = universalGroupIndex,
                         location = start_node_idx,
-                        mapGroupID = map_gid
+                        mapGroupID = map_gid,
+                        universalIndex = universalGroupIndex,
                 )
+                universalGroupIndex = universalGroupIndex + 1
 
                 universalGroupIndex = universalGroupIndex + 1
 
@@ -358,7 +360,9 @@ class EvergladesGame:
                                 universalIndex = universalUnitIndex,
                                 currentHealth = 100.,
                                 currentSpeed = self.unit_types[unit_id].speed,
+                                universalIndex = universalUnitIndex,
                         )
+                        universalUnitIndex = universalUnitIndex + 1
 
                         universalUnitIndex = universalUnitIndex + 1
 
@@ -1180,7 +1184,6 @@ class EvergladesGame:
                                         )
 
                                     self.output['GROUP_Disband'].append(outputString)
-
                 # Generate the lists necessary for telemetry data output.
                 # These lists get generated after damage has been applied to all drones for this turn.
                 for player in self.team_starts:
@@ -1188,7 +1191,6 @@ class EvergladesGame:
                     groupsForOutput = []
                     unitsForOutput = []
                     healthForOutput = []
-
                     for group in infliction[opponent]:
                         for unit in infliction[opponent][group]:
                             # If the unit had its health affected this turn, show it in the output file.
@@ -1611,7 +1613,6 @@ class EvergladesGame:
 
         copyfile(self.mappath, os.path.join(self.dat_dir, os.path.basename(self.mappath)))
         print("Copied map json")
-
 
 
 # end class EvergladesGame

@@ -1,7 +1,12 @@
+import os
+import importlib
 import random
 import random as r
 import re
 import numpy as np
+
+from agents import random_actions
+#import testbattle as tb
 
 # Targeting functions take in 4 parameters:
 # - combatActions:  List of what each unit is targeting
@@ -28,8 +33,7 @@ def unravelEnemies(self,oppUnits):
             ret.append(oppUnit)
 
     return ret
-
-# This simulates the damage equation used by combat() to help better coordinate attacks.
+  
 def predictHealth(self, targetedUnit, targetedTeam, attackingUnit, attackingGroupID, attackingTeam, node):
     # Calculate the node defense bonus.
     nodeControlled = 1 if node.controlledBy == attackingTeam else 0
@@ -61,7 +65,7 @@ def predictHealth(self, targetedUnit, targetedTeam, attackingUnit, attackingGrou
 # 1. Randomly selecting a single group from enemy groups that are at the node
 # 2. Randomly selects a drone from that chosen group
 # Information about the selected drone is added to a list of combat actions
-def randomlySelect(self, combatActions, player, opponent, activeGroups, activeUnits, node):
+def target_randomlySelect(self, combatActions, player, opponent, activeGroups, activeUnits, node):
     # Loop through all units in the current player and select an enemy for them to target.
     for groupID in activeUnits[player]:
         for attackingUnit in activeUnits[player][groupID]:
@@ -91,7 +95,7 @@ def randomlySelect(self, combatActions, player, opponent, activeGroups, activeUn
 # It targets enemy drones by lowest health first. If all enemy drones have the same amount of health,
 # or if any set of drones within the enemyDrones list have the same health, the list is sorted by a random number instead.
 # FUTURE TEAM: This random sorting is not necessary. It was added to put some spice into targeting. It's entirely up to you what you want to do with it.
-def lowestHealth(self, combatActions, player, opponent, activeGroups, activeUnits, node):
+def target_lowestHealth(self, combatActions, player, opponent, activeGroups, activeUnits, node):
     # Create a list of ALL enemy drones
     enemyDrones = unravelEnemies(self,activeUnits[opponent])
 
@@ -137,7 +141,7 @@ def lowestHealth(self, combatActions, player, opponent, activeGroups, activeUnit
 # This is a sample targeting function.
 # It functions in the exact same manner as lowestHealth(), except it targets drones
 # by highest health first.
-def highestHealth(self, combatActions, player, opponent, activeGroups, activeUnits, node):
+def target_highestHealth(self, combatActions, player, opponent, activeGroups, activeUnits, node):
     # Create a list of ALL enemy drones
     enemyDrones = unravelEnemies(self,activeUnits[opponent])
 
@@ -171,7 +175,7 @@ def highestHealth(self, combatActions, player, opponent, activeGroups, activeUni
             # Submit the drone's action
             action = (opponent, targetedDrone.groupID, targetedDrone, damage)
             combatActions.append(action)
-
+            
             # Prevent a possible overflow. If all drones have been targeted and possibly killed,
             # then there is no reason to continue targeting.
             if index >= len(enemyDrones):
@@ -180,7 +184,7 @@ def highestHealth(self, combatActions, player, opponent, activeGroups, activeUni
 # This is a sample targeting function.
 # It prioritizes enemies based on unique conditions, labelling enemies as being more of a threat than others.
 # Enemies who have the highest health and the highest damage are attacked before other enemies.
-def mostLethal(self, combatActions, player, opponent, activeGroups, activeUnits, node):
+def target_mostLethal(self, combatActions, player, opponent, activeGroups, activeUnits, node):
     # Create a list of ALL enemy drones
     enemyDrones = unravelEnemies(self,activeUnits[opponent])
 
@@ -203,7 +207,7 @@ def mostLethal(self, combatActions, player, opponent, activeGroups, activeUnits,
             # Get the attacking unit's ID and base damage.
             unitTypeID = self.unit_names[attackingUnit.unitType.lower()]
             damage = self.unit_types[unitTypeID].damage
-            
+
             # If the enemy at the present index has a predicted health value that rivals that of the largest found thus far,
             # and if it has a damage output value that also rivals the largest found thus far, target that enemy.
             if enemyDrones[index].predictedHealth >= largestHealth and self.unit_types[self.unit_names[enemyDrones[index].unitType.lower()]].damage >= largestDamage: 
@@ -218,27 +222,35 @@ def mostLethal(self, combatActions, player, opponent, activeGroups, activeUnits,
             action = (opponent, targetedDrone.groupID, targetedDrone, damage)
             combatActions.append(action)
 
-            # Prevent a possible overflow. If all drones have been targeted and possibly killed,
-            # then there is no reason to continue targeting.
-            if index >= len(enemyDrones):
-                return
-
-def callCustomTargeting(self, combatActions, player, opponent, activeGroups, activeUnits, node):
+def target_callCustomTargeting(self, combatActions, player, opponent, activeGroups, activeUnits,node):
     # Imported from the agent script
-    # Provide a copy of the node so they can't change it, or remove the node information entirely
-    #unreliableCombatActions = customTargeting(self, player, opponent, activeGroups, activeUnits, node)
-    # Ensure that the actions are not using drones that are not within the group. i.e. they're making a striker attack enemies when the group contains no strikers, or
-    # they're allowing a single unit to attack every enemy multiple times
+    # Provide a copy of data so that ai can't change them
+    playercopy = player
+    opponentcopy = opponent
+    activeGroupscopy = activeGroups
+    activeUnitscopy = activeUnits
+    nodecopy = node
 
-    # for action in unreliableCombatActions:
-    #     if action[3] is not an integer:
-    #         say "stop cheating"
-    #     elif action[3] is a valid unit ID:
-    #         convert that ID into the damage that unit type deals
-    action[3] = self.unit_types[action[3].lower()].damage
+    # Import the custom targeting function from random_actions.py
+    self.customTargeting = getattr(random_actions, "customTargeting")
+    unreliableCombatActions = self.customTargeting(self, playercopy, opponentcopy, activeGroupscopy, activeUnitscopy, nodecopy)
 
-    combatActions = unreliableCombatActions
+    # Keep a list of each attacking unit type that exists
+    attackingUnits = []
+    for groupID in activeUnits[player]:
+        for attackingUnit in activeUnits[player][groupID]:
+            attackingUnits.append(attackingUnit)
 
+    # Ensure that the actions are not using drones that are not within the group. i.e. they're making a striker attack enemies when the group contains no strikers
+    for action in unreliableCombatActions:
+        # Check that damage is a number and indexes a unit type so we can get its damage, if all is good then we edit the action with the calculated damage
+        try:
+            attackingUnits.remove(action[3])                                               # Check that attacking unit exists, prevents unit from atacking more than once
+            damage = self.unit_types[self.unit_names[action[3].unitType.lower()]].damage   # Change value to calculated damage
+            formattedAction = (action[0],action[1],action[2], damage)
+            combatActions.append(formattedAction)                                           # Add action to original list
+        except:
+            print("Damage is not valid")
 
     # unreliableCombatActions has the same tuple structure as combatActions, except damage is replaced by the unit type that is attacking
     # After the custom targeting funciton finishes, we need to run through combat actions and replace the unit type that's attacking with
