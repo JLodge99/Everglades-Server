@@ -343,7 +343,3 @@ def exec(xLen, yLen, zLen, weight = .1, bellcurve = False):
         loop = generateMap(xLen, yLen, zLen, map, weight, bellcurve)
         print("Empty node, regenerating")
     generateJsonFile(xLen, yLen, zLen, map)
-
-# Testing statements
-# exec(5, 5, 7)
-# print("Nodecount: ", nodeCount)

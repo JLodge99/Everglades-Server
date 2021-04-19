@@ -12,7 +12,9 @@ import numpy as np
 from everglades_server import server
 from everglades_server import generate_map
 from everglades_server import generate_3dmap
-from target_testing import targetSystems
+import testing.target_testing as targetTest
+
+# This file always ensures that combat will occur at the middle=most node.
 
 ## Input Variables
 # Agent files must include a class of the same name with a 'get_action' function
@@ -64,7 +66,7 @@ gamesetup = {}
 gamesetup["__type"] = "static"
 gamesetup["MapFile"] = map_name
 gamesetup["MapType"] = mapType
-gamesetup["Targeting"] = targetSystems # Valid options: randomlySelect, lowestHealth, highestHealth, mostLethal
+gamesetup["Targeting"] = ["target_lowestHealth", "target_lowestHealth"] #targetTest.targetSystems # Valid options: randomlySelect, lowestHealth, highestHealth, mostLethal
 gamesetup["Agents"] = ["random_actions.py", "random_actions.py"]
 gamesetup["UnitFile"] = "UnitDefinitions.json"
 gamesetup["UnitBudget"] = 100

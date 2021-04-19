@@ -3,8 +3,8 @@
     "MapFile": "Map.json",
     "MapType": "2D",
     "Targeting": [
-        "mostLethal",
-        "mostLethal"
+        "target_callCustomTargeting",
+        "target_callCustomTargeting"
     ],
     "Agents": [
         "random_actions.py",

@@ -224,8 +224,10 @@ def updateNum():
     ### to update the unit listbox to the correct number
 
     global selectIndex
+
     if selectIndex < 0:
         return
+    
     squadIndex = int(selSquadDdText.get())-1
     squadNums[squadIndex][selectIndex] = numVar.get()
     updateUnitList()
@@ -501,6 +503,13 @@ presetSelDdText.trace("w", preset_callback)
 preset_dd = tk.OptionMenu(gametype_frame, presetSelDdText, "Default Units", "Preset Units", "Custom Units")
 preset_dd.grid(row=0, column=1, sticky="e")
 
+# Delete Squad Button
+btn_delete = tk.Button(
+    master=mid_frame,
+    text="Remove Selected Unit",
+    command = deleteUnit
+)
+btn_delete.grid(row=2, column=0, pady = 10, sticky="w")
 
 ## Selected unit area title
 sel_unit_title_frame = tk.Frame(master=mid_frame)
@@ -588,7 +597,6 @@ btn_new_ttp = CreateToolTip(btn_new, \
    "The unit's amount defaults to 1.")
 btn_new.grid(row=4, column=0, pady=10)
 
-
 ## Right column
 right_frame = tk.Frame(master=window)
 right_frame.grid(row=0, column=2, padx=10, pady=10, sticky="n")
@@ -626,6 +634,25 @@ btn_random_ttp = CreateToolTip(btn_gen_random, \
    "To learn more about the preset number, mouse over the text \"Preset Number:\"")
 btn_gen_random.grid(row=2, column=0, pady=5)
 
+
+## Frame and widgets for random squad generation
+random_squad_frame = tk.Frame(master=right_frame)
+random_squad_frame.grid(row=6, column=0, pady=(15,0))
+
+presetnum_lbl = tk.Label(master=random_squad_frame, text="Preset Number: ")
+presetnum_lbl.grid(row=0, column=0, sticky="w")
+
+presetselSquadDdText = tk.StringVar()
+presetselSquadDdText.set("0")
+preset_dd = tk.OptionMenu(random_squad_frame, presetselSquadDdText, "0", "1", "2")
+preset_dd.grid(row=0, column=1, sticky="e")
+
+btn_gen_random = tk.Button(
+    master=random_squad_frame,
+    text="Create Random Squad",
+    command = generateRandom
+)
+btn_gen_random.grid(row=0, column=2, sticky="e")
 
 # Run the application
 updateAddUnitList()

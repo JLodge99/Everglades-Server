@@ -27,8 +27,6 @@ def loadFromFile():
     # Populate dropdown with loaded data
     refreshDropDown()
 
-    
-
 def generateFile():
     GenerateUnitAttributeFile(unitList[0],unitList[1],unitList[2],unitList[3],unitList[4],unitList[5],unitList[6])
 

@@ -1,5 +1,10 @@
 import numpy as np
 
+# NOTE
+# This is the previous server.py file. THIS FILE HAS NOT BEEN MODIFIED BY THE FALL 2020 - SPRING 2021 TEAM
+# It is included for regression testing purposes to ensure that changes did not heavily modify the intended
+# output of the file.
+
 class EvgMap:
     def __init__(self, name):
         self.name = name

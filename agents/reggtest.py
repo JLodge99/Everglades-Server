@@ -53,11 +53,12 @@ class reggtest:
 
     # This is what is determining the actions for the current turn
     def get_action(self, obs):
-        action = np.zeros((1,2))
+        action = np.zeros((2,2))
+        # action[x, 0] = g selects group g for action x
+        # action[x, 1] = n sends group g to node n for action x
         action[0, 0] = 0 # Group 0
         action[0, 1] = 5 # Node ID 5
 
-        # Moves a different group
-        # action[1, 0] = 1 # Group 1
-        # action[1, 1] = 5 # Node ID 5
+        action[1, 0] = 1 # Group 1
+        action[1, 1] = 5 # Node ID 5
         return action

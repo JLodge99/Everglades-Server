@@ -97,7 +97,7 @@ An alphabetical listing of class variables.
 ## Class Methods
 An alphabetical listing of class methods.
 
-[**_build_groups()**](./Methods/ServerMethods/_build_groups().md)  
+[**_build_groups()**](./Methods/ServerMethods/_build_groups().md)
 [**_build_observations()**](./Methods/ServerMethods/_build_observations().md)  
 [**_build_observation_space()**](./Methods/ServerMethods/_build_observation_space().md)  
 [**_convert_node()**](./Methods/ServerMethods/_convert_node().md)  
@@ -117,7 +117,6 @@ An alphabetical listing of class methods.
 [**step()**](./Methods/ServerMethods/step().md)  
 [**unitTypes_init()**](./Methods/ServerMethods/unitTypes_init().md)  
 [**write_output()**](./Methods/ServerMethods/write_output().md)  
-
 
 ## Create JSON Methods
 An alphabetical listing of class methods.
@@ -140,3 +139,24 @@ An alphabetical listing of class methods.
 [**GetLoadoutTypeArray()**](./Methods/ServerMethods/CreateJSONMethods/GetLoadoutTypeArray().md)  
 [**LoadAttributesBasedUnitFile()**](./Methods/ServerMethods/CreateJSONMethods/LoadAttributesBasedUnitFile().md)  
 [**LoadUnitAttributeFile()**](./Methods/ServerMethods/CreateJSONMethods/LoadUnitAttributeFile().md)  
+
+## 2D Generation Methods
+An alphabetical listing of class methods.
+
+[**exec()**](./Methods/ServerMethods/2DGenerationMethods/exec().md)  
+[**GenerateBaseMap()**](./Methods/ServerMethods/2DGenerationMethods/GenerateBaseMap().md)  
+[**GenerateCenterLine()**](./Methods/ServerMethods/2DGenerationMethods/GenerateCenterLine().md)  
+[**GenerateJsonFile()**](./Methods/ServerMethods/2DGenerationMethods/GenerateJsonFile().md)  
+
+## 3D Generation Methods
+An alphabetical listing of class methods.
+
+[**bellCurveVal()**](./Methods/ServerMethods/3DGenerationMethods/bellCurveVal().md)  
+[**createCube()**](./Methods/ServerMethods/3DGenerationMethods/createCube().md)  
+[**discoverConnections()**](./Methods/ServerMethods/3DGenerationMethods/discoverConnections().md)  
+[**exec()**](./Methods/ServerMethods/3DGenerationMethods/exec().md)  
+[**generateCenterPlane()**](./Methods/ServerMethods/3DGenerationMethods/generateCenterPlane().md)  
+[**generateJsonFile()**](./Methods/ServerMethods/3DGenerationMethods/generateJsonFile().md)  
+[**generateMap()**](./Methods/ServerMethods/3DGenerationMethods/generateMap().md)  
+[**getNodeID()**](./Methods/ServerMethods/3DGenerationMethods/getNodeID().md)  
+[**printMap()**](./Methods/ServerMethods/3DGenerationMethods/printMap().md)  

@@ -78,8 +78,6 @@ class EvgUnitDefinition:
         self.jamming = kwargs.get('jamming',0)
         self.commander_damage = kwargs.get('commander_damage',0)
         self.commander_speed = kwargs.get('commander_speed',0)
-
-
         self.recon = kwargs.get('recon', 0)
         self.speedbonus_controlled_ally = kwargs.get('speedbonus_controlled_ally', 0)
         self.speedbonus_controlled_enemy = kwargs.get('speedbonus_controlled_enemy', 0)
