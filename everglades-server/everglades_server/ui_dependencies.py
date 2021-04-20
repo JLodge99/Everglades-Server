@@ -7,9 +7,7 @@ except ImportError:
     import tkinter as tk
 
 class CreateToolTip(object):
-    """
-    create a tooltip for a given widget
-    """
+    ## create a tooltip for a given widget
     def __init__(self, widget, text='widget info'):
         self.waittime = 500     #miliseconds
         self.wraplength = 180   #pixels
@@ -58,3 +56,15 @@ class CreateToolTip(object):
         self.tw= None
         if tw:
             tw.destroy()
+
+def createPopUp(textContained):
+    # Create popup window
+    popup = tk.Toplevel()
+    # Play alarm
+    popup.bell()
+
+    label = tk.Label(popup, text=textContained)
+    label.pack(fill='x', padx=50, pady=5)
+
+    button_close = tk.Button(popup, text="Close", command=popup.destroy)
+    button_close.pack(pady=(0,5))
