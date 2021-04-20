@@ -113,7 +113,7 @@ def newAttribute():
     global unitList
 
     ## Data that populates new attribute
-    sampleData = ["Name"+str(newVarCounter),'Effect','Description','0','0','0','0']
+    sampleData = ["Name"+str(newVarCounter),'Health','Description','0','0','0','0']
     newVarCounter+=1
 
     ## Add new data to array
