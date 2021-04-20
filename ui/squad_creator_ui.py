@@ -2,7 +2,6 @@
 # 3/16/21
 # This program is a UI used to more easily create and edit squads
 # Not perfect, there are inefficiencies (ex: updating the whole listbox when only individual entries change, sorting random squads)
-# Also once during development I got a weird bug involving changing squad and the numbers of units in them??? Can't reproduce, maybe it fixed itself
 
 import sys
 import tkinter as tk
@@ -224,10 +223,8 @@ def updateNum():
     ### to update the unit listbox to the correct number
 
     global selectIndex
-
     if selectIndex < 0:
         return
-    
     squadIndex = int(selSquadDdText.get())-1
     squadNums[squadIndex][selectIndex] = numVar.get()
     updateUnitList()
@@ -284,6 +281,7 @@ def generateJSON():
 
     # Call the function to write the current loadout to the appropriate JSON
     GenerateJsonFileLoadout(loadout, playerIdentifier)
+    createPopUp("Saved to JSON!")
 
     if printStatementsThatEthanNeedsApparently == True:
         print("\nThis is the squad my UI displays")
@@ -305,9 +303,10 @@ def generateRandom():
     presetNumber = preset_dd['menu'].index(presetSelDdText.get())
     loadout = GenerateRandomLoadout(presetNumber)   #Defined in CreateJsonData.py
 
-    print("This is the squad your function returns")
-    for squad in loadout:
-        print(squad)
+    if printStatementsThatEthanNeedsApparently == True:
+        print("This is the squad your function returns")
+        for squad in loadout:
+            print(squad)
 
     global squadUnits
     global squadNums
@@ -320,7 +319,7 @@ def generateRandom():
 
     ## The code snippet below translates the loadout from the format used by the random loadout function
     ## to the format defined at the top of this program so it is usable in the UI
-    ## ex:      loadout[0]: ["Striker", "Striker", "Striker", "Tank", "Tank"]
+    ## ex:      loadout[0]: ["Striker", "Striker", "Tank", "Tank", "Striker"]
     ## becomes: squadNums[0]: [3, 2]  &  squadUnits[0]: ["Striker", "Tank"]
 
     # For each squad (squad = int index of current squad)
@@ -334,13 +333,11 @@ def generateRandom():
 
             # If the unit is in the squad, increment its counters
             if unit in tempsquadUnits[squad]:
-
                 indexOfUnitInSquad = tempsquadUnits[squad].index(unit)  # Find its index in the squad
                 tempsquadNums[squad][indexOfUnitInSquad]+=1            # Increment its count
 
             # If this is a new unit type, add the count of the previous unit, add new name to the list of unit types, and begin counting from 1
             else:
-
                 tempsquadUnits[squad].append(unit)  # Add this unit's name to the list
                 tempsquadNums[squad].append(1)      # Add this unit's count to the list
 
@@ -490,6 +487,8 @@ mid_frame.grid(row=0, column=1, padx=10, pady=10, sticky='n')
 
 ## Frame and widgets for random squad generation
 gametype_frame = tk.Frame(master=mid_frame)
+gametype_ttp = CreateToolTip(gametype_frame, \
+   "Select which gametype you will be using.\n\nThis changes which units are avilable in the existing name dropdown menu, as well as which JSON is written to.")
 gametype_frame.grid(row=0, column=0)
 
 presetnum_lbl = tk.Label(master=gametype_frame, text="Game Type: ")
@@ -503,13 +502,6 @@ presetSelDdText.trace("w", preset_callback)
 preset_dd = tk.OptionMenu(gametype_frame, presetSelDdText, "Default Units", "Preset Units", "Custom Units")
 preset_dd.grid(row=0, column=1, sticky="e")
 
-# Delete Squad Button
-btn_delete = tk.Button(
-    master=mid_frame,
-    text="Remove Selected Unit",
-    command = deleteUnit
-)
-btn_delete.grid(row=2, column=0, pady = 10, sticky="w")
 
 ## Selected unit area title
 sel_unit_title_frame = tk.Frame(master=mid_frame)
@@ -529,6 +521,8 @@ sel_unit_frame.grid(row=2, column=0)
 
 ## Number of
 selectedNumber_frame = tk.Frame(master=sel_unit_frame, bg = section_bg)
+selectedNumber_ttp = CreateToolTip(selectedNumber_frame, \
+   "Change the amount of the selected unit in the squad.\n\nOnly allows numbers.")
 selectedNumber_frame.grid(row=0, column=0, sticky="w")
 
 num_unit_lbl = tk.Label(master=selectedNumber_frame, text="Amount: ", bg = section_bg)
@@ -568,9 +562,13 @@ add_unit_frame.grid(row=4, column=0)
 ## Custom or existing radio buttons
 rbChoice = tk.IntVar()
 existingName = tk.Radiobutton(master= add_unit_frame, text="Existing Name", variable=rbChoice, value=1, bg = section_bg, command=selectAddMethod)
+existingName_ttp = CreateToolTip(existingName, \
+   "Set whether the added unit has the name of a unit already in the server's files or a new name.\n\nWarning!\nIf you enter a new unit name, define it in the unit creator!\nIf an undefined unit type is detected, the simulation will not run!")
 existingName.grid(row=0, column=0)
 
 customName = tk.Radiobutton(master = add_unit_frame, text="Custom Name", variable=rbChoice, value=2, bg = section_bg, command=selectAddMethod)
+customName_ttp = CreateToolTip(customName, \
+   "Set whether the added unit has the name of a unit already in the server's files or a new name.\n\nWarning!\nIf you enter a new unit name, define it in the unit creator!\nIf an undefined unit type is detected, the simulation will not run!")
 customName.grid(row=1, column=0)
 rbChoice.set(1)
 
@@ -593,9 +591,10 @@ btn_new = tk.Button(
 )
 btn_new_ttp = CreateToolTip(btn_new, \
    "Adds a new unit to the squad.\n\n"
-   "The unit's name is the text in the adjacent entry form.\n\n"
+   "The unit's name is the text in the form above.\n\n"
    "The unit's amount defaults to 1.")
 btn_new.grid(row=4, column=0, pady=10)
+
 
 ## Right column
 right_frame = tk.Frame(master=window)
@@ -604,6 +603,10 @@ right_frame.grid(row=0, column=2, padx=10, pady=10, sticky="n")
 
 ## Frame and widgets for JSON generation
 json_frame = tk.Frame(master=right_frame)
+json_frame_ttp = CreateToolTip(json_frame, \
+   "Set which player this squad will be set for.\n\n"
+   "Although the shown values are 1 and 2,"
+   "they are represented internally as 0 and 1")
 json_frame.grid(row=0, column=0)
 
 playnum_lbl = tk.Label(master=json_frame, text="Player Number: ")
@@ -630,29 +633,10 @@ btn_gen_random = tk.Button(
 )
 btn_random_ttp = CreateToolTip(btn_gen_random, \
    "Generates a random loadout of units in 12 squads.\n\n"
-   "The units are pulled from the pool of units defined by the preset number.\n\n"
-   "To learn more about the preset number, mouse over the text \"Preset Number:\"")
+   "The units are pulled from the pool of units defined by the gametype.\n\n"
+   "To learn more about the gametype, mouse over the \"Game Type:\" section.")
 btn_gen_random.grid(row=2, column=0, pady=5)
 
-
-## Frame and widgets for random squad generation
-random_squad_frame = tk.Frame(master=right_frame)
-random_squad_frame.grid(row=6, column=0, pady=(15,0))
-
-presetnum_lbl = tk.Label(master=random_squad_frame, text="Preset Number: ")
-presetnum_lbl.grid(row=0, column=0, sticky="w")
-
-presetselSquadDdText = tk.StringVar()
-presetselSquadDdText.set("0")
-preset_dd = tk.OptionMenu(random_squad_frame, presetselSquadDdText, "0", "1", "2")
-preset_dd.grid(row=0, column=1, sticky="e")
-
-btn_gen_random = tk.Button(
-    master=random_squad_frame,
-    text="Create Random Squad",
-    command = generateRandom
-)
-btn_gen_random.grid(row=0, column=2, sticky="e")
 
 # Run the application
 updateAddUnitList()
