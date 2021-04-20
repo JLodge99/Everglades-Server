@@ -151,7 +151,7 @@ def disableUI():
 # Set-up the window and frames
 window = tk.Tk()
 window.title("EVERGLADES Attribute Creator")
-window.resizable(width=True, height=True)
+window.resizable(width=False, height=False)
 section_bg = "#D8D8D8"
 right_frame = tk.Frame(master=window)
 right_frame.grid(row=0, column=1, padx=10, pady=10)
