@@ -43,6 +43,7 @@ def generateFile():
     ### PURPOSE: When the "save to JSON" button is clicked, this function is called
     ### to save the list of units to the server's files
     GenerateAttributeBasedUnitsFile(unitList[0], unitList[1])
+    createPopUp("Saved to JSON!")
         
 def refreshDropDown():
     ### PURPOSE: When the list of units changes, this function is called
@@ -82,12 +83,6 @@ def updateCost():
         attrIndex = attrList[0].index(usedAttr)
         sum += attrList[6][attrIndex]
     costVar.set(sum)
-
-def saveToFile():
-    ### PURPOSE: When the save to JSON button is pressed, this function is called
-    ### to generate a JSON with the UIs data in it
-    GenerateUnitAttributeFile(unitList[0], unitList[1], unitList[2], unitList[3], unitList[4], unitList[5], unitList[6])
-    createPopUp("Saved to JSON!")
 
 def loadUnit():
     ### PURPOSE: When a new unit name is selected in the dropdown, this function is called
