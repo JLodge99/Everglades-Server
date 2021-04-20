@@ -38,8 +38,7 @@
         {
             "Name": "Jammer",
             "Attributes": [
-                "Jammer",
-                "Increased Health"
+                "Jammer"
             ]
         }
     ]
