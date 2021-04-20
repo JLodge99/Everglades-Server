@@ -15,7 +15,7 @@ attrList = []
 def loadFromFile():
     ### PURPOSE: When the "load from JSON" button is clicked, this function is called
     ### to load in the list of units and attributes from the server's files
-    information = LoadAttributesBasedUnitFile(1)    ## The list of units
+    information = LoadAttributesBasedUnitFile(2)    ## The list of units
     dataList = LoadUnitAttributeFile()              ## The list of attributes
     ##LoadAttributesBasedUnitFile() defined in CreateJsonData
     ##The line below is the debug data I used to make sure the functions worked as intended
@@ -189,7 +189,6 @@ def updateDescription(*args):
         toDesc = list_attr.curselection()[0]
     elif curr_attr.curselection() != ():
         global attrList
-        print(attrList)
         attributeName = curr_attr.get(curr_attr.curselection()[0])
         toDesc = attrList[0].index(attributeName)
     ## Delete and repopulate description text
