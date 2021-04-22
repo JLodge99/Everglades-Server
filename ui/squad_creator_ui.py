@@ -278,9 +278,12 @@ def generateJSON():
     
     # Grab player number from the dropdown
     playerIdentifier = int(playerNumDdText.get())-1 # Translates DD options (1,2) to server-readable (0,1)
+    presetNumber = preset_dd['menu'].index(presetSelDdText.get())   # Translates DD options to server-readable
 
     # Call the function to write the current loadout to the appropriate JSON
     GenerateJsonFileLoadout(loadout, playerIdentifier)
+    GenerateUnitDefinitions(presetNumber)
+    
     createPopUp("Saved to JSON!")
 
     if printStatementsThatEthanNeedsApparently == True:
