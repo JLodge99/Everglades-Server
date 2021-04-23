@@ -47,7 +47,7 @@ if mapType == '2D':
     generate_map.exec(3)
 elif mapType == '3D':
     print("Generating 3D map")
-    generate_3dmap.exec(5, 5, 10, weight=.4, bellcurve=True)
+    generate_3dmap.exec(5, 5, 10, weight=.3, bellcurve=False)
 
 ## Specific Imports
 agent0_name, agent0_extension = os.path.splitext(agent0_file)
