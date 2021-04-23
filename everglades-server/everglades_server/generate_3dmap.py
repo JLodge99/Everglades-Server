@@ -44,7 +44,7 @@ def createCube(xLen, yLen, zLen):
 # Recommended settings for weight
 # Bellcurve Enable:   Weightinit should be .3 - .9
 # Bellcurve Disable:  Weightinit should be .1 - .3
-def generateMap(xLen, yLen, zLen, map, weightinit, bellcurve):
+def generateMap(xLen, yLen, zLen, map, weightinit = .1, bellcurve = False):
     global nodeCount
     queue = Queue()
     startingPoint = Point(int(xLen/2), int(yLen/2), 0)
@@ -174,7 +174,7 @@ def generateMap(xLen, yLen, zLen, map, weightinit, bellcurve):
     return False
 
 # Center Plane Function
-def generateCenterPlane(xLen, yLen, zLen, map, weightinit):
+def generateCenterPlane(xLen, yLen, zLen, map, weightinit = .1):
     zCenter = int(zLen / 2)
     # weight = (nodeDensityWeight / 17)
     weight = weightinit
@@ -336,12 +336,10 @@ def bellCurveVal(x, zLen):
 # Main execute function
 def exec(xLen, yLen, zLen, weight = .1, bellcurve = False):
     loop = True
+    if(bellcurve):
+        print("Bellcurve enabled")
     while loop:
         map = createCube(xLen, yLen, zLen)
         loop = generateMap(xLen, yLen, zLen, map, weight, bellcurve)
         print("Empty node, regenerating")
     generateJsonFile(xLen, yLen, zLen, map)
-
-# Testing statements
-# exec(5, 5, 7)
-# print("Nodecount: ", nodeCount)

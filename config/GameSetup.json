@@ -2,16 +2,22 @@
     "__type": "Setup",
     "MapFile": "Map.json",
     "MapType": "3D",
+    "Targeting": [
+        "target_randomlySelect",
+        "target_callCustomTargeting"
+    ],
     "Agents": [
         "random_actions.py",
         "random_actions.py"
     ],
     "UnitFile": "UnitDefinitions.json",
     "UnitBudget": 100,
-    "TurnLimit": 150,
+    "LoadoutPresetLevel": 0,
+    "TurnLimit": 100,
     "CaptureBonus": 1000,
-    "enableWind": true,
-    "Stochasticity": 15054,
+    "enableWind": false,
+    "Stochasticity": "",
+    "JammerPenalty": 0.75,
     "FocusTurnMin": 4,
     "FocusTurnMax": 6,
     "FocusHeatMovement": 15,

@@ -28,7 +28,7 @@ class random_actions:
         #   2 - Tank
         #   3 - Recon
         self.unit_config = CreateJsonData.ConvertLoadoutToObject(player_num)
-        print("Successfully loaded player", player_num, "loadout")
+        print("Loaded player", player_num, "loadout")
 
         # Default Output Format:
         #{
@@ -79,3 +79,44 @@ class random_actions:
         action[:, 1] = np.random.choice(self.nodes_array, self.num_actions, replace=False)
         #print(action)
         return action
+
+def unravelEnemies(self,oppUnits):
+    ret = []
+
+    # group : [dorne1, dorone2, drone3],
+    # group : [dorne1, drone2, dron3]
+    # (1,2)
+    # Check each available group
+    for oppGroupID in oppUnits.keys():
+        # Check each drone in each available group to assign reference to their groupID and unitID
+        for index,oppUnit in enumerate(oppUnits[oppGroupID]):
+            oppUnit.groupID = oppGroupID
+            ret.append(oppUnit)
+
+    return ret
+
+def customTargeting(self,player,opponent,activeGroups,activeUnits,node):
+    combatActions = []
+    # activeUnits[player][groupID][unitType][unitID] = unitType
+    # Create a list of ALL enemy drones
+    enemyDrones = unravelEnemies(self,activeUnits[opponent])
+
+    ## Sort enemy drones based on current drone's targeting priority
+    enemyDrones = sorted(enemyDrones, key = lambda i: (self.unit_types[self.unit_names[i.unitType.lower()]].damage, i.currentHealth), reverse=True)
+    ## Testing to prove drones are sorted by most highest damage and health
+    #for dr in enemyDrones:
+    #    print(self.unit_types[self.unit_names[dr.unitType.lower()]].damage)
+
+    for groupID in activeUnits[player]:
+        for idx,attackingUnit in enumerate(activeUnits[player][groupID]):
+
+            if len(enemyDrones) == 0:
+                return
+
+            # Target next viable drone
+            targetedDrone = enemyDrones[idx % len(enemyDrones)]
+            # Submit the drone's action
+            action = (opponent, targetedDrone.groupID, targetedDrone, attackingUnit)
+            combatActions.append(action)
+
+    return combatActions
